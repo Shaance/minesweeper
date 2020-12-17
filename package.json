@@ -1,0 +1,31 @@
+{
+  "name": "ts-node-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "npm run build && NODE_ENV=production node lib/index.js",
+    "start:dev": "ts-node-dev --respawn src/*.ts",
+    "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
+    "lint": "eslint -c .eslintrc.js --ext .ts src/**"
+  },
+  "keywords": [],
+  "author": "Christophe Ha",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "^8.8.1",
+    "jasmine": "^3.5.0",
+    "typescript": "^3.8.3",
+    "typescript-logging": "^0.6.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint": "^6.8.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "@types/jasmine": "^3.6.2",
+    "@types/node": "^14.14.9"
+  }
+}
