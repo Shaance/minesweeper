@@ -11,5 +11,6 @@ export function readlineSync(): Promise<string> {
 }
 
 export function writeToStandardOutput(message: string) {
+  // eslint-disable-next-line no-console
   console.log(message);
 }
