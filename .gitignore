@@ -118,3 +118,4 @@ lib
 *zip
 .webpack
 .build
+.metals
