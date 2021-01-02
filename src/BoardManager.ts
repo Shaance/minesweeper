@@ -1,7 +1,8 @@
 import Board from './Board';
 import { coordinatesInBoard } from './BoardHelper';
+import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
-import { printBoard, readlineSync, writeToStandardOutput } from './StandardIOHelper';
+import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 export function createBoard(size: number, bombNumber: number) {
   return new Board(size, bombNumber);

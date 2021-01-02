@@ -22,7 +22,7 @@ export default class Board {
 }
 
 /**
- * -1 means bomb, -2 means visited
+ * -1 means bomb
  */
 function getBoardContent(size: number, bombsNumber: number) {
   const bombPositions = getBombPositions(size, bombsNumber);
