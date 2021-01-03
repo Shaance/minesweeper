@@ -36,6 +36,13 @@ function playCoordinates(board: Board, row: number, col: number): Board {
   return expandedBoard;
 }
 
+/**
+ * This function will expand from starting cell to neighbour cells until it reaches
+ * bomb adjacent cells
+ * @param board the board on which you want to expand
+ * @param row the starting row
+ * @param col the starting col
+ */
 function expand(board: Board, row: number, col: number): Board {
   const expandedBoard = board;
   const directions = getDirections();
