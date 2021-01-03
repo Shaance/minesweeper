@@ -71,7 +71,6 @@ export async function play(board: Board): Promise<BoardState> {
     writeToStandardOutput('\n');
   }
   printBoard(board);
-  writeToStandardOutput(board.state.toString());
   return board.state;
 }
 

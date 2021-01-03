@@ -1,15 +1,15 @@
 import yargs from 'yargs';
 import Board from './Board';
 import { play } from './BoardManager';
+import { writeToStandardOutput } from './StandardIOHelper';
 // import factory from './ConfigLog4j';
-// import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 // const logger = factory.getLogger('main');
 const defaultSize = 8;
 const defaultBombNumbers = 8;
 
 export default async function main() {
-  // always correct input
+  // Assume always correct input
   const { argv } = yargs
     .option('size', {
       alias: 's',
@@ -26,19 +26,9 @@ export default async function main() {
 
   const finalSize = argv.size ? parseInt(argv.size, 10) : defaultSize;
   const bombNumber = argv.bomb ? parseInt(argv.bomb, 10) : defaultBombNumbers;
-
   const board = new Board(finalSize, bombNumber);
-
-  // printBoard(board);
-
-  play(board);
-
-  // console.log(board.content);
-  // console.log(board.visited);
-
-  // writeToStandardOutput('Col');
-  // const col = await readlineSync();
-  // logger.info(col);
+  const gameResult = await play(board);
+  writeToStandardOutput(gameResult.toString());
 }
 
 main();
