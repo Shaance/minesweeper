@@ -1,4 +1,4 @@
-import { coordinatesInBoard, createMatrix } from './BoardHelper';
+import { coordinatesInBoard, createMatrix, getDirections } from './BoardHelper';
 import BoardState from './BoardState';
 
 export default class Board {
@@ -45,7 +45,7 @@ function getBombPositions(size: number, bombsNumber: number): Set<number[]> {
 
 function markAdjacentCells(board: number[][], bombPositions: Set<number[]>) {
   const markedBoard = board;
-  const directions = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, -1], [1, -1], [-1, 1]];
+  const directions = getDirections();
 
   bombPositions.forEach((coord) => {
     const [x, y] = [coord[0], coord[1]];

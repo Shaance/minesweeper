@@ -1,5 +1,5 @@
 import Board from './Board';
-import { coordinatesInBoard } from './BoardHelper';
+import { coordinatesInBoard, getDirections } from './BoardHelper';
 import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
 import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
@@ -17,35 +17,48 @@ export function createBoard(size: number, bombNumber: number) {
  * @returns { Board } returns new board
  */
 function playCoordinates(board: Board, row: number, col: number): Board {
-  const newBoard = board;
-  // const visitedMatrix = board.visited;
-  // const { content } = board;
-  // let { remainingNotVisited, state } = board;
-
-  if (!coordinatesInBoard(row, col, newBoard.content) || newBoard.visited[row][col]) {
-    return newBoard;
+  if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
+    return board;
   }
+
+  const newBoard = board;
 
   if (newBoard.content[row][col] === -1) {
     newBoard.state = BoardState.LOST;
     return newBoard;
   }
 
-  newBoard.visited[row][col] = true;
-  newBoard.remainingNotVisited -= 1;
-  // const revealedNumber = expand(board);
-  // remainingNotVisited -= revealedNumber;
-  if (newBoard.remainingNotVisited === 0) {
-    newBoard.state = BoardState.WON;
+  const expandedBoard = expand(board, row, col);
+  if (expandedBoard.remainingNotVisited === 0) {
+    expandedBoard.state = BoardState.WON;
   }
 
-  return newBoard;
+  return expandedBoard;
 }
 
-// function expand(board: Board): number {
-//   // TODO
-//   return 0;
-// }
+function expand(board: Board, row: number, col: number): Board {
+  const expandedBoard = board;
+  const directions = getDirections();
+  const { content, visited } = expandedBoard;
+  const queue = [[row, col]];
+  let visitedCells = 0;
+
+  while (queue.length > 0) {
+    const [x, y] = queue.shift();
+    if (coordinatesInBoard(x, y, expandedBoard.content) && !visited[x][y]) {
+      visited[x][y] = true;
+      visitedCells += 1;
+      if (content[x][y] === 0) {
+        directions.forEach((dir) => {
+          queue.push([x + dir[0], y + dir[1]]);
+        });
+      }
+    }
+  }
+
+  expandedBoard.remainingNotVisited -= visitedCells;
+  return expandedBoard;
+}
 
 export async function play(board: Board): Promise<BoardState> {
   while (board.state === BoardState.PLAYING) {
@@ -57,18 +70,27 @@ export async function play(board: Board): Promise<BoardState> {
     playCoordinates(board, coord[0], coord[1]);
     writeToStandardOutput('\n');
   }
+  printBoard(board);
+  writeToStandardOutput(board.state.toString());
   return board.state;
 }
 
-// TODO: have to check if number
-async function printAndGetInput(message: string): Promise<number> {
+async function printAndGetNumberInput(message: string): Promise<number> {
   writeToStandardOutput(message);
   const userInput = await readlineSync();
+  if (!isNumber(userInput)) {
+    writeToStandardOutput('Not an number, try again.');
+    return printAndGetNumberInput(message);
+  }
   return Number.parseInt(userInput, 10);
 }
 
 async function askCoordinates(): Promise<number[]> {
-  const row = await printAndGetInput('Row: ');
-  const col = await printAndGetInput('Col: ');
+  const row = await printAndGetNumberInput('Row: ');
+  const col = await printAndGetNumberInput('Col: ');
   return [row - 1, col - 1];
+}
+
+function isNumber(str: string): boolean {
+  return !Number.isNaN(Number(str));
 }

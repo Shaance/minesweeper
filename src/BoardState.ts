@@ -1,7 +1,7 @@
 enum BoardState {
-  PLAYING,
-  WON,
-  LOST,
+  PLAYING = 'PLAYING',
+  WON = 'WON',
+  LOST = 'LOST',
 }
 
 export default BoardState;

@@ -1,4 +1,5 @@
 import Board from './Board';
+import BoardState from './BoardState';
 import { writeToStandardOutput } from './StandardIOHelper';
 
 function getPrintableFirstRow(length: number): string {
@@ -29,6 +30,8 @@ function getPrintableBoard(board: Board): string {
       if (visited) {
         if (content[i][j] === 0) {
           finalString += ' . ';
+        } else if (content[i][j] === -1) {
+          finalString += ' * ';
         } else {
           finalString += ` ${content[i][j]} `;
         }
@@ -42,8 +45,25 @@ function getPrintableBoard(board: Board): string {
   return finalString;
 }
 
+function revealBombs(board: Board) {
+  const revealedBoard = board;
+
+  revealedBoard.content.forEach((row, i) => {
+    row.forEach((val, j) => {
+      if (val === -1) {
+        revealedBoard.visited[i][j] = true;
+      }
+    });
+  });
+  return revealedBoard;
+}
+
 const printBoard = (board: Board) => {
-  writeToStandardOutput(getPrintableBoard(board));
+  let finalBoard = board;
+  if (finalBoard.state === BoardState.LOST) {
+    finalBoard = revealBombs(finalBoard);
+  }
+  writeToStandardOutput(getPrintableBoard(finalBoard));
 };
 
 export default printBoard;

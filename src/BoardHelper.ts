@@ -1,5 +1,5 @@
-export function coordinatesInBoard(x: number, y: number, board: number[][]) {
-  return x >= 0 && y >= 0 && x < board.length && y < board[x].length;
+export function coordinatesInBoard(x: number, y: number, boardContent: number[][]) {
+  return x >= 0 && y >= 0 && x < boardContent.length && y < boardContent[x].length;
 }
 
 export function createMatrix(size: number, func: Function) {
@@ -19,4 +19,8 @@ export function createMatrix(size: number, func: Function) {
   }
 
   return blankBoard;
+}
+
+export function getDirections(): number[][] {
+  return [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, -1], [1, -1], [-1, 1]];
 }
