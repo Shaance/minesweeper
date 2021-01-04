@@ -7,7 +7,7 @@ import CellType from './CellType';
 import isNumber from './CommonHelper';
 import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
-export function createBoard(size: number, bombNumber: number) {
+export function createBoard(size: number, bombNumber: number): Board {
   return new Board(size, bombNumber);
 }
 

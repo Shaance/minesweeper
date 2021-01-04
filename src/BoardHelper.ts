@@ -1,4 +1,4 @@
-export function coordinatesInBoard(x: number, y: number, boardContent: number[][]) {
+export function coordinatesInBoard(x: number, y: number, boardContent: number[][]): boolean {
   return x >= 0 && y >= 0 && x < boardContent.length && y < boardContent[x].length;
 }
 
