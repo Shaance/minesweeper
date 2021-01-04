@@ -9,6 +9,27 @@ export function createBoard(size: number, bombNumber: number) {
   return new Board(size, bombNumber);
 }
 
+export async function play(board: Board): Promise<BoardState> {
+  while (board.state === BoardState.PLAYING) {
+    printBoard(board);
+    // we can disable no-await-in-loop because all calls are dependant on each other
+    // eslint-disable-next-line no-await-in-loop
+    const inputMode = await printAndBoardInputMode('Input R to reveal or F to flag/unflag cell');
+    // we can disable no-await-in-loop because all calls are dependant on each other
+    // eslint-disable-next-line no-await-in-loop
+    const coord = await askCoordinates();
+    const [row, col] = [coord[0], coord[1]];
+    if (inputMode === BoardInput.REVEAL) {
+      playCoordinates(board, row, col);
+    } else {
+      flagCoordinates(board, row, col);
+    }
+    writeToStandardOutput('\n');
+  }
+  printBoard(board);
+  return board.state;
+}
+
 /**
  * This function will play the coordinates given in arguments and will create a new board
  * with it's new content, visited matrix and state accordingly.
@@ -22,9 +43,8 @@ function playCoordinates(board: Board, row: number, col: number): Board {
     return board;
   }
 
-  const newBoard = board;
-
-  if (newBoard.content[row][col] === -1) {
+  if (board.content[row][col] === -1) {
+    const newBoard = board;
     newBoard.state = BoardState.LOST;
     return newBoard;
   }
@@ -58,17 +78,17 @@ function expand(board: Board, row: number, col: number): Board {
   const expandedBoard = board;
   const directions = getDirections();
   const { content, visited, flagged } = expandedBoard;
-  const queue = [[row, col]];
+  const stack = [[row, col]];
   let visitedCells = 0;
 
-  while (queue.length > 0) {
-    const [x, y] = queue.shift();
+  while (stack.length > 0) {
+    const [x, y] = stack.pop();
     if (coordinatesInBoard(x, y, expandedBoard.content) && !visited[x][y] && !flagged[x][y]) {
       visited[x][y] = true;
       visitedCells += 1;
       if (content[x][y] === 0) {
         directions.forEach((dir) => {
-          queue.push([x + dir[0], y + dir[1]]);
+          stack.push([x + dir[0], y + dir[1]]);
         });
       }
     }
@@ -76,27 +96,6 @@ function expand(board: Board, row: number, col: number): Board {
 
   expandedBoard.remainingNotVisited -= visitedCells;
   return expandedBoard;
-}
-
-export async function play(board: Board): Promise<BoardState> {
-  while (board.state === BoardState.PLAYING) {
-    printBoard(board);
-    // we can disable no-await-in-loop because all calls are dependant on each other
-    // eslint-disable-next-line no-await-in-loop
-    const inputMode = await printAndBoardInputMode('Input R to reveal or F to flag/unflag cell');
-    // we can disable no-await-in-loop because all calls are dependant on each other
-    // eslint-disable-next-line no-await-in-loop
-    const coord = await askCoordinates();
-    const [row, col] = [coord[0], coord[1]];
-    if (inputMode === BoardInput.REVEAL) {
-      playCoordinates(board, row, col);
-    } else {
-      flagCoordinates(board, row, col);
-    }
-    writeToStandardOutput('\n');
-  }
-  printBoard(board);
-  return board.state;
 }
 
 async function printAndGetNumberInput(message: string): Promise<number> {
@@ -116,7 +115,7 @@ async function printAndBoardInputMode(message: string): Promise<BoardInput> {
 
 async function printAndGetInput(message: string, predicate: Function, errMessage: string): Promise<string> {
   writeToStandardOutput(message);
-  const userInput = (await readlineSync());
+  const userInput = await readlineSync();
   if (predicate(userInput)) {
     return userInput;
   }
