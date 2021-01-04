@@ -1,5 +1,6 @@
 import { coordinatesInBoard, createMatrix, getDirections } from './BoardHelper';
 import BoardState from './BoardState';
+import CellType from './CellType';
 
 export default class Board {
   size: number;
@@ -24,9 +25,6 @@ export default class Board {
   }
 }
 
-/**
- * -1 means bomb
- */
 function getBoardContent(size: number, bombsNumber: number) {
   const bombPositions = getBombPositions(size, bombsNumber);
   const board = placeBombs(getZeroesMatrix(size), bombPositions);
@@ -55,7 +53,7 @@ function markAdjacentCells(board: number[][], bombPositions: Set<number[]>) {
     directions.forEach((dir) => {
       const xi = x + dir[0];
       const yi = y + dir[1];
-      if (coordinatesInBoard(xi, yi, markedBoard) && markedBoard[xi][yi] !== -1) {
+      if (coordinatesInBoard(xi, yi, markedBoard) && markedBoard[xi][yi] !== CellType.BOMB) {
         markedBoard[xi][yi] += 1;
       }
     });
@@ -67,7 +65,7 @@ function placeBombs(board: number[][], bombPositions: Set<number[]>) {
   const newBoard = board;
   bombPositions.forEach((coord: number[]) => {
     const [x, y] = [coord[0], coord[1]];
-    newBoard[x][y] = -1;
+    newBoard[x][y] = CellType.BOMB;
   });
 
   return newBoard;

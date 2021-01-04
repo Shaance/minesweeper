@@ -1,6 +1,7 @@
 import Board from './Board';
 import { coordinatesInBoard } from './BoardHelper';
 import BoardState from './BoardState';
+import CellType from './CellType';
 import { writeToStandardOutput } from './StandardIOHelper';
 
 function getPrintableFirstRow(length: number): string {
@@ -49,11 +50,11 @@ function getSymbolForCoordinates(visited: boolean, content: number[][], flagged:
     return ' H ';
   }
 
-  if (content[row][col] === 0) {
+  if (content[row][col] === CellType.EMPTY) {
     return ' . ';
   }
 
-  if (content[row][col] === -1) {
+  if (content[row][col] === CellType.BOMB) {
     return ' * ';
   }
   return ` ${content[row][col]} `;
@@ -64,7 +65,7 @@ function revealBombs(board: Board) {
 
   revealedBoard.content.forEach((row, i) => {
     row.forEach((val, j) => {
-      if (val === -1) {
+      if (val === CellType.BOMB) {
         revealedBoard.visited[i][j] = true;
       }
     });

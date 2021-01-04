@@ -3,6 +3,7 @@ import { coordinatesInBoard, getDirections } from './BoardHelper';
 import BoardInput from './BoardInput';
 import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
+import CellType from './CellType';
 import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 export function createBoard(size: number, bombNumber: number) {
@@ -43,7 +44,7 @@ function playCoordinates(board: Board, row: number, col: number): Board {
     return board;
   }
 
-  if (board.content[row][col] === -1) {
+  if (board.content[row][col] === CellType.BOMB) {
     const newBoard = board;
     newBoard.state = BoardState.LOST;
     return newBoard;
@@ -86,7 +87,7 @@ function expand(board: Board, row: number, col: number): Board {
     if (coordinatesInBoard(x, y, expandedBoard.content) && !visited[x][y] && !flagged[x][y]) {
       visited[x][y] = true;
       visitedCells += 1;
-      if (content[x][y] === 0) {
+      if (content[x][y] === CellType.EMPTY) {
         directions.forEach((dir) => {
           stack.push([x + dir[0], y + dir[1]]);
         });
