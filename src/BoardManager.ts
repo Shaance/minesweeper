@@ -4,6 +4,7 @@ import BoardInput from './BoardInput';
 import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
 import CellType from './CellType';
+import isNumber from './CommonHelper';
 import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 export function createBoard(size: number, bombNumber: number) {
@@ -129,8 +130,4 @@ async function askCoordinates(): Promise<number[]> {
   const row = await printAndGetNumberInput('Row: ');
   const col = await printAndGetNumberInput('Col: ');
   return [row - 1, col - 1];
-}
-
-function isNumber(str: string): boolean {
-  return !Number.isNaN(Number(str));
 }
