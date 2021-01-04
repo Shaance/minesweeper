@@ -1,6 +1,5 @@
 import yargs from 'yargs';
-import Board from './Board';
-import { play } from './BoardManager';
+import { createBoard, play } from './BoardManager';
 import isNumber from './CommonHelper';
 import { writeToStandardOutput } from './StandardIOHelper';
 // import factory from './ConfigLog4j';
@@ -30,9 +29,9 @@ export default async function main() {
   const bombNumber = argv.bomb && isNumber(argv.bomb)
     ? parseInt(argv.bomb, 10)
     : defaultBombNumbers;
-  const board = new Board(finalSize, bombNumber);
+  const board = createBoard(finalSize, bombNumber);
   const gameResult = await play(board);
-  writeToStandardOutput(`YOU ${gameResult.toString()}!`);
+  writeToStandardOutput(`You ${gameResult.toString()}!`);
 }
 
 main();
