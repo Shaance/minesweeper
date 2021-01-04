@@ -8,13 +8,16 @@ export default class Board {
 
   visited: boolean[][];
 
+  flagged: boolean[][];
+
   state: BoardState;
 
   remainingNotVisited: number;
 
   constructor(size: number, bombsNumber: number) {
     this.content = getBoardContent(size, bombsNumber);
-    this.visited = getVisitedBoard(size);
+    this.visited = getBooleanMatrix(size);
+    this.flagged = getBooleanMatrix(size);
     this.size = size;
     this.state = BoardState.PLAYING;
     this.remainingNotVisited = size * size - bombsNumber;
@@ -26,7 +29,7 @@ export default class Board {
  */
 function getBoardContent(size: number, bombsNumber: number) {
   const bombPositions = getBombPositions(size, bombsNumber);
-  const board = placeBombs(getBlankBoard(size), bombPositions);
+  const board = placeBombs(getZeroesMatrix(size), bombPositions);
   return markAdjacentCells(board, bombPositions);
 }
 
@@ -79,10 +82,10 @@ function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getBlankBoard(size: number) {
+function getZeroesMatrix(size: number) {
   return createMatrix(size, (matrix: number[][], idx: number) => matrix[idx].push(0));
 }
 
-function getVisitedBoard(size: number) {
+function getBooleanMatrix(size: number) {
   return createMatrix(size, (matrix: boolean[][], idx: number) => matrix[idx].push(false));
 }

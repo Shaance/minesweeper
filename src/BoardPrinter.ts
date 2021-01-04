@@ -1,4 +1,5 @@
 import Board from './Board';
+import { coordinatesInBoard } from './BoardHelper';
 import BoardState from './BoardState';
 import { writeToStandardOutput } from './StandardIOHelper';
 
@@ -20,29 +21,42 @@ function getPrintableFirstRow(length: number): string {
 
 function getPrintableBoard(board: Board): string {
   const visitedMatrix = board.visited;
-  const { content } = board;
+  const { content, flagged } = board;
 
   let finalString = getPrintableFirstRow(content[0].length);
 
   visitedMatrix.forEach((row: boolean[], i: number) => {
     finalString += ` ${i + 1} `;
     row.forEach((visited: boolean, j: number) => {
-      if (visited) {
-        if (content[i][j] === 0) {
-          finalString += ' . ';
-        } else if (content[i][j] === -1) {
-          finalString += ' * ';
-        } else {
-          finalString += ` ${content[i][j]} `;
-        }
-      } else {
-        finalString += ' H ';
-      }
+      finalString += getSymbolForCoordinates(visited, content, flagged, i, j);
     });
     finalString += '\n';
   });
 
   return finalString;
+}
+
+function getSymbolForCoordinates(visited: boolean, content: number[][], flagged: boolean[][], row: number, col: number): string {
+  if (!coordinatesInBoard(row, col, content)) {
+    return '';
+  }
+
+  if (flagged[row][col]) {
+    return ' F ';
+  }
+
+  if (!visited) {
+    return ' H ';
+  }
+
+  if (content[row][col] === 0) {
+    return ' . ';
+  }
+
+  if (content[row][col] === -1) {
+    return ' * ';
+  }
+  return ` ${content[row][col]} `;
 }
 
 function revealBombs(board: Board) {

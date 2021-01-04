@@ -5,7 +5,7 @@ export function readlineSync(): Promise<string> {
     process.stdin.resume();
     process.stdin.on('data', (data) => {
       process.stdin.pause(); // stops after one line reads
-      resolve(data.toString());
+      resolve(data.toString().replace(/\n/g, ''));
     });
   });
 }

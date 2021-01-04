@@ -1,5 +1,6 @@
 import Board from './Board';
 import { coordinatesInBoard, getDirections } from './BoardHelper';
+import BoardInput from './BoardInput';
 import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
 import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
@@ -36,6 +37,16 @@ function playCoordinates(board: Board, row: number, col: number): Board {
   return expandedBoard;
 }
 
+function flagCoordinates(board: Board, row: number, col: number): Board {
+  if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
+    return board;
+  }
+
+  const newBoard = board;
+  newBoard.flagged[row][col] = !newBoard.flagged[row][col];
+  return newBoard;
+}
+
 /**
  * This function will expand from starting cell to neighbour cells until it reaches
  * bomb adjacent cells
@@ -46,13 +57,13 @@ function playCoordinates(board: Board, row: number, col: number): Board {
 function expand(board: Board, row: number, col: number): Board {
   const expandedBoard = board;
   const directions = getDirections();
-  const { content, visited } = expandedBoard;
+  const { content, visited, flagged } = expandedBoard;
   const queue = [[row, col]];
   let visitedCells = 0;
 
   while (queue.length > 0) {
     const [x, y] = queue.shift();
-    if (coordinatesInBoard(x, y, expandedBoard.content) && !visited[x][y]) {
+    if (coordinatesInBoard(x, y, expandedBoard.content) && !visited[x][y] && !flagged[x][y]) {
       visited[x][y] = true;
       visitedCells += 1;
       if (content[x][y] === 0) {
@@ -70,11 +81,18 @@ function expand(board: Board, row: number, col: number): Board {
 export async function play(board: Board): Promise<BoardState> {
   while (board.state === BoardState.PLAYING) {
     printBoard(board);
-
+    // we can disable no-await-in-loop because all calls are dependant on each other
+    // eslint-disable-next-line no-await-in-loop
+    const inputMode = await printAndBoardInputMode('Input R to reveal or F to flag/unflag cell');
     // we can disable no-await-in-loop because all calls are dependant on each other
     // eslint-disable-next-line no-await-in-loop
     const coord = await askCoordinates();
-    playCoordinates(board, coord[0], coord[1]);
+    const [row, col] = [coord[0], coord[1]];
+    if (inputMode === BoardInput.REVEAL) {
+      playCoordinates(board, row, col);
+    } else {
+      flagCoordinates(board, row, col);
+    }
     writeToStandardOutput('\n');
   }
   printBoard(board);
@@ -82,13 +100,29 @@ export async function play(board: Board): Promise<BoardState> {
 }
 
 async function printAndGetNumberInput(message: string): Promise<number> {
-  writeToStandardOutput(message);
-  const userInput = await readlineSync();
-  if (!isNumber(userInput)) {
-    writeToStandardOutput('Not an number, try again.');
-    return printAndGetNumberInput(message);
-  }
+  const userInput = await printAndGetInput(message, isNumber, 'Not an number, try again.');
   return Number.parseInt(userInput, 10);
+}
+
+async function printAndBoardInputMode(message: string): Promise<BoardInput> {
+  const errMessage = 'Wrong input. Valid inputs are F for flag mode or R as reveal mode.';
+  const validInput = (str: string) => str && (str.toUpperCase() === 'F' || str.toUpperCase() === 'R');
+  const userInput = await printAndGetInput(message, validInput, errMessage);
+  if (userInput.toUpperCase() === 'F') {
+    return BoardInput.FLAG;
+  }
+  return BoardInput.REVEAL;
+}
+
+async function printAndGetInput(message: string, predicate: Function, errMessage: string): Promise<string> {
+  writeToStandardOutput(message);
+  const userInput = (await readlineSync());
+  if (predicate(userInput)) {
+    return userInput;
+  }
+
+  writeToStandardOutput(errMessage);
+  return printAndGetInput(message, predicate, errMessage);
 }
 
 async function askCoordinates(): Promise<number[]> {
