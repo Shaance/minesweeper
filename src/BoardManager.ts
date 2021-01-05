@@ -40,7 +40,7 @@ export async function play(board: Board): Promise<BoardState> {
  * @param col column you want to play
  * @returns { Board } returns new board
  */
-function playCoordinates(board: Board, row: number, col: number): Board {
+export function playCoordinates(board: Board, row: number, col: number): Board {
   if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
     return board;
   }
@@ -59,7 +59,7 @@ function playCoordinates(board: Board, row: number, col: number): Board {
   return expandedBoard;
 }
 
-function flagCoordinates(board: Board, row: number, col: number): Board {
+export function flagCoordinates(board: Board, row: number, col: number): Board {
   if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
     return board;
   }

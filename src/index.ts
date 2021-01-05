@@ -2,9 +2,6 @@ import yargs from 'yargs';
 import { createBoard, play } from './BoardManager';
 import isNumber from './CommonHelper';
 import { writeToStandardOutput } from './StandardIOHelper';
-// import factory from './ConfigLog4j';
-
-// const logger = factory.getLogger('main');
 
 export default async function main() {
   const { argv } = yargs
