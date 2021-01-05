@@ -41,13 +41,14 @@ export async function play(board: Board): Promise<BoardState> {
  * @returns { Board } returns new board
  */
 export function playCoordinates(board: Board, row: number, col: number): Board {
-  if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
+  if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col] || finishedState(board)) {
     return board;
   }
 
   if (board.content[row][col] === CellType.BOMB) {
     const newBoard = board;
     newBoard.state = BoardState.LOST;
+    newBoard.visited[row][col] = true;
     return newBoard;
   }
 
@@ -67,6 +68,10 @@ export function flagCoordinates(board: Board, row: number, col: number): Board {
   const newBoard = board;
   newBoard.flagged[row][col] = !newBoard.flagged[row][col];
   return newBoard;
+}
+
+function finishedState(board: Board) {
+  return board.state === BoardState.LOST || board.state === BoardState.WON;
 }
 
 /**

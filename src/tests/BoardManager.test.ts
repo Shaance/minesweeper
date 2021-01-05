@@ -1,5 +1,5 @@
 import Board from '../Board';
-import { playCoordinates } from '../BoardManager';
+import { flagCoordinates, playCoordinates } from '../BoardManager';
 import BoardState from '../BoardState';
 import CellType from '../CellType';
 
@@ -39,6 +39,44 @@ describe('playCoordinates function', () => {
     });
 
     expect(board.state).toEqual(BoardState.WON);
+  });
+
+  it('should update visited matrix when playing coordinates', () => {
+    const board = new Board();
+    const [x, y] = [1, 3];
+    const newBoard = playCoordinates(board, x, y);
+    expect(newBoard.visited[x][y]).toEqual(true);
+  });
+
+  it('should update flagged matrix when flagging coordinates', () => {
+    const board = new Board();
+    const [x, y] = [1, 3];
+    const newBoard = flagCoordinates(board, x, y);
+    expect(newBoard.flagged[x][y]).toEqual(true);
+  });
+
+  it('should return same board when board state is WON', () => {
+    const board = new Board();
+    board.state = BoardState.WON;
+    const [x, y] = [1, 3];
+    const newBoard = playCoordinates(board, x, y);
+    const flaggedBoard = playCoordinates(newBoard, x, y);
+
+    expect(newBoard).toEqual(board);
+    expect(newBoard).toEqual(flaggedBoard);
+    expect(board).toEqual(flaggedBoard);
+  });
+
+  it('should return same board when board state is LOST', () => {
+    const board = new Board();
+    board.state = BoardState.LOST;
+    const [x, y] = [1, 3];
+    const newBoard = playCoordinates(board, x, y);
+    const flaggedBoard = playCoordinates(newBoard, x, y);
+
+    expect(newBoard).toEqual(board);
+    expect(newBoard).toEqual(flaggedBoard);
+    expect(board).toEqual(flaggedBoard);
   });
 });
 
