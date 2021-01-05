@@ -23,4 +23,4 @@ Simply run `npm run test`
 
 ## Some visuals
 
-![Minesweeper gif](https://github.com/Shaance/cli-minesweeper/blob/master/res/cli-minesweeper.gif "Minesweeper gif")
+![Minesweeper gif](https://github.com/Shaance/cli-minesweeper/blob/master/res/cli-minesweeper-low.gif "Minesweeper gif")
