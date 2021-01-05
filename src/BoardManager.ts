@@ -17,7 +17,6 @@ export async function play(board: Board): Promise<BoardState> {
     // we can disable no-await-in-loop because all calls are dependant on each other
     // eslint-disable-next-line no-await-in-loop
     const inputMode = await printAndBoardInputMode('Input R to reveal or F to flag/unflag cell');
-    // we can disable no-await-in-loop because all calls are dependant on each other
     // eslint-disable-next-line no-await-in-loop
     const coord = await askCoordinates();
     const [row, col] = [coord[0], coord[1]];
@@ -84,13 +83,13 @@ function finishedState(board: Board) {
 function expand(board: Board, row: number, col: number): Board {
   const expandedBoard = board;
   const directions = getDirections();
-  const { content, visited, flagged } = expandedBoard;
+  const { content, visited } = expandedBoard;
   const stack = [[row, col]];
   let visitedCells = 0;
 
   while (stack.length > 0) {
     const [x, y] = stack.pop();
-    if (coordinatesInBoard(x, y, expandedBoard.content) && !visited[x][y] && !flagged[x][y]) {
+    if (canExpand(expandedBoard, x, y)) {
       visited[x][y] = true;
       visitedCells += 1;
       if (content[x][y] === CellType.EMPTY) {
@@ -103,6 +102,11 @@ function expand(board: Board, row: number, col: number): Board {
 
   expandedBoard.remainingNotVisited -= visitedCells;
   return expandedBoard;
+}
+
+function canExpand(board: Board, x: number, y: number) {
+  const { content, visited, flagged } = board;
+  return coordinatesInBoard(x, y, content) && !visited[x][y] && !flagged[x][y];
 }
 
 async function printAndGetNumberInput(message: string): Promise<number> {
