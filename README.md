@@ -20,3 +20,7 @@ First, rules can be found here <https://www.instructables.com/How-to-play-minesw
 ## How to launch tests
 
 Simply run `npm run test`
+
+## Some visuals
+
+![Minesweeper gif](https://github.com/Shaance/cli-minesweeper/blob/master/res/cli-minesweeper.gif "Minesweeper gif")
