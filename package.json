@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p .",
-    "start": "npm run build && NODE_ENV=production node lib/index.js",
+    "start": "NODE_ENV=production node lib/index.js",
+    "start:build": "npm run build && NODE_ENV=production node lib/index.js",
     "start:dev": "ts-node-dev --respawn src/*.ts",
     "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
     "lint": "eslint -c .eslintrc.js --ext .ts src/**"
