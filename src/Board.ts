@@ -2,6 +2,8 @@ import { coordinatesInBoard, createMatrix, getDirections } from './BoardHelper';
 import BoardState from './BoardState';
 import CellType from './CellType';
 
+const DEFAULT_SIZE = 8;
+const DEFAULT_BOMB_NUMBERS = 8;
 export default class Board {
   size: number;
 
@@ -15,13 +17,19 @@ export default class Board {
 
   remainingNotVisited: number;
 
-  constructor(size: number, bombsNumber: number) {
-    this.content = getBoardContent(size, bombsNumber);
-    this.visited = getBooleanMatrix(size);
-    this.flagged = getBooleanMatrix(size);
-    this.size = size;
+  constructor(size?: number, bombsNumber?: number) {
+    const actualSize = size && size > 0
+      ? size
+      : DEFAULT_SIZE;
+    const actualBombsNumber = bombsNumber && bombsNumber > 0
+      ? bombsNumber
+      : DEFAULT_BOMB_NUMBERS;
+    this.content = getBoardContent(actualSize, actualBombsNumber);
+    this.visited = getBooleanMatrix(actualSize);
+    this.flagged = getBooleanMatrix(actualSize);
+    this.size = actualSize;
     this.state = BoardState.PLAYING;
-    this.remainingNotVisited = size * size - bombsNumber;
+    this.remainingNotVisited = actualSize * actualSize - actualBombsNumber;
   }
 }
 

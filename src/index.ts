@@ -5,8 +5,6 @@ import { writeToStandardOutput } from './StandardIOHelper';
 // import factory from './ConfigLog4j';
 
 // const logger = factory.getLogger('main');
-const defaultSize = 8;
-const defaultBombNumbers = 8;
 
 export default async function main() {
   const { argv } = yargs
@@ -23,13 +21,13 @@ export default async function main() {
     .help()
     .alias('help', 'h');
 
-  const finalSize = argv.size && isNumber(argv.size)
+  const size = argv.size && isNumber(argv.size)
     ? parseInt(argv.size, 10)
-    : defaultSize;
-  const bombNumber = argv.bomb && isNumber(argv.bomb)
+    : undefined;
+  const bombsNumber = argv.bomb && isNumber(argv.bomb)
     ? parseInt(argv.bomb, 10)
-    : defaultBombNumbers;
-  const board = createBoard(finalSize, bombNumber);
+    : undefined;
+  const board = createBoard(size, bombsNumber);
   const gameResult = await play(board);
   writeToStandardOutput(`You ${gameResult.toString()}!`);
 }
