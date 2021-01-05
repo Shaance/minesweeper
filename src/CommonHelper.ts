@@ -1,3 +1,7 @@
-const isNumber = (str: string): boolean => !Number.isNaN(Number(str));
+export function isNumber(str: string): boolean {
+  return !Number.isNaN(Number(str));
+}
 
-export default isNumber;
+export type Predicate<T> = (t: T) => boolean;
+
+export type BiConsumer<T, U> = (t: T, u: U) => void;

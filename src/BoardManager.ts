@@ -4,7 +4,7 @@ import BoardInput from './BoardInput';
 import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
 import CellType from './CellType';
-import isNumber from './CommonHelper';
+import { isNumber, Predicate } from './CommonHelper';
 import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 export function createBoard(size: number, bombNumber: number): Board {
@@ -16,7 +16,7 @@ export async function play(board: Board): Promise<BoardState> {
     printBoard(board);
     // we can disable no-await-in-loop because all calls are dependant on each other
     // eslint-disable-next-line no-await-in-loop
-    const inputMode = await printAndBoardInputMode('Input R to reveal or F to flag/unflag cell');
+    const inputMode = await printAndGetInputMode('Input R to reveal or F to flag/unflag cell');
     // eslint-disable-next-line no-await-in-loop
     const coord = await askCoordinates();
     const [row, col] = [coord[0], coord[1]];
@@ -114,7 +114,7 @@ async function printAndGetNumberInput(message: string): Promise<number> {
   return Number.parseInt(userInput, 10);
 }
 
-async function printAndBoardInputMode(message: string): Promise<BoardInput> {
+async function printAndGetInputMode(message: string): Promise<BoardInput> {
   const errMessage = 'Wrong input. Valid inputs are F for flag mode or R as reveal mode.';
   const validInput = (str: string) => str && (str.toUpperCase() === 'F' || str.toUpperCase() === 'R');
   const userInput = await printAndGetInput(message, validInput, errMessage);
@@ -124,7 +124,7 @@ async function printAndBoardInputMode(message: string): Promise<BoardInput> {
   return BoardInput.REVEAL;
 }
 
-async function printAndGetInput(message: string, predicate: Function, errMessage: string): Promise<string> {
+async function printAndGetInput(message: string, predicate: Predicate<string>, errMessage: string): Promise<string> {
   writeToStandardOutput(message);
   const userInput = await readlineSync();
   if (predicate(userInput)) {

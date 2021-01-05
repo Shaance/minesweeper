@@ -1,8 +1,10 @@
+import { BiConsumer } from './CommonHelper';
+
 export function coordinatesInBoard(x: number, y: number, boardContent: number[][]): boolean {
   return x >= 0 && y >= 0 && x < boardContent.length && y < boardContent[x].length;
 }
 
-export function createMatrix(size: number, func: Function) {
+export function createMatrix(size: number, func: BiConsumer<any[], number>) {
   let i = 0;
   let j = 0;
 
