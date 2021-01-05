@@ -13,6 +13,10 @@ Small project written in TypeScript that was originally asked as an interview qu
 5. (optional) Run `node lib/index.js -h` to get help on the different args
 6. Run `node lib/index.js [-option] [arg]`
 
+## How to launch tests
+
+Simply run `npm run test`
+
 ## How to play?
 
 Rules can be found here <https://www.instructables.com/How-to-play-minesweeper/>.
@@ -28,10 +32,6 @@ Board representation:
 - `.` corresponds to an empty cell
 - `*` corresponds to a bomb
 - `F` corresponds to a flagged cell
-
-## How to launch tests
-
-Simply run `npm run test`
 
 ## Some visuals
 
