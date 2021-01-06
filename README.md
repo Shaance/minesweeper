@@ -23,7 +23,7 @@ Rules can be found here <https://www.instructables.com/How-to-play-minesweeper/>
 
 At every turn:
 
-- You will have to choose between 'reveal' and 'flag/unflag' mode by input R or F
+- You will have to choose between 'reveal' and 'flag/unflag' mode by inputting R or F
 - You can then input the row and the column you want to play on
 
 Board representation:
