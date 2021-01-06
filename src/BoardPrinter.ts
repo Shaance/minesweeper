@@ -1,4 +1,4 @@
-import Board from './Board';
+import type Board from './Board';
 import { coordinatesInBoard } from './BoardHelper';
 import BoardState from './BoardState';
 import CellType from './CellType';
