@@ -23,6 +23,10 @@ export function createMatrix(size: number, func: BiConsumer<any[], number>) {
   return blankBoard;
 }
 
-export function getDirections(): number[][] {
+export function getDirectionsWithDiagonals(): number[][] {
   return [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, -1], [1, -1], [-1, 1]];
+}
+
+export function getDirections(): number[][] {
+  return [[0, 1], [1, 0], [0, -1], [-1, 0]];
 }

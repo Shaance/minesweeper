@@ -1,5 +1,5 @@
 import Board from '../Board';
-import { coordinatesInBoard, getDirections } from '../BoardHelper';
+import { coordinatesInBoard, getDirectionsWithDiagonals } from '../BoardHelper';
 import BoardState from '../BoardState';
 import CellType from '../CellType';
 
@@ -44,9 +44,9 @@ describe('Board constructor', () => {
     expect(board.remainingNotVisited).toEqual(expectedRemainingNotVisited);
   });
 
-  it('board instance state should be PLAYING', () => {
+  it('board instance state should be INITIAL', () => {
     const board = new Board();
-    const expectedState = BoardState.PLAYING;
+    const expectedState = BoardState.INITIAL;
     expect(board.state).toEqual(expectedState);
   });
 
@@ -70,7 +70,7 @@ function expectAdjacentCellsToHaveRightValue(board: Board) {
   const { content } = board;
   const stack = getNonBombCellsCoordinates(board);
 
-  const directions = getDirections();
+  const directions = getDirectionsWithDiagonals();
   while (stack.length > 0) {
     const [x, y] = stack.pop();
     let adjacentCellsSum = 0;

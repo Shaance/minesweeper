@@ -12,23 +12,44 @@ export function createBoard(size: number, bombNumber: number): Board {
 }
 
 export async function play(board: Board): Promise<BoardState> {
-  while (board.state === BoardState.PLAYING) {
-    printBoard(board);
+  let playableBoard = board;
+  while (playableBoard.state === BoardState.PLAYING || playableBoard.state === BoardState.INITIAL) {
+    printBoard(playableBoard);
     // we can disable no-await-in-loop because all calls are dependant on each other
     // eslint-disable-next-line no-await-in-loop
     const inputMode = await printAndGetInputMode('Input R to reveal or F to flag/unflag cell');
     // eslint-disable-next-line no-await-in-loop
     const coord = await askCoordinates();
     const [row, col] = [coord[0], coord[1]];
-    if (inputMode === BoardInput.REVEAL) {
-      playCoordinates(board, row, col);
-    } else {
-      flagCoordinates(board, row, col);
-    }
+    playableBoard = getBoardAfterPlayerMove(inputMode, playableBoard, row, col);
     writeToStandardOutput('\n');
   }
-  printBoard(board);
-  return board.state;
+  printBoard(playableBoard);
+  return playableBoard.state;
+}
+
+export function getBoardAfterPlayerMove(inputMode: BoardInput, board: Board, row: number, col: number): Board {
+  if (inputMode === BoardInput.REVEAL) {
+    return playCoordinates(getPlayableBoard(board, row, col), row, col);
+  }
+  return flagCoordinates(board, row, col);
+}
+
+/**
+ * We always want the first coordinates the player picks to be expandable. This function will
+ * regenerate a board as long as the coordinates in input points to either a bomb or a cell
+ * that is adjacent to bombs
+ */
+function getPlayableBoard(board: Board, row: number, col: number): Board {
+  if (board.state !== BoardState.INITIAL || !coordinatesInBoard(row, col, board.content) || isEmptyCell(board, row, col)) {
+    return board;
+  }
+  const newBoard = createBoard(board.size, board.bombsNumber).withFlagged(board.flagged);
+  return getPlayableBoard(newBoard, row, col);
+}
+
+function isEmptyCell(board: Board, row: number, col: number): boolean {
+  return coordinatesInBoard(row, col, board.content) && board.content[row][col] === CellType.EMPTY;
 }
 
 /**
@@ -39,7 +60,7 @@ export async function play(board: Board): Promise<BoardState> {
  * @param col column you want to play
  * @returns { Board } returns new board
  */
-export function playCoordinates(board: Board, row: number, col: number): Board {
+function playCoordinates(board: Board, row: number, col: number): Board {
   if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col] || finishedState(board)) {
     return board;
   }
@@ -56,10 +77,14 @@ export function playCoordinates(board: Board, row: number, col: number): Board {
     expandedBoard.state = BoardState.WON;
   }
 
+  if (expandedBoard.state === BoardState.INITIAL) {
+    expandedBoard.state = BoardState.PLAYING;
+  }
+
   return expandedBoard;
 }
 
-export function flagCoordinates(board: Board, row: number, col: number): Board {
+function flagCoordinates(board: Board, row: number, col: number): Board {
   if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
     return board;
   }
