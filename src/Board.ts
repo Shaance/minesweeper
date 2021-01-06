@@ -1,4 +1,4 @@
-import { coordinatesInBoard, createMatrix, getDirections } from './BoardHelper';
+import { coordinatesInBoard, createMatrix, getDirectionsWithDiagonals } from './BoardHelper';
 import BoardState from './BoardState';
 import CellType from './CellType';
 
@@ -6,6 +6,8 @@ const DEFAULT_SIZE = 8;
 const DEFAULT_BOMB_NUMBERS = 8;
 export default class Board {
   size: number;
+
+  bombsNumber: number;
 
   content: number[][];
 
@@ -28,8 +30,14 @@ export default class Board {
     this.visited = getBooleanMatrix(actualSize);
     this.flagged = getBooleanMatrix(actualSize);
     this.size = actualSize;
-    this.state = BoardState.PLAYING;
+    this.bombsNumber = actualBombsNumber;
+    this.state = BoardState.INITIAL;
     this.remainingNotVisited = actualSize * actualSize - actualBombsNumber;
+  }
+
+  withFlagged(flagged: boolean[][]) {
+    this.flagged = flagged;
+    return this;
   }
 }
 
@@ -54,7 +62,7 @@ function getBombPositions(size: number, bombsNumber: number): Set<number[]> {
 
 function markAdjacentCells(board: number[][], bombPositions: Set<number[]>) {
   const markedBoard = board;
-  const directions = getDirections();
+  const directions = getDirectionsWithDiagonals();
 
   bombPositions.forEach((coord) => {
     const [x, y] = [coord[0], coord[1]];

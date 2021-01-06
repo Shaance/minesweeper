@@ -1,41 +1,48 @@
 import Board from '../Board';
-import { flagCoordinates, playCoordinates } from '../BoardManager';
+import BoardInput from '../BoardInput';
+import { getBoardAfterPlayerMove } from '../BoardManager';
 import BoardState from '../BoardState';
 import CellType from '../CellType';
 
-describe('playCoordinates function', () => {
+describe('getBoardAfterPlayerMove function', () => {
   it('should return same board when coordinates are incorrect', () => {
     const board = new Board();
-    const newBoard = playCoordinates(board, -1, -3);
+    const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, -1, -3);
     expect(newBoard).toEqual(board);
   });
 
   it('should return same board when cell already visited', () => {
-    const board = new Board();
+    let board = new Board();
+    // make sure we get the playable board
+    board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const [x, y] = [1, 3];
     board.visited[x][y] = true;
-    const newBoard = playCoordinates(board, x, y);
+    const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     expect(newBoard).toEqual(board);
   });
 
   it('should have lost state if bomb coordinates are played', () => {
-    const board = new Board();
+    let board = new Board();
+    // make sure we get the playable board
+    board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const coord = getFirstBombFromBoard(board);
 
     if (coord) {
       const [x, y] = [coord[0], coord[1]];
-      const newBoard = playCoordinates(board, x, y);
+      const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
       expect(newBoard.state).toEqual(BoardState.LOST);
     }
   });
 
   it('should have win state if all non bomb coordinates are played', () => {
     let board = new Board();
+    // make sure we get the playable board
+    board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const notBomb = (value: number) => value !== CellType.BOMB;
     const coordinates = getCoordinates(board, notBomb);
     coordinates.forEach((coord) => {
       const [x, y] = [coord[0], coord[1]];
-      board = playCoordinates(board, x, y);
+      board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     });
 
     expect(board.state).toEqual(BoardState.WON);
@@ -44,23 +51,33 @@ describe('playCoordinates function', () => {
   it('should update visited matrix when playing coordinates', () => {
     const board = new Board();
     const [x, y] = [1, 3];
-    const newBoard = playCoordinates(board, x, y);
+    const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     expect(newBoard.visited[x][y]).toEqual(true);
   });
 
   it('should update flagged matrix when flagging coordinates', () => {
     const board = new Board();
     const [x, y] = [1, 3];
-    const newBoard = flagCoordinates(board, x, y);
+    const newBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
     expect(newBoard.flagged[x][y]).toEqual(true);
   });
+
+  it('should always expand on first play', () => {
+    const bombsNumber = 8;
+    const size = 8;
+    const board = new Board(size, bombsNumber);
+    const [x, y] = [1, 3];
+    const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
+    expect(newBoard.remainingNotVisited).toBeLessThan(size * size - bombsNumber - 1);
+  });
+
 
   it('should return same board when board state is WON', () => {
     const board = new Board();
     board.state = BoardState.WON;
     const [x, y] = [1, 3];
-    const newBoard = playCoordinates(board, x, y);
-    const flaggedBoard = playCoordinates(newBoard, x, y);
+    const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
+    const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
 
     expect(newBoard).toEqual(board);
     expect(newBoard).toEqual(flaggedBoard);
@@ -71,8 +88,8 @@ describe('playCoordinates function', () => {
     const board = new Board();
     board.state = BoardState.LOST;
     const [x, y] = [1, 3];
-    const newBoard = playCoordinates(board, x, y);
-    const flaggedBoard = playCoordinates(newBoard, x, y);
+    const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
+    const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
 
     expect(newBoard).toEqual(board);
     expect(newBoard).toEqual(flaggedBoard);
