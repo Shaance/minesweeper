@@ -19,8 +19,8 @@ export async function play(board: Board): Promise<BoardState> {
     // eslint-disable-next-line no-await-in-loop
     const inputMode = await printAndGetInputMode('Input R to reveal or F to flag/unflag cell');
     // eslint-disable-next-line no-await-in-loop
-    const coord = await askCoordinates();
-    const [row, col] = [coord[0], coord[1]];
+    const [row, col] = await askCoordinates();
+    // const [row, col] = [coord[0], coord[1]];
     playableBoard = getBoardAfterPlayerMove(inputMode, playableBoard, row, col);
     writeToStandardOutput('\n');
   }
