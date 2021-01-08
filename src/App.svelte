@@ -1,34 +1,10 @@
 <script lang="ts">
-import { onMount } from 'svelte';
-
-	import type Board from './minesweeper/Board';
-	import { createBoard } from './minesweeper/BoardManager';
-	let board: Board;
-
-	$: content = board ? board.content : [];
-	$: visited = board ? board.visited : [];
-	$: flagged = board ? board.flagged : [];
-
-	onMount(() => {
-    board = createBoard(5, 5);
-	});
-	
-	function handleClick() {
-		board = createBoard(5, 5);
-	}
+	import Board from "./Board.svelte";
 </script>
 
 <main>
-	<h1>Hello Boss!</h1>
-	<button on:click={handleClick}>
-		Reset board
-	</button>
-	{#each content as row, i}
-		{#each row as value, j}
-			<p>Row {i}, Column {j}, value {value} </p>
-		{/each}
-	<br />
-	{/each}
+	<h1>MineSweeper</h1>
+	<Board/>
 </main>
 
 <style>
