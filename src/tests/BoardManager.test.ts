@@ -1,8 +1,8 @@
-import Board from '../Board';
-import BoardInput from '../BoardInput';
-import { getBoardAfterPlayerMove } from '../BoardManager';
-import BoardState from '../BoardState';
-import CellType from '../CellType';
+import Board from '../minesweeper/Board';
+import BoardInput from '../minesweeper/BoardInput';
+import { getBoardAfterPlayerMove } from '../minesweeper/BoardManager';
+import BoardState from '../minesweeper/BoardState';
+import CellType from '../minesweeper/CellType';
 
 describe('getBoardAfterPlayerMove function', () => {
   it('should return same board when coordinates are incorrect', () => {
@@ -70,7 +70,6 @@ describe('getBoardAfterPlayerMove function', () => {
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     expect(newBoard.remainingNotVisited).toBeLessThan(size * size - bombsNumber - 1);
   });
-
 
   it('should return same board when board state is WON', () => {
     const board = new Board();

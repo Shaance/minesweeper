@@ -1,7 +1,7 @@
-import Board from '../Board';
-import { coordinatesInBoard, getDirectionsWithDiagonals } from '../BoardHelper';
-import BoardState from '../BoardState';
-import CellType from '../CellType';
+import Board from '../minesweeper/Board';
+import { coordinatesInBoard, getDirectionsWithDiagonals } from '../minesweeper/BoardHelper';
+import BoardState from '../minesweeper/BoardState';
+import CellType from '../minesweeper/CellType';
 
 describe('Board constructor', () => {
   it('board instance should have default 8 size when not specified', () => {

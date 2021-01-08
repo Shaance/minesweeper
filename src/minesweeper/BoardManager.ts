@@ -1,32 +1,32 @@
 import Board from './Board';
 import { coordinatesInBoard, getDirections } from './BoardHelper';
 import BoardInput from './BoardInput';
-import printBoard from './BoardPrinter';
+// import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
 import CellType from './CellType';
 import { isNumber, Predicate } from './CommonHelper';
-import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
+// import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 export function createBoard(size: number, bombNumber: number): Board {
   return new Board(size, bombNumber);
 }
 
-export async function play(board: Board): Promise<BoardState> {
-  let playableBoard = board;
-  while (playableBoard.state === BoardState.PLAYING || playableBoard.state === BoardState.INITIAL) {
-    printBoard(playableBoard);
-    // we can disable no-await-in-loop because all calls are dependant on each other
-    // eslint-disable-next-line no-await-in-loop
-    const inputMode = await printAndGetInputMode('Input R to reveal or F to flag/unflag cell');
-    // eslint-disable-next-line no-await-in-loop
-    const [row, col] = await askCoordinates();
-    // const [row, col] = [coord[0], coord[1]];
-    playableBoard = getBoardAfterPlayerMove(inputMode, playableBoard, row, col);
-    writeToStandardOutput('\n');
-  }
-  printBoard(playableBoard);
-  return playableBoard.state;
-}
+// export async function play(board: Board): Promise<BoardState> {
+//   let playableBoard = board;
+//   while (playableBoard.state === BoardState.PLAYING || playableBoard.state === BoardState.INITIAL) {
+//     printBoard(playableBoard);
+//     // we can disable no-await-in-loop because all calls are dependant on each other
+//     // eslint-disable-next-line no-await-in-loop
+//     const inputMode = await printAndGetInputMode('Input R to reveal or F to flag/unflag cell');
+//     // eslint-disable-next-line no-await-in-loop
+//     const [row, col] = await askCoordinates();
+//     // const [row, col] = [coord[0], coord[1]];
+//     playableBoard = getBoardAfterPlayerMove(inputMode, playableBoard, row, col);
+//     writeToStandardOutput('\n');
+//   }
+//   printBoard(playableBoard);
+//   return playableBoard.state;
+// }
 
 export function getBoardAfterPlayerMove(inputMode: BoardInput, board: Board, row: number, col: number): Board {
   if (inputMode === BoardInput.REVEAL) {
@@ -134,34 +134,34 @@ function canExpand(board: Board, x: number, y: number) {
   return coordinatesInBoard(x, y, content) && !visited[x][y] && !flagged[x][y];
 }
 
-async function printAndGetNumberInput(message: string): Promise<number> {
-  const userInput = await printAndGetInput(message, isNumber, 'Not an number, try again.');
-  return Number.parseInt(userInput, 10);
-}
+// async function printAndGetNumberInput(message: string): Promise<number> {
+//   const userInput = await printAndGetInput(message, isNumber, 'Not an number, try again.');
+//   return Number.parseInt(userInput, 10);
+// }
 
-async function printAndGetInputMode(message: string): Promise<BoardInput> {
-  const errMessage = 'Wrong input. Valid inputs are F for flag mode or R as reveal mode.';
-  const validInput = (str: string) => str && (str.toUpperCase() === 'F' || str.toUpperCase() === 'R');
-  const userInput = await printAndGetInput(message, validInput, errMessage);
-  if (userInput.toUpperCase() === 'F') {
-    return BoardInput.FLAG;
-  }
-  return BoardInput.REVEAL;
-}
+// async function printAndGetInputMode(message: string): Promise<BoardInput> {
+//   const errMessage = 'Wrong input. Valid inputs are F for flag mode or R as reveal mode.';
+//   const validInput = (str: string) => str && (str.toUpperCase() === 'F' || str.toUpperCase() === 'R');
+//   const userInput = await printAndGetInput(message, validInput, errMessage);
+//   if (userInput.toUpperCase() === 'F') {
+//     return BoardInput.FLAG;
+//   }
+//   return BoardInput.REVEAL;
+// }
 
-async function printAndGetInput(message: string, predicate: Predicate<string>, errMessage: string): Promise<string> {
-  writeToStandardOutput(message);
-  const userInput = await readlineSync();
-  if (predicate(userInput)) {
-    return userInput;
-  }
+// async function printAndGetInput(message: string, predicate: Predicate<string>, errMessage: string): Promise<string> {
+//   writeToStandardOutput(message);
+//   const userInput = await readlineSync();
+//   if (predicate(userInput)) {
+//     return userInput;
+//   }
 
-  writeToStandardOutput(errMessage);
-  return printAndGetInput(message, predicate, errMessage);
-}
+//   writeToStandardOutput(errMessage);
+//   return printAndGetInput(message, predicate, errMessage);
+// }
 
-async function askCoordinates(): Promise<number[]> {
-  const row = await printAndGetNumberInput('Row: ');
-  const col = await printAndGetNumberInput('Col: ');
-  return [row - 1, col - 1];
-}
+// async function askCoordinates(): Promise<number[]> {
+//   const row = await printAndGetNumberInput('Row: ');
+//   const col = await printAndGetNumberInput('Col: ');
+//   return [row - 1, col - 1];
+// }
