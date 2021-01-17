@@ -54,7 +54,11 @@ function revealBombs(board: Board) {
  * @returns { Board } returns new board
  */
 function playCoordinates(board: Board, row: number, col: number): Board {
-  if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col] || finishedState(board)) {
+  if (!coordinatesInBoard(row, col, board.content)) {
+    return board;
+  }
+
+  if (board.visited[row][col] || board.flagged[row][col] || finishedState(board)) {
     return board;
   }
 

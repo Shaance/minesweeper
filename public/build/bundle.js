@@ -59,6 +59,13 @@ var app = (function () {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
     }
+    function prevent_default(fn) {
+        return function (event) {
+            event.preventDefault();
+            // @ts-ignore
+            return fn.call(this, event);
+        };
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
@@ -547,7 +554,10 @@ var app = (function () {
      * @returns { Board } returns new board
      */
     function playCoordinates(board, row, col) {
-        if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col] || finishedState(board)) {
+        if (!coordinatesInBoard(row, col, board.content)) {
+            return board;
+        }
+        if (board.visited[row][col] || board.flagged[row][col] || finishedState(board)) {
             return board;
         }
         if (board.content[row][col] === CellType$1.BOMB) {
@@ -611,15 +621,15 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[16] = list[i];
+    	child_ctx[18] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[17] = list[i];
-    	child_ctx[19] = i;
+    	child_ctx[19] = list[i];
+    	child_ctx[21] = i;
     	return child_ctx;
     }
 
@@ -631,8 +641,8 @@ var app = (function () {
     		c: function create() {
     			h2 = element("h2");
     			h2.textContent = "Avoid the 💣💥";
-    			attr_dev(h2, "class", "svelte-s9fjdk");
-    			add_location(h2, file, 115, 4, 2825);
+    			attr_dev(h2, "class", "svelte-vtmw7m");
+    			add_location(h2, file, 115, 4, 2899);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h2, anchor);
@@ -662,16 +672,16 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			h2 = element("h2");
-    			t = text(/*endGameText*/ ctx[4]);
-    			attr_dev(h2, "class", "svelte-s9fjdk");
-    			add_location(h2, file, 113, 4, 2788);
+    			t = text(/*endGameText*/ ctx[5]);
+    			attr_dev(h2, "class", "svelte-vtmw7m");
+    			add_location(h2, file, 113, 4, 2862);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h2, anchor);
     			append_dev(h2, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*endGameText*/ 16) set_data_dev(t, /*endGameText*/ ctx[4]);
+    			if (dirty & /*endGameText*/ 32) set_data_dev(t, /*endGameText*/ ctx[5]);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(h2);
@@ -693,7 +703,7 @@ var app = (function () {
     function create_each_block_1(ctx) {
     	let div;
     	let button;
-    	let t0_value = /*getCellContent*/ ctx[11](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + "";
+    	let t0_value = /*getCellContent*/ ctx[12](/*visited*/ ctx[2], /*flagged*/ ctx[3], /*i*/ ctx[18], /*j*/ ctx[21]) + "";
     	let t0;
     	let button_disabled_value;
     	let button_style_value;
@@ -702,7 +712,11 @@ var app = (function () {
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[13](/*i*/ ctx[16], /*j*/ ctx[19]);
+    		return /*click_handler*/ ctx[14](/*i*/ ctx[18], /*j*/ ctx[21]);
+    	}
+
+    	function contextmenu_handler() {
+    		return /*contextmenu_handler*/ ctx[15](/*i*/ ctx[18], /*j*/ ctx[21]);
     	}
 
     	const block = {
@@ -711,12 +725,12 @@ var app = (function () {
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr_dev(button, "class", "cell-button svelte-s9fjdk");
-    			button.disabled = button_disabled_value = /*notClickable*/ ctx[10](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]);
-    			attr_dev(button, "style", button_style_value = "background-color:" + /*getBackgroundColor*/ ctx[8](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + ";\n              color:" + getColorForValue(/*value*/ ctx[17]) + ";\n              " + /*getCursorStyle*/ ctx[9](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]));
-    			add_location(button, file, 127, 12, 3282);
-    			attr_dev(div, "class", "column svelte-s9fjdk");
-    			add_location(div, file, 126, 8, 3249);
+    			attr_dev(button, "class", "cell-button svelte-vtmw7m");
+    			button.disabled = button_disabled_value = /*notClickable*/ ctx[11](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[18], /*j*/ ctx[21]);
+    			attr_dev(button, "style", button_style_value = "background-color:" + /*getBackgroundColor*/ ctx[9](/*visited*/ ctx[2], /*i*/ ctx[18], /*j*/ ctx[21]) + ";\n              color:" + getColorForValue(/*value*/ ctx[19]) + ";\n              " + /*getCursorStyle*/ ctx[10](/*visited*/ ctx[2], /*flagged*/ ctx[3], /*state*/ ctx[0], /*i*/ ctx[18], /*j*/ ctx[21]));
+    			add_location(button, file, 127, 12, 3356);
+    			attr_dev(div, "class", "column svelte-vtmw7m");
+    			add_location(div, file, 126, 8, 3323);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -725,26 +739,30 @@ var app = (function () {
     			append_dev(div, t1);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				dispose = [
+    					listen_dev(button, "click", click_handler, false, false, false),
+    					listen_dev(button, "contextmenu", prevent_default(contextmenu_handler), false, true, false)
+    				];
+
     				mounted = true;
     			}
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*visited*/ 4 && t0_value !== (t0_value = /*getCellContent*/ ctx[11](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*visited, flagged*/ 12 && t0_value !== (t0_value = /*getCellContent*/ ctx[12](/*visited*/ ctx[2], /*flagged*/ ctx[3], /*i*/ ctx[18], /*j*/ ctx[21]) + "")) set_data_dev(t0, t0_value);
 
-    			if (dirty & /*visited, state*/ 5 && button_disabled_value !== (button_disabled_value = /*notClickable*/ ctx[10](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]))) {
+    			if (dirty & /*visited, state*/ 5 && button_disabled_value !== (button_disabled_value = /*notClickable*/ ctx[11](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[18], /*j*/ ctx[21]))) {
     				prop_dev(button, "disabled", button_disabled_value);
     			}
 
-    			if (dirty & /*visited, content, state*/ 7 && button_style_value !== (button_style_value = "background-color:" + /*getBackgroundColor*/ ctx[8](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + ";\n              color:" + getColorForValue(/*value*/ ctx[17]) + ";\n              " + /*getCursorStyle*/ ctx[9](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]))) {
+    			if (dirty & /*visited, content, flagged, state*/ 15 && button_style_value !== (button_style_value = "background-color:" + /*getBackgroundColor*/ ctx[9](/*visited*/ ctx[2], /*i*/ ctx[18], /*j*/ ctx[21]) + ";\n              color:" + getColorForValue(/*value*/ ctx[19]) + ";\n              " + /*getCursorStyle*/ ctx[10](/*visited*/ ctx[2], /*flagged*/ ctx[3], /*state*/ ctx[0], /*i*/ ctx[18], /*j*/ ctx[21]))) {
     				attr_dev(button, "style", button_style_value);
     			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			mounted = false;
-    			dispose();
+    			run_all(dispose);
     		}
     	};
 
@@ -762,7 +780,7 @@ var app = (function () {
     // (125:4) {#each content as row, i}
     function create_each_block(ctx) {
     	let each_1_anchor;
-    	let each_value_1 = /*row*/ ctx[14];
+    	let each_value_1 = /*row*/ ctx[16];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -786,8 +804,8 @@ var app = (function () {
     			insert_dev(target, each_1_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*notClickable, visited, state, getBackgroundColor, getColorForValue, content, getCursorStyle, selectCell, BoardInput, getCellContent*/ 3975) {
-    				each_value_1 = /*row*/ ctx[14];
+    			if (dirty & /*notClickable, visited, state, getBackgroundColor, getColorForValue, content, getCursorStyle, flagged, selectCell, BoardInput, getCellContent*/ 7951) {
+    				each_value_1 = /*row*/ ctx[16];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -842,7 +860,7 @@ var app = (function () {
     	let dispose;
 
     	function select_block_type(ctx, dirty) {
-    		if (show_if == null || dirty & /*state*/ 1) show_if = !!!/*isPlayingState*/ ctx[5](/*state*/ ctx[0]);
+    		if (show_if == null || dirty & /*state*/ 1) show_if = !!!/*isPlayingState*/ ctx[6](/*state*/ ctx[0]);
     		if (show_if) return create_if_block;
     		return create_else_block;
     	}
@@ -863,7 +881,7 @@ var app = (function () {
     			if_block.c();
     			t0 = space();
     			button = element("button");
-    			t1 = text(/*resetBtnText*/ ctx[3]);
+    			t1 = text(/*resetBtnText*/ ctx[4]);
     			t2 = space();
     			br0 = element("br");
     			br1 = element("br");
@@ -874,16 +892,16 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(button, "class", "reset-btn svelte-s9fjdk");
-    			add_location(button, file, 117, 2, 2859);
-    			add_location(br0, file, 118, 2, 2935);
-    			add_location(br1, file, 118, 6, 2939);
-    			attr_dev(div, "class", "grid svelte-s9fjdk");
+    			attr_dev(button, "class", "reset-btn svelte-vtmw7m");
+    			add_location(button, file, 117, 2, 2933);
+    			add_location(br0, file, 118, 2, 3009);
+    			add_location(br1, file, 118, 6, 3013);
+    			attr_dev(div, "class", "grid svelte-vtmw7m");
     			set_style(div, "width", width + "px");
     			set_style(div, "grid-template-columns", repeatValueWithSuffix(DEFAULT_SIZE$1, width / DEFAULT_SIZE$1, "px"));
     			set_style(div, "grid-template-rows", repeatValueWithSuffix(DEFAULT_SIZE$1, width / DEFAULT_SIZE$1, "px"));
-    			add_location(div, file, 119, 2, 2946);
-    			add_location(main, file, 111, 0, 2746);
+    			add_location(div, file, 119, 2, 3020);
+    			add_location(main, file, 111, 0, 2820);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -905,7 +923,7 @@ var app = (function () {
     			}
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*resetBoard*/ ctx[6], false, false, false);
+    				dispose = listen_dev(button, "click", /*resetBoard*/ ctx[7], false, false, false);
     				mounted = true;
     			}
     		},
@@ -922,9 +940,9 @@ var app = (function () {
     				}
     			}
 
-    			if (dirty & /*resetBtnText*/ 8) set_data_dev(t1, /*resetBtnText*/ ctx[3]);
+    			if (dirty & /*resetBtnText*/ 16) set_data_dev(t1, /*resetBtnText*/ ctx[4]);
 
-    			if (dirty & /*content, notClickable, visited, state, getBackgroundColor, getColorForValue, getCursorStyle, selectCell, BoardInput, getCellContent*/ 3975) {
+    			if (dirty & /*content, notClickable, visited, state, getBackgroundColor, getColorForValue, getCursorStyle, flagged, selectCell, BoardInput, getCellContent*/ 7951) {
     				each_value = /*content*/ ctx[1];
     				validate_each_argument(each_value);
     				let i;
@@ -971,7 +989,7 @@ var app = (function () {
     }
 
     const DEFAULT_SIZE$1 = 8;
-    const DEFAULT_BOMBS_NUMBER = 7;
+    const DEFAULT_BOMBS_NUMBER = 11;
     const width = 500;
 
     function repeatValueWithSuffix(times, value, suffix) {
@@ -1014,6 +1032,7 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let content;
     	let visited;
+    	let flagged;
     	let state;
     	let resetBtnText;
     	let endGameText;
@@ -1026,11 +1045,11 @@ var app = (function () {
     	}
 
     	function resetBoard() {
-    		$$invalidate(12, board = createBoard(DEFAULT_SIZE$1, DEFAULT_BOMBS_NUMBER));
+    		$$invalidate(13, board = createBoard(DEFAULT_SIZE$1, DEFAULT_BOMBS_NUMBER));
     	}
 
     	function selectCell(inputMode, i, j) {
-    		$$invalidate(12, board = getBoardAfterPlayerMove(inputMode, board, i, j));
+    		$$invalidate(13, board = getBoardAfterPlayerMove(inputMode, board, i, j));
     	}
 
     	function getBackgroundColor(visited, row, col) {
@@ -1043,8 +1062,8 @@ var app = (function () {
     		return even ? "#9cd14f" : "#95c74c";
     	}
 
-    	function getCursorStyle(visited, state, row, col) {
-    		return notClickable(visited, state, row, col)
+    	function getCursorStyle(visited, flagged, state, row, col) {
+    		return notClickable(visited, state, row, col) || flagged[row][col]
     		? ""
     		: "cursor: pointer;";
     	}
@@ -1053,7 +1072,7 @@ var app = (function () {
     		return visited[row][col] || !isPlayingState(state);
     	}
 
-    	function getCellContent(visited, row, col) {
+    	function getCellContent(visited, flagged, row, col) {
     		const value = content[row][col];
 
     		if (visited[row][col] && value !== CellType$1.EMPTY) {
@@ -1064,7 +1083,7 @@ var app = (function () {
     			return value;
     		}
 
-    		return "";
+    		return flagged[row][col] ? "⛳️" : "";
     	}
 
     	const writable_props = [];
@@ -1074,6 +1093,7 @@ var app = (function () {
     	});
 
     	const click_handler = (i, j) => selectCell(BoardInput$1.REVEAL, i, j);
+    	const contextmenu_handler = (i, j) => selectCell(BoardInput$1.FLAG, i, j);
 
     	$$self.$capture_state = () => ({
     		BoardInput: BoardInput$1,
@@ -1096,18 +1116,20 @@ var app = (function () {
     		getColorForValue,
     		content,
     		visited,
+    		flagged,
     		state,
     		resetBtnText,
     		endGameText
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("board" in $$props) $$invalidate(12, board = $$props.board);
+    		if ("board" in $$props) $$invalidate(13, board = $$props.board);
     		if ("content" in $$props) $$invalidate(1, content = $$props.content);
     		if ("visited" in $$props) $$invalidate(2, visited = $$props.visited);
+    		if ("flagged" in $$props) $$invalidate(3, flagged = $$props.flagged);
     		if ("state" in $$props) $$invalidate(0, state = $$props.state);
-    		if ("resetBtnText" in $$props) $$invalidate(3, resetBtnText = $$props.resetBtnText);
-    		if ("endGameText" in $$props) $$invalidate(4, endGameText = $$props.endGameText);
+    		if ("resetBtnText" in $$props) $$invalidate(4, resetBtnText = $$props.resetBtnText);
+    		if ("endGameText" in $$props) $$invalidate(5, endGameText = $$props.endGameText);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1115,25 +1137,28 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*board*/ 4096) {
+    		if ($$self.$$.dirty & /*board*/ 8192) {
     			 $$invalidate(1, content = board.content);
     		}
 
-    		if ($$self.$$.dirty & /*board*/ 4096) {
+    		if ($$self.$$.dirty & /*board*/ 8192) {
     			 $$invalidate(2, visited = board.visited);
     		}
 
-    		if ($$self.$$.dirty & /*board*/ 4096) {
-    			// $: flagged = board.flagged;
+    		if ($$self.$$.dirty & /*board*/ 8192) {
+    			 $$invalidate(3, flagged = board.flagged);
+    		}
+
+    		if ($$self.$$.dirty & /*board*/ 8192) {
     			 $$invalidate(0, state = board.state);
     		}
 
     		if ($$self.$$.dirty & /*state*/ 1) {
-    			 $$invalidate(3, resetBtnText = isPlayingState(state) ? "Reset" : "Play again");
+    			 $$invalidate(4, resetBtnText = isPlayingState(state) ? "Reset" : "Play again");
     		}
 
     		if ($$self.$$.dirty & /*state*/ 1) {
-    			 $$invalidate(4, endGameText = state === BoardState$1.WON
+    			 $$invalidate(5, endGameText = state === BoardState$1.WON
     			? "You won! 🙌"
     			: "You lost.. 😫");
     		}
@@ -1143,6 +1168,7 @@ var app = (function () {
     		state,
     		content,
     		visited,
+    		flagged,
     		resetBtnText,
     		endGameText,
     		isPlayingState,
@@ -1153,7 +1179,8 @@ var app = (function () {
     		notClickable,
     		getCellContent,
     		board,
-    		click_handler
+    		click_handler,
+    		contextmenu_handler
     	];
     }
 
@@ -1171,52 +1198,36 @@ var app = (function () {
     	}
     }
 
-    /* src/App.svelte generated by Svelte v3.31.2 */
-    const file$1 = "src/App.svelte";
+    /* src/Commands.svelte generated by Svelte v3.31.2 */
+
+    const file$1 = "src/Commands.svelte";
 
     function create_fragment$1(ctx) {
     	let main;
-    	let h1;
-    	let t1;
-    	let board;
-    	let current;
-    	board = new Board$1({ $$inline: true });
+    	let h3;
 
     	const block = {
     		c: function create() {
     			main = element("main");
-    			h1 = element("h1");
-    			h1.textContent = "MineSweeper";
-    			t1 = space();
-    			create_component(board.$$.fragment);
-    			attr_dev(h1, "class", "svelte-1tky8bj");
-    			add_location(h1, file$1, 4, 1, 73);
-    			attr_dev(main, "class", "svelte-1tky8bj");
-    			add_location(main, file$1, 3, 0, 65);
+    			h3 = element("h3");
+    			h3.textContent = "Use left click to reveal cell content or right click to flag/unflag";
+    			attr_dev(h3, "class", "svelte-h71jex");
+    			add_location(h3, file$1, 16, 1, 177);
+    			attr_dev(main, "class", "svelte-h71jex");
+    			add_location(main, file$1, 15, 0, 169);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, h1);
-    			append_dev(main, t1);
-    			mount_component(board, main, null);
-    			current = true;
+    			append_dev(main, h3);
     		},
     		p: noop,
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(board.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(board.$$.fragment, local);
-    			current = false;
-    		},
+    		i: noop,
+    		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
-    			destroy_component(board);
     		}
     	};
 
@@ -1231,7 +1242,103 @@ var app = (function () {
     	return block;
     }
 
-    function instance$1($$self, $$props, $$invalidate) {
+    function instance$1($$self, $$props) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Commands", slots, []);
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Commands> was created with unknown prop '${key}'`);
+    	});
+
+    	return [];
+    }
+
+    class Commands extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Commands",
+    			options,
+    			id: create_fragment$1.name
+    		});
+    	}
+    }
+
+    /* src/App.svelte generated by Svelte v3.31.2 */
+    const file$2 = "src/App.svelte";
+
+    function create_fragment$2(ctx) {
+    	let main;
+    	let h1;
+    	let t1;
+    	let board;
+    	let t2;
+    	let commands;
+    	let current;
+    	board = new Board$1({ $$inline: true });
+    	commands = new Commands({ $$inline: true });
+
+    	const block = {
+    		c: function create() {
+    			main = element("main");
+    			h1 = element("h1");
+    			h1.textContent = "MineSweeper";
+    			t1 = space();
+    			create_component(board.$$.fragment);
+    			t2 = space();
+    			create_component(commands.$$.fragment);
+    			attr_dev(h1, "class", "svelte-1tky8bj");
+    			add_location(h1, file$2, 5, 1, 115);
+    			attr_dev(main, "class", "svelte-1tky8bj");
+    			add_location(main, file$2, 4, 0, 107);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, main, anchor);
+    			append_dev(main, h1);
+    			append_dev(main, t1);
+    			mount_component(board, main, null);
+    			append_dev(main, t2);
+    			mount_component(commands, main, null);
+    			current = true;
+    		},
+    		p: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(board.$$.fragment, local);
+    			transition_in(commands.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(board.$$.fragment, local);
+    			transition_out(commands.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(main);
+    			destroy_component(board);
+    			destroy_component(commands);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$2.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
     	const writable_props = [];
@@ -1240,20 +1347,20 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ Board: Board$1 });
+    	$$self.$capture_state = () => ({ Board: Board$1, Commands });
     	return [];
     }
 
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$1.name
+    			id: create_fragment$2.name
     		});
     	}
     }

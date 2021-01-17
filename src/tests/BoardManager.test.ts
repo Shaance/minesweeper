@@ -62,6 +62,14 @@ describe('getBoardAfterPlayerMove function', () => {
     expect(newBoard.flagged[x][y]).toEqual(true);
   });
 
+  it('should not be able to visit a flagged coordinates', () => {
+    const board = new Board();
+    const [x, y] = [1, 3];
+    const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
+    const finalBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, flaggedBoard, x, y);
+    expect(finalBoard.visited[x][y]).toEqual(false);
+  });
+
   it('should always expand on first play', () => {
     const bombsNumber = 8;
     const size = 8;

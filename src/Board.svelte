@@ -5,17 +5,17 @@
     getBoardAfterPlayerMove,
   } from "./minesweeper/BoardManager";
   import BoardState from "./minesweeper/BoardState";
-import CellType from "./minesweeper/CellType";
+  import CellType from "./minesweeper/CellType";
 
   const DEFAULT_SIZE = 8;
-  const DEFAULT_BOMBS_NUMBER = 7;
+  const DEFAULT_BOMBS_NUMBER = 11;
   const width = 500;
 
   let board = createBoard(DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
 
   $: content = board.content;
   $: visited = board.visited;
-  // $: flagged = board.flagged;
+  $: flagged = board.flagged;
   $: state = board.state;
   $: resetBtnText = isPlayingState(state) ? "Reset" : "Play again";
   $: endGameText = state === BoardState.WON ? "You won! 🙌" : "You lost.. 😫";
@@ -53,15 +53,15 @@ import CellType from "./minesweeper/CellType";
     return even ? '#9cd14f' : '#95c74c';
   }
 
-  function getCursorStyle(visited: boolean[][], state: BoardState, row: number, col: number): string {
-    return notClickable(visited, state, row, col) ?  '' : 'cursor: pointer;'
+  function getCursorStyle(visited: boolean[][], flagged: boolean[][], state: BoardState, row: number, col: number): string {
+    return notClickable(visited, state, row, col) || flagged[row][col] ?  '' : 'cursor: pointer;'
   }
 
   function notClickable(visited: boolean[][], state: BoardState, row: number, col: number) {
     return visited[row][col] || !isPlayingState(state);
   }
 
-  function getCellContent(visited: boolean[][], row: number, col: number) {
+  function getCellContent(visited: boolean[][], flagged: boolean[][], row: number, col: number) {
     const value = content[row][col];
     if (visited[row][col] && value !== CellType.EMPTY) {
       if (value === CellType.BOMB) {
@@ -69,7 +69,7 @@ import CellType from "./minesweeper/CellType";
       }
       return value;
     }
-    return '';
+    return flagged[row][col] ? '⛳️' : '';
   }
 
   function getColorForValue(value: number): string {
@@ -114,14 +114,14 @@ import CellType from "./minesweeper/CellType";
     height: 100%;
     border: 0;
   }
-
+  
   .reset-btn {
     font-size: 1em;
 		font-weight: 100;
   }
 
-  .cell-button:disabled {
-    cursor: 'none';
+  .reset-btn:hover {
+    background-color: lightgray;
   }
 </style>
 
@@ -144,10 +144,11 @@ import CellType from "./minesweeper/CellType";
             <button class="cell-button"
               disabled={notClickable(visited, state, i, j)}
               on:click={() => selectCell(BoardInput.REVEAL, i, j)}
+              on:contextmenu|preventDefault={() => selectCell(BoardInput.FLAG, i, j)}
               style="background-color:{getBackgroundColor(visited, i, j)};
               color:{getColorForValue(value)};
-              {getCursorStyle(visited, state, i, j)}">
-              {getCellContent(visited, i, j)}
+              {getCursorStyle(visited, flagged, state, i, j)}">
+              {getCellContent(visited, flagged, i, j)}
             </button>
         </div>
       {/each}

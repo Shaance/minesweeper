@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Board from "./Board.svelte";
+	import Commands from "./Commands.svelte";
 </script>
 
 <main>
 	<h1>MineSweeper</h1>
 	<Board/>
+	<Commands/>
 </main>
 
 <style>
