@@ -39,6 +39,11 @@ export default class Board {
     this.flagged = flagged;
     return this;
   }
+
+  withState(state: BoardState) {
+    this.state = state;
+    return this;
+  }
 }
 
 function getBoardContent(size: number, bombsNumber: number) {
