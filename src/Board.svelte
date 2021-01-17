@@ -99,9 +99,11 @@
     font-size: 2em;
 		font-weight: 100;
   }
+
   .grid {
     display: inline-grid;
   }
+
   .column {
     display: flex;
     justify-content: center;

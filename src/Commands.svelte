@@ -14,5 +14,5 @@
 </style>
 
 <main>
-	<h3>Use left click to reveal cell content or right click to flag/unflag</h3>
+	<h3>Left click to reveal cell content or right click to flag / unflag</h3>
 </main>
