@@ -1,2 +1,1268 @@
-var app=function(){"use strict";function t(){}function n(t){return t()}function e(){return Object.create(null)}function r(t){t.forEach(n)}function o(t){return"function"==typeof t}function c(t,n){return t!=t?n==n:t!==n||t&&"object"==typeof t||"function"==typeof t}function u(t,n){t.appendChild(n)}function i(t,n,e){t.insertBefore(n,e||null)}function s(t){t.parentNode.removeChild(t)}function f(t,n){for(let e=0;e<t.length;e+=1)t[e]&&t[e].d(n)}function l(t){return document.createElement(t)}function a(t){return document.createTextNode(t)}function d(){return a(" ")}function h(t,n,e,r){return t.addEventListener(n,e,r),()=>t.removeEventListener(n,e,r)}function g(t,n,e){null==e?t.removeAttribute(n):t.getAttribute(n)!==e&&t.setAttribute(n,e)}function p(t,n){n=""+n,t.wholeText!==n&&(t.data=n)}function m(t,n,e,r){t.style.setProperty(n,e,r?"important":"")}let $;function b(t){$=t}const y=[],v=[],E=[],N=[],A=Promise.resolve();let I=!1;function L(t){E.push(t)}let k=!1;const x=new Set;function w(){if(!k){k=!0;do{for(let t=0;t<y.length;t+=1){const n=y[t];b(n),O(n.$$)}for(b(null),y.length=0;v.length;)v.pop()();for(let t=0;t<E.length;t+=1){const n=E[t];x.has(n)||(x.add(n),n())}E.length=0}while(y.length);for(;N.length;)N.pop()();I=!1,k=!1,x.clear()}}function O(t){if(null!==t.fragment){t.update(),r(t.before_update);const n=t.dirty;t.dirty=[-1],t.fragment&&t.fragment.p(t.ctx,n),t.after_update.forEach(L)}}const _=new Set;function T(t,n){t&&t.i&&(_.delete(t),t.i(n))}function M(t,e,c){const{fragment:u,on_mount:i,on_destroy:s,after_update:f}=t.$$;u&&u.m(e,c),L((()=>{const e=i.map(n).filter(o);s?s.push(...e):r(e),t.$$.on_mount=[]})),f.forEach(L)}function B(t,n){const e=t.$$;null!==e.fragment&&(r(e.on_destroy),e.fragment&&e.fragment.d(n),e.on_destroy=e.fragment=null,e.ctx=[])}function S(t,n){-1===t.$$.dirty[0]&&(y.push(t),I||(I=!0,A.then(w)),t.$$.dirty.fill(0)),t.$$.dirty[n/31|0]|=1<<n%31}function P(n,o,c,u,i,f,l=[-1]){const a=$;b(n);const d=o.props||{},h=n.$$={fragment:null,ctx:null,props:f,update:t,not_equal:i,bound:e(),on_mount:[],on_destroy:[],before_update:[],after_update:[],context:new Map(a?a.$$.context:[]),callbacks:e(),dirty:l,skip_bound:!1};let g=!1;if(h.ctx=c?c(n,d,((t,e,...r)=>{const o=r.length?r[0]:e;return h.ctx&&i(h.ctx[t],h.ctx[t]=o)&&(!h.skip_bound&&h.bound[t]&&h.bound[t](o),g&&S(n,t)),e})):[],h.update(),g=!0,r(h.before_update),h.fragment=!!u&&u(h.ctx),o.target){if(o.hydrate){const t=function(t){return Array.from(t.childNodes)}(o.target);h.fragment&&h.fragment.l(t),t.forEach(s)}else h.fragment&&h.fragment.c();o.intro&&T(n.$$.fragment),M(n,o.target,o.anchor),w()}b(a)}class j{$destroy(){B(this,1),this.$destroy=t}$on(t,n){const e=this.$$.callbacks[t]||(this.$$.callbacks[t]=[]);return e.push(n),()=>{const t=e.indexOf(n);-1!==t&&e.splice(t,1)}}$set(t){var n;this.$$set&&(n=t,0!==Object.keys(n).length)&&(this.$$.skip_bound=!0,this.$$set(t),this.$$.skip_bound=!1)}}var Y;!function(t){t.REVEAL="REVEAL",t.FLAG="FLAG"}(Y||(Y={}));var V,G=Y;function R(t,n,e){return t>=0&&n>=0&&t<e.length&&n<e[t].length}function W(t,n){let e=0,r=0;const o=[];for(;e!==t;){for(o.push([]);r!==t;)n(o,e),r+=1;r=0,e+=1}return o}!function(t){t.INITIAL="INITIAL",t.PLAYING="PLAYING",t.WON="WON",t.LOST="LOST"}(V||(V={}));var C,F=V;!function(t){t[t.BOMB=-1]="BOMB",t[t.EMPTY=0]="EMPTY"}(C||(C={}));var z=C;class q{constructor(t,n){const e=t&&t>0?t:8,r=n&&n>0?n:8;this.content=function(t,n){const e=function(t,n){const e=new Set;for(;e.size!==n;){const n=D(t);e.add(String(n[0])+String(n[1]))}const r=Array.from(e).map((t=>[Number(t.charAt(0)),Number(t.charAt(1))]));return new Set(r)}(t,n);return function(t,n){const e=t,r=[[0,1],[1,0],[0,-1],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]];return n.forEach((t=>{const[n,o]=[t[0],t[1]];r.forEach((t=>{const r=n+t[0],c=o+t[1];R(r,c,e)&&e[r][c]!==z.BOMB&&(e[r][c]+=1)}))})),e}(function(t,n){const e=t;return n.forEach((t=>{const[n,r]=[t[0],t[1]];e[n][r]=z.BOMB})),e}(function(t){return W(t,((t,n)=>t[n].push(0)))}(t),e),e)}(e,r),this.visited=J(e),this.flagged=J(e),this.size=e,this.bombsNumber=r,this.state=F.INITIAL,this.remainingNotVisited=e*e-r}withFlagged(t){return this.flagged=t,this}withState(t){return this.state=t,this}}function D(t){return[H(0,t),H(0,t)]}function H(t,n){return Math.floor(Math.random()*(n-t)+t)}function J(t){return W(t,((t,n)=>t[n].push(!1)))}function K(t,n){return new q(t,n)}function Q(t,n,e,r){return t===G.REVEAL?function(t,n,e){if(!R(n,e,t.content)||t.visited[n][e]||function(t){return t.state===F.LOST||t.state===F.WON}(t))return t;if(t.content[n][e]===z.BOMB)return function(t){const n=t;return n.content.forEach(((t,e)=>{t.forEach(((t,r)=>{t===z.BOMB&&(n.visited[e][r]=!0)}))})),n}(t).withState(F.LOST);const r=function(t,n,e){const r=t,o=[[0,1],[1,0],[0,-1],[-1,0]],{content:c,visited:u}=r,i=[[n,e]];let s=0;for(;i.length>0;){const[t,n]=i.pop();X(r,t,n)&&(u[t][n]=!0,s+=1,c[t][n]===z.EMPTY&&o.forEach((e=>{i.push([t+e[0],n+e[1]])})))}return r.remainingNotVisited-=s,r}(t,n,e);0===r.remainingNotVisited&&(r.state=F.WON);r.state===F.INITIAL&&(r.state=F.PLAYING);return r}(U(n,e,r),e,r):function(t,n,e){if(!R(n,e,t.content)||t.visited[n][e])return t;const r=t;return r.flagged[n][e]=!r.flagged[n][e],r}(n,e,r)}function U(t,n,e){if(t.state!==F.INITIAL||!R(n,e,t.content)||function(t,n,e){return R(n,e,t.content)&&t.content[n][e]===z.EMPTY}(t,n,e))return t;return U(K(t.size,t.bombsNumber).withFlagged(t.flagged),n,e)}function X(t,n,e){const{content:r,visited:o,flagged:c}=t;return R(n,e,r)&&!o[n][e]&&!c[n][e]}function Z(t,n,e){const r=t.slice();return r[15]=n[e],r[17]=e,r}function tt(t,n,e){const r=t.slice();return r[18]=n[e],r[20]=e,r}function nt(n){let e;return{c(){e=l("h2"),e.textContent="Avoid the 💣💥",g(e,"class","svelte-s9fjdk")},m(t,n){i(t,e,n)},p:t,d(t){t&&s(e)}}}function et(t){let n,e;return{c(){n=l("h2"),e=a(t[4]),g(n,"class","svelte-s9fjdk")},m(t,r){i(t,n,r),u(n,e)},p(t,n){16&n&&p(e,t[4])},d(t){t&&s(n)}}}function rt(t){let n,e,r,o,c,f,m,$,b=t[11](t[2],t[17],t[20])+"";function y(){return t[13](t[17],t[20])}return{c(){n=l("div"),e=l("button"),r=a(b),f=d(),g(e,"class","cell-button svelte-s9fjdk"),e.disabled=o=t[10](t[2],t[0],t[17],t[20]),g(e,"style",c="background-color:"+t[8](t[2],t[17],t[20])+";\n              color:"+ft(t[18])+";\n              "+t[9](t[2],t[0],t[17],t[20])),g(n,"class","column svelte-s9fjdk")},m(t,o){i(t,n,o),u(n,e),u(e,r),u(n,f),m||($=h(e,"click",y),m=!0)},p(n,u){t=n,4&u&&b!==(b=t[11](t[2],t[17],t[20])+"")&&p(r,b),5&u&&o!==(o=t[10](t[2],t[0],t[17],t[20]))&&(e.disabled=o),7&u&&c!==(c="background-color:"+t[8](t[2],t[17],t[20])+";\n              color:"+ft(t[18])+";\n              "+t[9](t[2],t[0],t[17],t[20]))&&g(e,"style",c)},d(t){t&&s(n),m=!1,$()}}}function ot(t){let n,e=t[15],r=[];for(let n=0;n<e.length;n+=1)r[n]=rt(tt(t,e,n));return{c(){for(let t=0;t<r.length;t+=1)r[t].c();n=a("")},m(t,e){for(let n=0;n<r.length;n+=1)r[n].m(t,e);i(t,n,e)},p(t,o){if(3975&o){let c;for(e=t[15],c=0;c<e.length;c+=1){const u=tt(t,e,c);r[c]?r[c].p(u,o):(r[c]=rt(u),r[c].c(),r[c].m(n.parentNode,n))}for(;c<r.length;c+=1)r[c].d(1);r.length=e.length}},d(t){f(r,t),t&&s(n)}}}function ct(n){let e,r,o,c,$,b,y,v,E,N,A,I;function L(t,n){return(null==r||1&n)&&(r=!t[5](t[0])),r?et:nt}let k=L(n,-1),x=k(n),w=n[1],O=[];for(let t=0;t<w.length;t+=1)O[t]=ot(Z(n,w,t));return{c(){e=l("main"),x.c(),o=d(),c=l("button"),$=a(n[3]),b=d(),y=l("br"),v=l("br"),E=d(),N=l("div");for(let t=0;t<O.length;t+=1)O[t].c();g(c,"class","reset-btn svelte-s9fjdk"),g(N,"class","grid svelte-s9fjdk"),m(N,"width",it+"px"),m(N,"grid-template-columns",st(ut,it/ut,"px")),m(N,"grid-template-rows",st(ut,it/ut,"px"))},m(t,r){i(t,e,r),x.m(e,null),u(e,o),u(e,c),u(c,$),u(e,b),u(e,y),u(e,v),u(e,E),u(e,N);for(let t=0;t<O.length;t+=1)O[t].m(N,null);A||(I=h(c,"click",n[6]),A=!0)},p(t,[n]){if(k===(k=L(t,n))&&x?x.p(t,n):(x.d(1),x=k(t),x&&(x.c(),x.m(e,o))),8&n&&p($,t[3]),3975&n){let e;for(w=t[1],e=0;e<w.length;e+=1){const r=Z(t,w,e);O[e]?O[e].p(r,n):(O[e]=ot(r),O[e].c(),O[e].m(N,null))}for(;e<O.length;e+=1)O[e].d(1);O.length=w.length}},i:t,o:t,d(t){t&&s(e),x.d(),f(O,t),A=!1,I()}}}const ut=8,it=500;function st(t,n,e){if(t<0)return;let r="",o=0;for(;o!==t;)r+=`${n}${e} `,o++;return r}function ft(t){switch(t){case 1:return"blue";case 2:return"green";case 3:return"red";case 4:return"purple";case 5:return"maroon";case 6:return"turquoise";case 7:return"black";case 8:return"grey"}}function lt(t,n,e){let r,o,c,u,i,s=K(ut,7);function f(t){return t===F.INITIAL||t===F.PLAYING}function l(t,n,r){e(12,s=Q(t,s,n,r))}function a(t,n,e,r){return t[e][r]||!f(n)}return t.$$.update=()=>{4096&t.$$.dirty&&e(1,r=s.content),4096&t.$$.dirty&&e(2,o=s.visited),4096&t.$$.dirty&&s.flagged,4096&t.$$.dirty&&e(0,c=s.state),1&t.$$.dirty&&e(3,u=f(c)?"Reset":"Play again"),1&t.$$.dirty&&e(4,i=c===F.WON?"You won! 🙌":"You lost.. 😫")},[c,r,o,u,i,f,function(){e(12,s=K(ut,7))},l,function(t,n,e){const r=(n+e)%2==0;return t[n][e]?r?"#d4c18e":"#cfbb86":r?"#9cd14f":"#95c74c"},function(t,n,e,r){return a(t,n,e,r)?"":"cursor: pointer;"},a,function(t,n,e){const o=r[n][e];return t[n][e]&&o!==z.EMPTY?o===z.BOMB?"💣":o:""},s,(t,n)=>l(G.REVEAL,t,n)]}class at extends j{constructor(t){super(),P(this,t,lt,ct,c,{})}}function dt(n){let e,r,o,c,f;return c=new at({}),{c(){var t;e=l("main"),r=l("h1"),r.textContent="MineSweeper",o=d(),(t=c.$$.fragment)&&t.c(),g(r,"class","svelte-1tky8bj"),g(e,"class","svelte-1tky8bj")},m(t,n){i(t,e,n),u(e,r),u(e,o),M(c,e,null),f=!0},p:t,i(t){f||(T(c.$$.fragment,t),f=!0)},o(t){!function(t,n,e,r){if(t&&t.o){if(_.has(t))return;_.add(t),(void 0).c.push((()=>{_.delete(t),r&&(e&&t.d(1),r())})),t.o(n)}}(c.$$.fragment,t),f=!1},d(t){t&&s(e),B(c)}}}return new class extends j{constructor(t){super(),P(this,t,null,dt,c,{})}}({target:document.body})}();
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+var app = (function () {
+    'use strict';
+
+    function noop() { }
+    function add_location(element, file, line, column, char) {
+        element.__svelte_meta = {
+            loc: { file, line, column, char }
+        };
+    }
+    function run(fn) {
+        return fn();
+    }
+    function blank_object() {
+        return Object.create(null);
+    }
+    function run_all(fns) {
+        fns.forEach(run);
+    }
+    function is_function(thing) {
+        return typeof thing === 'function';
+    }
+    function safe_not_equal(a, b) {
+        return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
+    }
+    function is_empty(obj) {
+        return Object.keys(obj).length === 0;
+    }
+
+    function append(target, node) {
+        target.appendChild(node);
+    }
+    function insert(target, node, anchor) {
+        target.insertBefore(node, anchor || null);
+    }
+    function detach(node) {
+        node.parentNode.removeChild(node);
+    }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
+    function element(name) {
+        return document.createElement(name);
+    }
+    function text(data) {
+        return document.createTextNode(data);
+    }
+    function space() {
+        return text(' ');
+    }
+    function empty() {
+        return text('');
+    }
+    function listen(node, event, handler, options) {
+        node.addEventListener(event, handler, options);
+        return () => node.removeEventListener(event, handler, options);
+    }
+    function attr(node, attribute, value) {
+        if (value == null)
+            node.removeAttribute(attribute);
+        else if (node.getAttribute(attribute) !== value)
+            node.setAttribute(attribute, value);
+    }
+    function children(element) {
+        return Array.from(element.childNodes);
+    }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
+    function custom_event(type, detail) {
+        const e = document.createEvent('CustomEvent');
+        e.initCustomEvent(type, false, false, detail);
+        return e;
+    }
+
+    let current_component;
+    function set_current_component(component) {
+        current_component = component;
+    }
+
+    const dirty_components = [];
+    const binding_callbacks = [];
+    const render_callbacks = [];
+    const flush_callbacks = [];
+    const resolved_promise = Promise.resolve();
+    let update_scheduled = false;
+    function schedule_update() {
+        if (!update_scheduled) {
+            update_scheduled = true;
+            resolved_promise.then(flush);
+        }
+    }
+    function add_render_callback(fn) {
+        render_callbacks.push(fn);
+    }
+    let flushing = false;
+    const seen_callbacks = new Set();
+    function flush() {
+        if (flushing)
+            return;
+        flushing = true;
+        do {
+            // first, call beforeUpdate functions
+            // and update components
+            for (let i = 0; i < dirty_components.length; i += 1) {
+                const component = dirty_components[i];
+                set_current_component(component);
+                update(component.$$);
+            }
+            set_current_component(null);
+            dirty_components.length = 0;
+            while (binding_callbacks.length)
+                binding_callbacks.pop()();
+            // then, once components are updated, call
+            // afterUpdate functions. This may cause
+            // subsequent updates...
+            for (let i = 0; i < render_callbacks.length; i += 1) {
+                const callback = render_callbacks[i];
+                if (!seen_callbacks.has(callback)) {
+                    // ...so guard against infinite loops
+                    seen_callbacks.add(callback);
+                    callback();
+                }
+            }
+            render_callbacks.length = 0;
+        } while (dirty_components.length);
+        while (flush_callbacks.length) {
+            flush_callbacks.pop()();
+        }
+        update_scheduled = false;
+        flushing = false;
+        seen_callbacks.clear();
+    }
+    function update($$) {
+        if ($$.fragment !== null) {
+            $$.update();
+            run_all($$.before_update);
+            const dirty = $$.dirty;
+            $$.dirty = [-1];
+            $$.fragment && $$.fragment.p($$.ctx, dirty);
+            $$.after_update.forEach(add_render_callback);
+        }
+    }
+    const outroing = new Set();
+    let outros;
+    function transition_in(block, local) {
+        if (block && block.i) {
+            outroing.delete(block);
+            block.i(local);
+        }
+    }
+    function transition_out(block, local, detach, callback) {
+        if (block && block.o) {
+            if (outroing.has(block))
+                return;
+            outroing.add(block);
+            outros.c.push(() => {
+                outroing.delete(block);
+                if (callback) {
+                    if (detach)
+                        block.d(1);
+                    callback();
+                }
+            });
+            block.o(local);
+        }
+    }
+    function create_component(block) {
+        block && block.c();
+    }
+    function mount_component(component, target, anchor) {
+        const { fragment, on_mount, on_destroy, after_update } = component.$$;
+        fragment && fragment.m(target, anchor);
+        // onMount happens before the initial afterUpdate
+        add_render_callback(() => {
+            const new_on_destroy = on_mount.map(run).filter(is_function);
+            if (on_destroy) {
+                on_destroy.push(...new_on_destroy);
+            }
+            else {
+                // Edge case - component was destroyed immediately,
+                // most likely as a result of a binding initialising
+                run_all(new_on_destroy);
+            }
+            component.$$.on_mount = [];
+        });
+        after_update.forEach(add_render_callback);
+    }
+    function destroy_component(component, detaching) {
+        const $$ = component.$$;
+        if ($$.fragment !== null) {
+            run_all($$.on_destroy);
+            $$.fragment && $$.fragment.d(detaching);
+            // TODO null out other refs, including component.$$ (but need to
+            // preserve final state?)
+            $$.on_destroy = $$.fragment = null;
+            $$.ctx = [];
+        }
+    }
+    function make_dirty(component, i) {
+        if (component.$$.dirty[0] === -1) {
+            dirty_components.push(component);
+            schedule_update();
+            component.$$.dirty.fill(0);
+        }
+        component.$$.dirty[(i / 31) | 0] |= (1 << (i % 31));
+    }
+    function init(component, options, instance, create_fragment, not_equal, props, dirty = [-1]) {
+        const parent_component = current_component;
+        set_current_component(component);
+        const prop_values = options.props || {};
+        const $$ = component.$$ = {
+            fragment: null,
+            ctx: null,
+            // state
+            props,
+            update: noop,
+            not_equal,
+            bound: blank_object(),
+            // lifecycle
+            on_mount: [],
+            on_destroy: [],
+            before_update: [],
+            after_update: [],
+            context: new Map(parent_component ? parent_component.$$.context : []),
+            // everything else
+            callbacks: blank_object(),
+            dirty,
+            skip_bound: false
+        };
+        let ready = false;
+        $$.ctx = instance
+            ? instance(component, prop_values, (i, ret, ...rest) => {
+                const value = rest.length ? rest[0] : ret;
+                if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
+                    if (!$$.skip_bound && $$.bound[i])
+                        $$.bound[i](value);
+                    if (ready)
+                        make_dirty(component, i);
+                }
+                return ret;
+            })
+            : [];
+        $$.update();
+        ready = true;
+        run_all($$.before_update);
+        // `false` as a special case of no DOM component
+        $$.fragment = create_fragment ? create_fragment($$.ctx) : false;
+        if (options.target) {
+            if (options.hydrate) {
+                const nodes = children(options.target);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                $$.fragment && $$.fragment.l(nodes);
+                nodes.forEach(detach);
+            }
+            else {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                $$.fragment && $$.fragment.c();
+            }
+            if (options.intro)
+                transition_in(component.$$.fragment);
+            mount_component(component, options.target, options.anchor);
+            flush();
+        }
+        set_current_component(parent_component);
+    }
+    /**
+     * Base class for Svelte components. Used when dev=false.
+     */
+    class SvelteComponent {
+        $destroy() {
+            destroy_component(this, 1);
+            this.$destroy = noop;
+        }
+        $on(type, callback) {
+            const callbacks = (this.$$.callbacks[type] || (this.$$.callbacks[type] = []));
+            callbacks.push(callback);
+            return () => {
+                const index = callbacks.indexOf(callback);
+                if (index !== -1)
+                    callbacks.splice(index, 1);
+            };
+        }
+        $set($$props) {
+            if (this.$$set && !is_empty($$props)) {
+                this.$$.skip_bound = true;
+                this.$$set($$props);
+                this.$$.skip_bound = false;
+            }
+        }
+    }
+
+    function dispatch_dev(type, detail) {
+        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.31.2' }, detail)));
+    }
+    function append_dev(target, node) {
+        dispatch_dev('SvelteDOMInsert', { target, node });
+        append(target, node);
+    }
+    function insert_dev(target, node, anchor) {
+        dispatch_dev('SvelteDOMInsert', { target, node, anchor });
+        insert(target, node, anchor);
+    }
+    function detach_dev(node) {
+        dispatch_dev('SvelteDOMRemove', { node });
+        detach(node);
+    }
+    function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
+        const modifiers = options === true ? ['capture'] : options ? Array.from(Object.keys(options)) : [];
+        if (has_prevent_default)
+            modifiers.push('preventDefault');
+        if (has_stop_propagation)
+            modifiers.push('stopPropagation');
+        dispatch_dev('SvelteDOMAddEventListener', { node, event, handler, modifiers });
+        const dispose = listen(node, event, handler, options);
+        return () => {
+            dispatch_dev('SvelteDOMRemoveEventListener', { node, event, handler, modifiers });
+            dispose();
+        };
+    }
+    function attr_dev(node, attribute, value) {
+        attr(node, attribute, value);
+        if (value == null)
+            dispatch_dev('SvelteDOMRemoveAttribute', { node, attribute });
+        else
+            dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
+    }
+    function prop_dev(node, property, value) {
+        node[property] = value;
+        dispatch_dev('SvelteDOMSetProperty', { node, property, value });
+    }
+    function set_data_dev(text, data) {
+        data = '' + data;
+        if (text.wholeText === data)
+            return;
+        dispatch_dev('SvelteDOMSetData', { node: text, data });
+        text.data = data;
+    }
+    function validate_each_argument(arg) {
+        if (typeof arg !== 'string' && !(arg && typeof arg === 'object' && 'length' in arg)) {
+            let msg = '{#each} only iterates over array-like objects.';
+            if (typeof Symbol === 'function' && arg && Symbol.iterator in arg) {
+                msg += ' You can use a spread to convert this iterable into an array.';
+            }
+            throw new Error(msg);
+        }
+    }
+    function validate_slots(name, slot, keys) {
+        for (const slot_key of Object.keys(slot)) {
+            if (!~keys.indexOf(slot_key)) {
+                console.warn(`<${name}> received an unexpected slot "${slot_key}".`);
+            }
+        }
+    }
+    /**
+     * Base class for Svelte components with some minor dev-enhancements. Used when dev=true.
+     */
+    class SvelteComponentDev extends SvelteComponent {
+        constructor(options) {
+            if (!options || (!options.target && !options.$$inline)) {
+                throw new Error("'target' is a required option");
+            }
+            super();
+        }
+        $destroy() {
+            super.$destroy();
+            this.$destroy = () => {
+                console.warn('Component was already destroyed'); // eslint-disable-line no-console
+            };
+        }
+        $capture_state() { }
+        $inject_state() { }
+    }
+
+    var BoardInput;
+    (function (BoardInput) {
+        BoardInput["REVEAL"] = "REVEAL";
+        BoardInput["FLAG"] = "FLAG";
+    })(BoardInput || (BoardInput = {}));
+    var BoardInput$1 = BoardInput;
+
+    function coordinatesInBoard(x, y, boardContent) {
+        return x >= 0 && y >= 0 && x < boardContent.length && y < boardContent[x].length;
+    }
+    function createMatrix(size, func) {
+        let i = 0;
+        let j = 0;
+        const blankBoard = [];
+        while (i !== size) {
+            blankBoard.push([]);
+            while (j !== size) {
+                func(blankBoard, i);
+                j += 1;
+            }
+            j = 0;
+            i += 1;
+        }
+        return blankBoard;
+    }
+    function getDirectionsWithDiagonals() {
+        return [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, -1], [1, -1], [-1, 1]];
+    }
+    function getDirections() {
+        return [[0, 1], [1, 0], [0, -1], [-1, 0]];
+    }
+
+    var BoardState;
+    (function (BoardState) {
+        BoardState["INITIAL"] = "INITIAL";
+        BoardState["PLAYING"] = "PLAYING";
+        BoardState["WON"] = "WON";
+        BoardState["LOST"] = "LOST";
+    })(BoardState || (BoardState = {}));
+    var BoardState$1 = BoardState;
+
+    var CellType;
+    (function (CellType) {
+        CellType[CellType["BOMB"] = -1] = "BOMB";
+        CellType[CellType["EMPTY"] = 0] = "EMPTY";
+    })(CellType || (CellType = {}));
+    var CellType$1 = CellType;
+
+    const DEFAULT_SIZE = 8;
+    const DEFAULT_BOMB_NUMBERS = 8;
+    class Board {
+        constructor(size, bombsNumber) {
+            const actualSize = size && size > 0
+                ? size
+                : DEFAULT_SIZE;
+            const actualBombsNumber = bombsNumber && bombsNumber > 0
+                ? bombsNumber
+                : DEFAULT_BOMB_NUMBERS;
+            this.content = getBoardContent(actualSize, actualBombsNumber);
+            this.visited = getBooleanMatrix(actualSize);
+            this.flagged = getBooleanMatrix(actualSize);
+            this.size = actualSize;
+            this.bombsNumber = actualBombsNumber;
+            this.state = BoardState$1.INITIAL;
+            this.remainingNotVisited = actualSize * actualSize - actualBombsNumber;
+        }
+        withFlagged(flagged) {
+            this.flagged = flagged;
+            return this;
+        }
+        withState(state) {
+            this.state = state;
+            return this;
+        }
+    }
+    function getBoardContent(size, bombsNumber) {
+        const bombPositions = getBombPositions(size, bombsNumber);
+        const board = placeBombs(getZeroesMatrix(size), bombPositions);
+        return markAdjacentCells(board, bombPositions);
+    }
+    function getBombPositions(size, bombsNumber) {
+        const bombPositions = new Set();
+        while (bombPositions.size !== bombsNumber) {
+            const randomPositions = generatePosition(size);
+            bombPositions.add(String(randomPositions[0]) + String(randomPositions[1]));
+        }
+        const positionsArray = Array.from(bombPositions)
+            .map((str) => [Number(str.charAt(0)), Number(str.charAt(1))]);
+        return new Set(positionsArray);
+    }
+    function markAdjacentCells(board, bombPositions) {
+        const markedBoard = board;
+        const directions = getDirectionsWithDiagonals();
+        bombPositions.forEach((coord) => {
+            const [x, y] = [coord[0], coord[1]];
+            directions.forEach((dir) => {
+                const xi = x + dir[0];
+                const yi = y + dir[1];
+                if (coordinatesInBoard(xi, yi, markedBoard) && markedBoard[xi][yi] !== CellType$1.BOMB) {
+                    markedBoard[xi][yi] += 1;
+                }
+            });
+        });
+        return markedBoard;
+    }
+    function placeBombs(board, bombPositions) {
+        const newBoard = board;
+        bombPositions.forEach((coord) => {
+            const [x, y] = [coord[0], coord[1]];
+            newBoard[x][y] = CellType$1.BOMB;
+        });
+        return newBoard;
+    }
+    function generatePosition(size) {
+        return [getRandomInt(0, size), getRandomInt(0, size)];
+    }
+    // The maximum is exclusive and the minimum is inclusive
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+    function getZeroesMatrix(size) {
+        return createMatrix(size, (matrix, idx) => matrix[idx].push(0));
+    }
+    function getBooleanMatrix(size) {
+        return createMatrix(size, (matrix, idx) => matrix[idx].push(false));
+    }
+
+    function createBoard(size, bombNumber) {
+        return new Board(size, bombNumber);
+    }
+    function getBoardAfterPlayerMove(inputMode, board, row, col) {
+        if (inputMode === BoardInput$1.REVEAL) {
+            return playCoordinates(getPlayableBoard(board, row, col), row, col);
+        }
+        return flagCoordinates(board, row, col);
+    }
+    /**
+     * We always want the first coordinates the player picks to be expandable. This function will
+     * regenerate a board as long as the coordinates in input points to either a bomb or a cell
+     * that is adjacent to bombs
+     */
+    function getPlayableBoard(board, row, col) {
+        if (board.state !== BoardState$1.INITIAL || !coordinatesInBoard(row, col, board.content) || isEmptyCell(board, row, col)) {
+            return board;
+        }
+        const newBoard = createBoard(board.size, board.bombsNumber).withFlagged(board.flagged);
+        return getPlayableBoard(newBoard, row, col);
+    }
+    function isEmptyCell(board, row, col) {
+        return coordinatesInBoard(row, col, board.content) && board.content[row][col] === CellType$1.EMPTY;
+    }
+    function revealBombs(board) {
+        const revealedBoard = board;
+        revealedBoard.content.forEach((row, i) => {
+            row.forEach((val, j) => {
+                if (val === CellType$1.BOMB) {
+                    revealedBoard.visited[i][j] = true;
+                }
+            });
+        });
+        return revealedBoard;
+    }
+    /**
+     * This function will play the coordinates given in arguments and will create a new board
+     * with it's new content, visited matrix and state accordingly.
+     * @param board board on which you want to play
+     * @param row row you want to play
+     * @param col column you want to play
+     * @returns { Board } returns new board
+     */
+    function playCoordinates(board, row, col) {
+        if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col] || finishedState(board)) {
+            return board;
+        }
+        if (board.content[row][col] === CellType$1.BOMB) {
+            return revealBombs(board).withState(BoardState$1.LOST);
+        }
+        const expandedBoard = expand(board, row, col);
+        if (expandedBoard.remainingNotVisited === 0) {
+            expandedBoard.state = BoardState$1.WON;
+        }
+        if (expandedBoard.state === BoardState$1.INITIAL) {
+            expandedBoard.state = BoardState$1.PLAYING;
+        }
+        return expandedBoard;
+    }
+    function flagCoordinates(board, row, col) {
+        if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col]) {
+            return board;
+        }
+        const newBoard = board;
+        newBoard.flagged[row][col] = !newBoard.flagged[row][col];
+        return newBoard;
+    }
+    function finishedState(board) {
+        return board.state === BoardState$1.LOST || board.state === BoardState$1.WON;
+    }
+    /**
+     * This function will expand from starting cell to neighbour cells until it reaches
+     * bomb adjacent cells
+     * @param board the board on which you want to expand
+     * @param row the starting row
+     * @param col the starting col
+     */
+    function expand(board, row, col) {
+        const expandedBoard = board;
+        const directions = getDirections();
+        const { content, visited } = expandedBoard;
+        const stack = [[row, col]];
+        let visitedCells = 0;
+        while (stack.length > 0) {
+            const [x, y] = stack.pop();
+            if (canExpand(expandedBoard, x, y)) {
+                visited[x][y] = true;
+                visitedCells += 1;
+                if (content[x][y] === CellType$1.EMPTY) {
+                    directions.forEach((dir) => {
+                        stack.push([x + dir[0], y + dir[1]]);
+                    });
+                }
+            }
+        }
+        expandedBoard.remainingNotVisited -= visitedCells;
+        return expandedBoard;
+    }
+    function canExpand(board, x, y) {
+        const { content, visited, flagged } = board;
+        return coordinatesInBoard(x, y, content) && !visited[x][y] && !flagged[x][y];
+    }
+
+    /* src/Board.svelte generated by Svelte v3.31.2 */
+    const file = "src/Board.svelte";
+
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[14] = list[i];
+    	child_ctx[16] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[17] = list[i];
+    	child_ctx[19] = i;
+    	return child_ctx;
+    }
+
+    // (115:2) {:else}
+    function create_else_block(ctx) {
+    	let h2;
+
+    	const block = {
+    		c: function create() {
+    			h2 = element("h2");
+    			h2.textContent = "Avoid the 💣💥";
+    			attr_dev(h2, "class", "svelte-s9fjdk");
+    			add_location(h2, file, 115, 4, 2825);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h2, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h2);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(115:2) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (113:2) {#if !isPlayingState(state)}
+    function create_if_block(ctx) {
+    	let h2;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			h2 = element("h2");
+    			t = text(/*endGameText*/ ctx[4]);
+    			attr_dev(h2, "class", "svelte-s9fjdk");
+    			add_location(h2, file, 113, 4, 2788);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h2, anchor);
+    			append_dev(h2, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*endGameText*/ 16) set_data_dev(t, /*endGameText*/ ctx[4]);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h2);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(113:2) {#if !isPlayingState(state)}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (126:6) {#each row as value, j}
+    function create_each_block_1(ctx) {
+    	let div;
+    	let button;
+    	let t0_value = /*getCellContent*/ ctx[11](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + "";
+    	let t0;
+    	let button_disabled_value;
+    	let button_style_value;
+    	let t1;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[13](/*i*/ ctx[16], /*j*/ ctx[19]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			button = element("button");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr_dev(button, "class", "cell-button svelte-s9fjdk");
+    			button.disabled = button_disabled_value = /*notClickable*/ ctx[10](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]);
+    			attr_dev(button, "style", button_style_value = "background-color:" + /*getBackgroundColor*/ ctx[8](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + ";\n              color:" + getColorForValue(/*value*/ ctx[17]) + ";\n              " + /*getCursorStyle*/ ctx[9](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]));
+    			add_location(button, file, 127, 12, 3282);
+    			attr_dev(div, "class", "column svelte-s9fjdk");
+    			add_location(div, file, 126, 8, 3249);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, button);
+    			append_dev(button, t0);
+    			append_dev(div, t1);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*visited*/ 4 && t0_value !== (t0_value = /*getCellContent*/ ctx[11](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*visited, state*/ 5 && button_disabled_value !== (button_disabled_value = /*notClickable*/ ctx[10](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]))) {
+    				prop_dev(button, "disabled", button_disabled_value);
+    			}
+
+    			if (dirty & /*visited, content, state*/ 7 && button_style_value !== (button_style_value = "background-color:" + /*getBackgroundColor*/ ctx[8](/*visited*/ ctx[2], /*i*/ ctx[16], /*j*/ ctx[19]) + ";\n              color:" + getColorForValue(/*value*/ ctx[17]) + ";\n              " + /*getCursorStyle*/ ctx[9](/*visited*/ ctx[2], /*state*/ ctx[0], /*i*/ ctx[16], /*j*/ ctx[19]))) {
+    				attr_dev(button, "style", button_style_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(126:6) {#each row as value, j}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (125:4) {#each content as row, i}
+    function create_each_block(ctx) {
+    	let each_1_anchor;
+    	let each_value_1 = /*row*/ ctx[14];
+    	validate_each_argument(each_value_1);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*notClickable, visited, state, getBackgroundColor, getColorForValue, content, getCursorStyle, selectCell, BoardInput, getCellContent*/ 3975) {
+    				each_value_1 = /*row*/ ctx[14];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(125:4) {#each content as row, i}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment(ctx) {
+    	let main;
+    	let show_if;
+    	let t0;
+    	let button;
+    	let t1;
+    	let t2;
+    	let br0;
+    	let br1;
+    	let t3;
+    	let div;
+    	let mounted;
+    	let dispose;
+
+    	function select_block_type(ctx, dirty) {
+    		if (show_if == null || dirty & /*state*/ 1) show_if = !!!/*isPlayingState*/ ctx[5](/*state*/ ctx[0]);
+    		if (show_if) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx, -1);
+    	let if_block = current_block_type(ctx);
+    	let each_value = /*content*/ ctx[1];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			main = element("main");
+    			if_block.c();
+    			t0 = space();
+    			button = element("button");
+    			t1 = text(/*resetBtnText*/ ctx[3]);
+    			t2 = space();
+    			br0 = element("br");
+    			br1 = element("br");
+    			t3 = space();
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(button, "class", "reset-btn svelte-s9fjdk");
+    			add_location(button, file, 117, 2, 2859);
+    			add_location(br0, file, 118, 2, 2935);
+    			add_location(br1, file, 118, 6, 2939);
+    			attr_dev(div, "class", "grid svelte-s9fjdk");
+    			set_style(div, "width", width + "px");
+    			set_style(div, "grid-template-columns", repeatValueWithSuffix(DEFAULT_SIZE$1, width / DEFAULT_SIZE$1, "px"));
+    			set_style(div, "grid-template-rows", repeatValueWithSuffix(DEFAULT_SIZE$1, width / DEFAULT_SIZE$1, "px"));
+    			add_location(div, file, 119, 2, 2946);
+    			add_location(main, file, 111, 0, 2746);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, main, anchor);
+    			if_block.m(main, null);
+    			append_dev(main, t0);
+    			append_dev(main, button);
+    			append_dev(button, t1);
+    			append_dev(main, t2);
+    			append_dev(main, br0);
+    			append_dev(main, br1);
+    			append_dev(main, t3);
+    			append_dev(main, div);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*resetBoard*/ ctx[6], false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx, dirty)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(main, t0);
+    				}
+    			}
+
+    			if (dirty & /*resetBtnText*/ 8) set_data_dev(t1, /*resetBtnText*/ ctx[3]);
+
+    			if (dirty & /*content, notClickable, visited, state, getBackgroundColor, getColorForValue, getCursorStyle, selectCell, BoardInput, getCellContent*/ 3975) {
+    				each_value = /*content*/ ctx[1];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(main);
+    			if_block.d();
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    const DEFAULT_SIZE$1 = 8;
+    const DEFAULT_BOMBS_NUMBER = 7;
+    const width = 500;
+
+    function repeatValueWithSuffix(times, value, suffix) {
+    	if (times < 0) {
+    		return;
+    	}
+
+    	let finalStyle = "";
+    	let counter = 0;
+
+    	while (counter !== times) {
+    		finalStyle += `${value}${suffix} `;
+    		counter++;
+    	}
+
+    	return finalStyle;
+    }
+
+    function getColorForValue(value) {
+    	switch (value) {
+    		case 1:
+    			return "blue";
+    		case 2:
+    			return "green";
+    		case 3:
+    			return "red";
+    		case 4:
+    			return "purple";
+    		case 5:
+    			return "maroon";
+    		case 6:
+    			return "turquoise";
+    		case 7:
+    			return "black";
+    		case 8:
+    			return "grey";
+    	}
+    }
+
+    function instance($$self, $$props, $$invalidate) {
+    	let content;
+    	let visited;
+    	let state;
+    	let resetBtnText;
+    	let endGameText;
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Board", slots, []);
+    	let board = createBoard(DEFAULT_SIZE$1, DEFAULT_BOMBS_NUMBER);
+
+    	function isPlayingState(state) {
+    		return state === BoardState$1.INITIAL || state === BoardState$1.PLAYING;
+    	}
+
+    	function resetBoard() {
+    		$$invalidate(12, board = createBoard(DEFAULT_SIZE$1, DEFAULT_BOMBS_NUMBER));
+    	}
+
+    	function selectCell(inputMode, i, j) {
+    		$$invalidate(12, board = getBoardAfterPlayerMove(inputMode, board, i, j));
+    	}
+
+    	function getBackgroundColor(visited, row, col) {
+    		const even = (row + col) % 2 == 0;
+
+    		if (visited[row][col]) {
+    			return even ? "#d4c18e" : "#cfbb86";
+    		}
+
+    		return even ? "#9cd14f" : "#95c74c";
+    	}
+
+    	function getCursorStyle(visited, state, row, col) {
+    		return notClickable(visited, state, row, col)
+    		? ""
+    		: "cursor: pointer;";
+    	}
+
+    	function notClickable(visited, state, row, col) {
+    		return visited[row][col] || !isPlayingState(state);
+    	}
+
+    	function getCellContent(visited, row, col) {
+    		const value = content[row][col];
+
+    		if (visited[row][col] && value !== CellType$1.EMPTY) {
+    			if (value === CellType$1.BOMB) {
+    				return "💣";
+    			}
+
+    			return value;
+    		}
+
+    		return "";
+    	}
+
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Board> was created with unknown prop '${key}'`);
+    	});
+
+    	const click_handler = (i, j) => selectCell(BoardInput$1.REVEAL, i, j);
+
+    	$$self.$capture_state = () => ({
+    		BoardInput: BoardInput$1,
+    		createBoard,
+    		getBoardAfterPlayerMove,
+    		BoardState: BoardState$1,
+    		CellType: CellType$1,
+    		DEFAULT_SIZE: DEFAULT_SIZE$1,
+    		DEFAULT_BOMBS_NUMBER,
+    		width,
+    		board,
+    		isPlayingState,
+    		resetBoard,
+    		selectCell,
+    		repeatValueWithSuffix,
+    		getBackgroundColor,
+    		getCursorStyle,
+    		notClickable,
+    		getCellContent,
+    		getColorForValue,
+    		content,
+    		visited,
+    		state,
+    		resetBtnText,
+    		endGameText
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("board" in $$props) $$invalidate(12, board = $$props.board);
+    		if ("content" in $$props) $$invalidate(1, content = $$props.content);
+    		if ("visited" in $$props) $$invalidate(2, visited = $$props.visited);
+    		if ("state" in $$props) $$invalidate(0, state = $$props.state);
+    		if ("resetBtnText" in $$props) $$invalidate(3, resetBtnText = $$props.resetBtnText);
+    		if ("endGameText" in $$props) $$invalidate(4, endGameText = $$props.endGameText);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*board*/ 4096) {
+    			 $$invalidate(1, content = board.content);
+    		}
+
+    		if ($$self.$$.dirty & /*board*/ 4096) {
+    			 $$invalidate(2, visited = board.visited);
+    		}
+
+    		if ($$self.$$.dirty & /*board*/ 4096) {
+    			// $: flagged = board.flagged;
+    			 $$invalidate(0, state = board.state);
+    		}
+
+    		if ($$self.$$.dirty & /*state*/ 1) {
+    			 $$invalidate(3, resetBtnText = isPlayingState(state) ? "Reset" : "Play again");
+    		}
+
+    		if ($$self.$$.dirty & /*state*/ 1) {
+    			 $$invalidate(4, endGameText = state === BoardState$1.WON
+    			? "You won! 🙌"
+    			: "You lost.. 😫");
+    		}
+    	};
+
+    	return [
+    		state,
+    		content,
+    		visited,
+    		resetBtnText,
+    		endGameText,
+    		isPlayingState,
+    		resetBoard,
+    		selectCell,
+    		getBackgroundColor,
+    		getCursorStyle,
+    		notClickable,
+    		getCellContent,
+    		board,
+    		click_handler
+    	];
+    }
+
+    class Board$1 extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance, create_fragment, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Board",
+    			options,
+    			id: create_fragment.name
+    		});
+    	}
+    }
+
+    /* src/App.svelte generated by Svelte v3.31.2 */
+    const file$1 = "src/App.svelte";
+
+    function create_fragment$1(ctx) {
+    	let main;
+    	let h1;
+    	let t1;
+    	let board;
+    	let current;
+    	board = new Board$1({ $$inline: true });
+
+    	const block = {
+    		c: function create() {
+    			main = element("main");
+    			h1 = element("h1");
+    			h1.textContent = "MineSweeper";
+    			t1 = space();
+    			create_component(board.$$.fragment);
+    			attr_dev(h1, "class", "svelte-1tky8bj");
+    			add_location(h1, file$1, 4, 1, 73);
+    			attr_dev(main, "class", "svelte-1tky8bj");
+    			add_location(main, file$1, 3, 0, 65);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, main, anchor);
+    			append_dev(main, h1);
+    			append_dev(main, t1);
+    			mount_component(board, main, null);
+    			current = true;
+    		},
+    		p: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(board.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(board.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(main);
+    			destroy_component(board);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$1.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$1($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("App", slots, []);
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$capture_state = () => ({ Board: Board$1 });
+    	return [];
+    }
+
+    class App extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "App",
+    			options,
+    			id: create_fragment$1.name
+    		});
+    	}
+    }
+
+    const app = new App({
+        target: document.body,
+    });
+
+    return app;
+
+}());
 //# sourceMappingURL=bundle.js.map
