@@ -9,7 +9,7 @@
 
   const DEFAULT_SIZE = 8;
   const DEFAULT_BOMBS_NUMBER = 11;
-  const width = 500;
+  const width = 400;
 
   let board = createBoard(DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
 
