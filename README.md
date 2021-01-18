@@ -7,7 +7,7 @@ Then wanted to try out Svelte framework so created a web app out from it. You ca
 
 ## Setup
 
-If you have to use Docker simply run `docker-compose up` from the root of the repository and connect to `localhost:5000`. Else follow the instructions below:
+If you have Docker simply run `docker-compose up` from the root of the repository and connect to `localhost:5000`. Else follow the instructions below:
 
 1. Install nvm if you do not have it already: <https://github.com/nvm-sh/nvm>
 2. In the root of the repository run `nvm use`, if the required node version is not installed please follow the instructions to install it
