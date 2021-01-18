@@ -1,17 +1,19 @@
-# CLI Minesweeper
+# Minesweeper
 
 ## Context
 
-Small project written in TypeScript that was originally asked as an interview question. Found it interesting to put it on GitHub as coding this game was actually pretty fun! (Even though I failed 🤫)
+The CLI minesweeper project was originally asked as an interview question. Found it interesting to put it on GitHub as coding this game was actually pretty fun! (Even though I failed 🤫).
+Then wanted to try out Svelte framework so created a web app out from it. You can still find the original CLI version version here <https://github.com/Shaance/minesweeper/releases/tag/v1.0.0>
 
 ## Setup
+
+If you have to use Docker simply run `docker-compose up` from the root of the repository and connect to `localhost:5000`. Else follow the instructions below:
 
 1. Install nvm if you do not have it already: <https://github.com/nvm-sh/nvm>
 2. In the root of the repository run `nvm use`, if the required node version is not installed please follow the instructions to install it
 3. Once the required node version is installed, run `npm i` to install dependencies
 4. Run `npm run build` to transpile TS to JS
-5. (optional) Run `node lib/index.js -h` to get help on the different args
-6. Run `node lib/index.js [-option] [arg]`
+5. Run `npm start` and connect to `localhost:5000`
 
 ## How to launch tests
 
@@ -21,18 +23,6 @@ Simply run `npm run test`
 
 Rules can be found here <https://www.instructables.com/How-to-play-minesweeper/>.
 
-At every turn:
+## Link
 
-- You will have to choose between 'reveal' and 'flag/unflag' mode by inputting R or F
-- You can then input the row and the column you want to play on
-
-Board representation:
-
-- `H` corresponds to the cell content is hidden (not yet revealed)
-- `.` corresponds to an empty cell
-- `*` corresponds to a bomb
-- `F` corresponds to a flagged cell
-
-## Some visuals
-
-![Minesweeper gif](https://github.com/Shaance/cli-minesweeper/blob/master/res/cli-minesweeper-low.gif "Minesweeper gif")
+<https://svelte-minesweeper.shaance.vercel.app>
