@@ -1,31 +1,11 @@
 import Board from './Board';
 import { coordinatesInBoard, getDirections } from './BoardHelper';
 import BoardInput from './BoardInput';
-import printBoard from './BoardPrinter';
 import BoardState from './BoardState';
 import CellType from './CellType';
-import { isNumber, Predicate } from './CommonHelper';
-import { readlineSync, writeToStandardOutput } from './StandardIOHelper';
 
 export function createBoard(size: number, bombNumber: number): Board {
   return new Board(size, bombNumber);
-}
-
-export async function play(board: Board): Promise<BoardState> {
-  let playableBoard = board;
-  while (playableBoard.state === BoardState.PLAYING || playableBoard.state === BoardState.INITIAL) {
-    printBoard(playableBoard);
-    // we can disable no-await-in-loop because all calls are dependant on each other
-    // eslint-disable-next-line no-await-in-loop
-    const inputMode = await printAndGetInputMode('Input R to reveal or F to flag/unflag cell');
-    // eslint-disable-next-line no-await-in-loop
-    const [row, col] = await askCoordinates();
-    // const [row, col] = [coord[0], coord[1]];
-    playableBoard = getBoardAfterPlayerMove(inputMode, playableBoard, row, col);
-    writeToStandardOutput('\n');
-  }
-  printBoard(playableBoard);
-  return playableBoard.state;
 }
 
 export function getBoardAfterPlayerMove(inputMode: BoardInput, board: Board, row: number, col: number): Board {
@@ -52,6 +32,19 @@ function isEmptyCell(board: Board, row: number, col: number): boolean {
   return coordinatesInBoard(row, col, board.content) && board.content[row][col] === CellType.EMPTY;
 }
 
+function revealBombs(board: Board) {
+  const revealedBoard = board;
+
+  revealedBoard.content.forEach((row, i) => {
+    row.forEach((val, j) => {
+      if (val === CellType.BOMB) {
+        revealedBoard.visited[i][j] = true;
+      }
+    });
+  });
+  return revealedBoard;
+}
+
 /**
  * This function will play the coordinates given in arguments and will create a new board
  * with it's new content, visited matrix and state accordingly.
@@ -61,15 +54,16 @@ function isEmptyCell(board: Board, row: number, col: number): boolean {
  * @returns { Board } returns new board
  */
 function playCoordinates(board: Board, row: number, col: number): Board {
-  if (!coordinatesInBoard(row, col, board.content) || board.visited[row][col] || finishedState(board)) {
+  if (!coordinatesInBoard(row, col, board.content)) {
+    return board;
+  }
+
+  if (board.visited[row][col] || board.flagged[row][col] || finishedState(board)) {
     return board;
   }
 
   if (board.content[row][col] === CellType.BOMB) {
-    const newBoard = board;
-    newBoard.state = BoardState.LOST;
-    newBoard.visited[row][col] = true;
-    return newBoard;
+    return revealBombs(board).withState(BoardState.LOST);
   }
 
   const expandedBoard = expand(board, row, col);
@@ -132,36 +126,4 @@ function expand(board: Board, row: number, col: number): Board {
 function canExpand(board: Board, x: number, y: number) {
   const { content, visited, flagged } = board;
   return coordinatesInBoard(x, y, content) && !visited[x][y] && !flagged[x][y];
-}
-
-async function printAndGetNumberInput(message: string): Promise<number> {
-  const userInput = await printAndGetInput(message, isNumber, 'Not an number, try again.');
-  return Number.parseInt(userInput, 10);
-}
-
-async function printAndGetInputMode(message: string): Promise<BoardInput> {
-  const errMessage = 'Wrong input. Valid inputs are F for flag mode or R as reveal mode.';
-  const validInput = (str: string) => str && (str.toUpperCase() === 'F' || str.toUpperCase() === 'R');
-  const userInput = await printAndGetInput(message, validInput, errMessage);
-  if (userInput.toUpperCase() === 'F') {
-    return BoardInput.FLAG;
-  }
-  return BoardInput.REVEAL;
-}
-
-async function printAndGetInput(message: string, predicate: Predicate<string>, errMessage: string): Promise<string> {
-  writeToStandardOutput(message);
-  const userInput = await readlineSync();
-  if (predicate(userInput)) {
-    return userInput;
-  }
-
-  writeToStandardOutput(errMessage);
-  return printAndGetInput(message, predicate, errMessage);
-}
-
-async function askCoordinates(): Promise<number[]> {
-  const row = await printAndGetNumberInput('Row: ');
-  const col = await printAndGetNumberInput('Col: ');
-  return [row - 1, col - 1];
 }

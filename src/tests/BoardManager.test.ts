@@ -1,8 +1,8 @@
-import Board from '../Board';
-import BoardInput from '../BoardInput';
-import { getBoardAfterPlayerMove } from '../BoardManager';
-import BoardState from '../BoardState';
-import CellType from '../CellType';
+import Board from '../minesweeper/Board';
+import BoardInput from '../minesweeper/BoardInput';
+import { getBoardAfterPlayerMove } from '../minesweeper/BoardManager';
+import BoardState from '../minesweeper/BoardState';
+import CellType from '../minesweeper/CellType';
 
 describe('getBoardAfterPlayerMove function', () => {
   it('should return same board when coordinates are incorrect', () => {
@@ -62,6 +62,14 @@ describe('getBoardAfterPlayerMove function', () => {
     expect(newBoard.flagged[x][y]).toEqual(true);
   });
 
+  it('should not be able to visit a flagged coordinates', () => {
+    const board = new Board();
+    const [x, y] = [1, 3];
+    const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
+    const finalBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, flaggedBoard, x, y);
+    expect(finalBoard.visited[x][y]).toEqual(false);
+  });
+
   it('should always expand on first play', () => {
     const bombsNumber = 8;
     const size = 8;
@@ -71,10 +79,8 @@ describe('getBoardAfterPlayerMove function', () => {
     expect(newBoard.remainingNotVisited).toBeLessThan(size * size - bombsNumber - 1);
   });
 
-
   it('should return same board when board state is WON', () => {
-    const board = new Board();
-    board.state = BoardState.WON;
+    const board = new Board().withState(BoardState.WON);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
@@ -85,8 +91,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should return same board when board state is LOST', () => {
-    const board = new Board();
-    board.state = BoardState.LOST;
+    const board = new Board().withState(BoardState.LOST);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
@@ -94,6 +99,26 @@ describe('getBoardAfterPlayerMove function', () => {
     expect(newBoard).toEqual(board);
     expect(newBoard).toEqual(flaggedBoard);
     expect(board).toEqual(flaggedBoard);
+  });
+
+  it('should reveal all bombs when state is LOST', () => {
+    let board = new Board();
+    // make sure we get the playable board
+    board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
+    const coord = getFirstBombFromBoard(board);
+
+    if (coord) {
+      const [x, y] = [coord[0], coord[1]];
+      const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
+      const { visited } = newBoard;
+      newBoard.content.forEach((row, i) => {
+        row.forEach((elem, j) => {
+          if (elem === CellType.BOMB) {
+            expect(visited[i][j]).toEqual(true);
+          }
+        });
+      });
+    }
   });
 });
 
