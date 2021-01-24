@@ -53,13 +53,13 @@ export function getGameSettings(level?: Level, size?: number, bombsNumber?: numb
 
   if (level === Level.MEDIUM) {
     return {
-      size: 16,
-      bombsNumber: 40,
+      size: 10,
+      bombsNumber: 16,
     };
   }
 
   return {
-    size: 22,
-    bombsNumber: 100,
+    size: 12,
+    bombsNumber: 25,
   };
 }

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE } from "./minesweeper/BoardHelper";
+  import type Board from './minesweeper/Board';
+  // import { DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE } from "./minesweeper/BoardHelper";
   import BoardInput from "./minesweeper/BoardInput";
   import {
     createBoard,
@@ -10,11 +11,14 @@
   import Level from "./minesweeper/Level";
 
   const width = 400;
-  let board = createBoard(Level.CUSTOM, DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
+  let board = createBoard(Level.EASY);
 
   $: content = board.content;
   $: visited = board.visited;
   $: flagged = board.flagged;
+  $: level = board.level;
+  $: size = board.size;
+  $: bombsNumber = board.bombsNumber;
   $: state = board.state;
   $: resetBtnText = isPlayingState(state) ? "Reset" : "Play again";
   $: endGameText = state === BoardState.WON ? "You won! 🙌" : "You lost.. 😫";
@@ -24,7 +28,7 @@
   }
 
   function resetBoard() {
-    board = createBoard(Level.CUSTOM, DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
+    board = createBoard(level, size, bombsNumber);
   }
 
   function selectCell(inputMode: BoardInput, i: number, j: number) {
@@ -137,8 +141,8 @@
   <div
     class="grid"
     style="width: {width}px; 
-  grid-template-columns: {repeatValueWithSuffix(DEFAULT_SIZE, width / DEFAULT_SIZE, 'px')};
-  grid-template-rows: {repeatValueWithSuffix(DEFAULT_SIZE, width / DEFAULT_SIZE, 'px')};">
+  grid-template-columns: {repeatValueWithSuffix(size, width / size, 'px')};
+  grid-template-rows: {repeatValueWithSuffix(size, width / size, 'px')};">
     {#each content as row, i}
       {#each row as value, j}
         <div class="column">

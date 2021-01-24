@@ -26,7 +26,8 @@ function getPlayableBoard(board: Board, row: number, col: number): Board {
   if (board.state !== BoardState.INITIAL || !coordinatesInBoard(row, col, board.content) || isEmptyCell(board, row, col)) {
     return board;
   }
-  const newBoard = createBoard(board.level, board.size, board.bombsNumber).withFlagged(board.flagged);
+  const newBoard = createBoard(board.level, board.size, board.bombsNumber)
+    .withFlagged(board.flagged);
   return getPlayableBoard(newBoard, row, col);
 }
 

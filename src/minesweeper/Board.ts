@@ -60,11 +60,14 @@ function getBombPositions(size: number, bombsNumber: number): Set<number[]> {
   const bombPositions = new Set<string>();
   while (bombPositions.size !== bombsNumber) {
     const randomPositions = generatePosition(size);
-    bombPositions.add(String(randomPositions[0]) + String(randomPositions[1]));
+    bombPositions.add(`${String(randomPositions[0])}-${String(randomPositions[1])}`);
   }
 
   const positionsArray = Array.from(bombPositions)
-    .map((str: string) => [Number(str.charAt(0)), Number(str.charAt(1))]);
+    .map((str: string) => {
+      const split = str.split('-');
+      return [Number(split[0]), Number(split[1])];
+    });
 
   return new Set(positionsArray);
 }
