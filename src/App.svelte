@@ -1,15 +1,15 @@
 <script lang="ts">
   import Board from "./Board.svelte";
-	import MenuRow from "./MenuRow.svelte";
+  import MenuRow from "./MenuRow.svelte";
   import Commands from "./Commands.svelte";
-	import StateText from "./StateText.svelte";
+  import StateText from "./StateText.svelte";
 </script>
 
 <main>
-	<h1>MineSweeper</h1>
-	<StateText />
-	<MenuRow />
-	<br><br>
+  <h1>MineSweeper</h1>
+  <StateText />
+  <MenuRow />
+  <br /><br />
   <Board />
   <Commands />
 </main>

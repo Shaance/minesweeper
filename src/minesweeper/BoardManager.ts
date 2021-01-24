@@ -128,6 +128,5 @@ function expand(board: Board, row: number, col: number): Board {
 
 function canExpand(board: Board, x: number, y: number) {
   const { content, visited, flagged } = board;
-  // console.log(content, visited, flagged);
   return coordinatesInBoard(x, y, content) && !visited[x][y] && !flagged[x][y];
 }
