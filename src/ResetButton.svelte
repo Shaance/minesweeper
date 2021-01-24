@@ -26,6 +26,7 @@
   .reset-btn {
     font-size: 1em;
     font-weight: 100;
+    min-width: 85px;
   }
 
   .reset-btn:hover {

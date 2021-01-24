@@ -22,6 +22,8 @@ export default class Board {
 
   remainingNotVisited: number;
 
+  availableFlags: number;
+
   constructor(size: number, bombsNumber: number, level: Level) {
     const actualSize = size > 0
       ? size
@@ -37,6 +39,7 @@ export default class Board {
     this.bombsNumber = actualBombsNumber;
     this.state = BoardState.INITIAL;
     this.remainingNotVisited = size * size - bombsNumber;
+    this.availableFlags = actualBombsNumber;
   }
 
   withFlagged(flagged: boolean[][]) {

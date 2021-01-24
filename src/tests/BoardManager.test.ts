@@ -63,6 +63,32 @@ describe('getBoardAfterPlayerMove function', () => {
     expect(newBoard.flagged[x][y]).toEqual(true);
   });
 
+  it('should decrease availableFlags when flagging coordinates', () => {
+    const board = createBoard();
+    const [x, y] = [1, 3];
+    const expected = board.availableFlags - 1;
+    const newBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
+    expect(newBoard.availableFlags).toEqual(expected);
+  });
+
+  it('should increase availableFlags when unflagging coordinates', () => {
+    const board = createBoard();
+    const [x, y] = [1, 3];
+    const expected = board.availableFlags;
+    const newBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
+    const finalBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
+    expect(finalBoard.availableFlags).toEqual(expected);
+  });
+
+  it('should not decrease availableFlags when it is equal to 0', () => {
+    const board = createBoard(Level.CUSTOM, 5, 1);
+    const [x, y] = [1, 3];
+    const expected = 0;
+    const newBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
+    const finalBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x + 1, y + 1);
+    expect(finalBoard.availableFlags).toEqual(expected);
+  });
+
   it('should not be able to visit a flagged coordinates', () => {
     const board = createBoard();
     const [x, y] = [1, 3];
