@@ -1,4 +1,4 @@
-import Board from '../minesweeper/Board';
+import type Board from '../minesweeper/Board';
 import BoardInput from '../minesweeper/BoardInput';
 import { createBoard, getBoardAfterPlayerMove } from '../minesweeper/BoardManager';
 import BoardState from '../minesweeper/BoardState';
@@ -81,7 +81,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should return same board when board state is WON', () => {
-    const board = new Board(5, 4, Level.CUSTOM).withState(BoardState.WON);
+    const board = createBoard(Level.CUSTOM, 5, 4).withState(BoardState.WON);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
@@ -92,7 +92,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should return same board when board state is LOST', () => {
-    const board = new Board(5, 4, Level.CUSTOM).withState(BoardState.LOST);
+    const board = createBoard(Level.CUSTOM, 5, 4).withState(BoardState.LOST);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);

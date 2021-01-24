@@ -1,5 +1,7 @@
 import Board from './Board';
-import { coordinatesInBoard, getDirections, getGameSettings } from './BoardHelper';
+import {
+  coordinatesInBoard, getDirections, getGameSettings, isPlayingState,
+} from './BoardHelper';
 import BoardInput from './BoardInput';
 import BoardState from './BoardState';
 import CellType from './CellType';
@@ -61,7 +63,7 @@ function playCoordinates(board: Board, row: number, col: number): Board {
     return board;
   }
 
-  if (board.visited[row][col] || board.flagged[row][col] || finishedState(board)) {
+  if (board.visited[row][col] || board.flagged[row][col] || !isPlayingState(board.state)) {
     return board;
   }
 
@@ -89,10 +91,6 @@ function flagCoordinates(board: Board, row: number, col: number): Board {
   const newBoard = board;
   newBoard.flagged[row][col] = !newBoard.flagged[row][col];
   return newBoard;
-}
-
-function finishedState(board: Board) {
-  return board.state === BoardState.LOST || board.state === BoardState.WON;
 }
 
 /**
