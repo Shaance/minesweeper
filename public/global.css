@@ -61,3 +61,8 @@ button:not(:disabled):active {
 button:focus {
 	border-color: #666;
 }
+
+select {
+	color: #333;
+	background-color: #f4f4f4;
+}
