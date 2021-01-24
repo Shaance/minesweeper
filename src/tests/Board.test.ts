@@ -32,6 +32,13 @@ describe('Board constructor', () => {
     expect(board.remainingNotVisited).toEqual(expectedRemainingNotVisited);
   });
 
+  it('board instance should have flagsAvailables property equal to the number of bombs', () => {
+    const size = 6;
+    const bombsNumber = 5;
+    const board = new Board(size, bombsNumber, Level.CUSTOM);
+    expect(board.availableFlags).toEqual(bombsNumber);
+  });
+
   it('board instance state should be INITIAL', () => {
     const board = new Board(5, 5, Level.CUSTOM);
     const expectedState = BoardState.INITIAL;
