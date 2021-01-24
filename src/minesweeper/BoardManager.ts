@@ -88,8 +88,17 @@ function flagCoordinates(board: Board, row: number, col: number): Board {
     return board;
   }
 
+  if (!board.flagged[row][col] && board.availableFlags === 0) {
+    return board;
+  }
+
   const newBoard = board;
   newBoard.flagged[row][col] = !newBoard.flagged[row][col];
+  if (newBoard.flagged[row][col]) {
+    newBoard.availableFlags -= 1;
+  } else {
+    newBoard.availableFlags += 1;
+  }
   return newBoard;
 }
 
