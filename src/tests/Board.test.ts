@@ -1,67 +1,55 @@
 import Board from '../minesweeper/Board';
-import { coordinatesInBoard, getDirectionsWithDiagonals } from '../minesweeper/BoardHelper';
+import {
+  coordinatesInBoard, DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE, getDirectionsWithDiagonals,
+} from '../minesweeper/BoardHelper';
 import BoardState from '../minesweeper/BoardState';
 import CellType from '../minesweeper/CellType';
+import Level from '../minesweeper/Level';
 
 describe('Board constructor', () => {
-  it('board instance should have default 8 size when not specified', () => {
-    const board = new Board();
-    const defaultSize = 8;
-    expect(board.size).toEqual(defaultSize);
+  it('board instance should have default size when size is inferior or equal to 0', () => {
+    const board = new Board(0, 0, Level.CUSTOM);
+    expect(board.size).toEqual(DEFAULT_SIZE);
   });
 
-  it('board instance should have default 8 size when size is inferior or equal to 0', () => {
-    const board = new Board(0);
-    const defaultSize = 8;
-    expect(board.size).toEqual(defaultSize);
-  });
-
-  it('board instance should have default 8 bombs when bombs number is inferior or equal to 0', () => {
-    const board = new Board(undefined, -1);
-    const expectedBombNumber = 8;
+  it('board instance should have default bombs number when bombs number is inferior or equal to 0', () => {
+    const board = new Board(0, -1, Level.CUSTOM);
     const actualBombsNumber = getActualBombsNumberFromBoard(board);
-    expect(actualBombsNumber).toEqual(expectedBombNumber);
-  });
-
-  it('board instance should have default 8 bombs when not specified', () => {
-    const board = new Board();
-    const expectedBombNumber = 8;
-    const actualBombsNumber = getActualBombsNumberFromBoard(board);
-    expect(actualBombsNumber).toEqual(expectedBombNumber);
+    expect(actualBombsNumber).toEqual(DEFAULT_BOMBS_NUMBER);
   });
 
   it('board instance should have the right size', () => {
     const size = 5;
-    const board = new Board(size);
+    const board = new Board(5, -1, Level.CUSTOM);
     expect(board.size).toEqual(size);
   });
 
   it('board instance should have correct remainingNotVisited cells', () => {
     const size = 6;
     const bombsNumber = 5;
-    const board = new Board(size, bombsNumber);
+    const board = new Board(size, bombsNumber, Level.CUSTOM);
     const expectedRemainingNotVisited = 31;
     expect(board.remainingNotVisited).toEqual(expectedRemainingNotVisited);
   });
 
   it('board instance state should be INITIAL', () => {
-    const board = new Board();
+    const board = new Board(5, 5, Level.CUSTOM);
     const expectedState = BoardState.INITIAL;
     expect(board.state).toEqual(expectedState);
   });
 
   it('board instance visited matrix should be all false', () => {
-    const board = new Board();
+    const board = new Board(5, 5, Level.CUSTOM);
     expectValueFromMatrix(false, board.visited);
   });
 
   it('board instance flagged matrix should be all false', () => {
-    const board = new Board();
+    const board = new Board(5, 5, Level.CUSTOM);
     expectValueFromMatrix(false, board.flagged);
   });
 
   it('board instance content should have correct adjacent cells count', () => {
-    const board = new Board();
+    const board = new Board(5, 5, Level.CUSTOM);
     expectAdjacentCellsToHaveRightValue(board);
   });
 });

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE } from "./minesweeper/BoardHelper";
   import BoardInput from "./minesweeper/BoardInput";
   import {
     createBoard,
@@ -6,12 +7,10 @@
   } from "./minesweeper/BoardManager";
   import BoardState from "./minesweeper/BoardState";
   import CellType from "./minesweeper/CellType";
+  import Level from "./minesweeper/Level";
 
-  const DEFAULT_SIZE = 8;
-  const DEFAULT_BOMBS_NUMBER = 11;
   const width = 400;
-
-  let board = createBoard(DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
+  let board = createBoard(Level.CUSTOM, DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
 
   $: content = board.content;
   $: visited = board.visited;
@@ -25,7 +24,7 @@
   }
 
   function resetBoard() {
-    board = createBoard(DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
+    board = createBoard(Level.CUSTOM, DEFAULT_SIZE, DEFAULT_BOMBS_NUMBER);
   }
 
   function selectCell(inputMode: BoardInput, i: number, j: number) {

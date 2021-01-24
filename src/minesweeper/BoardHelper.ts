@@ -1,4 +1,9 @@
 import type { BiConsumer } from './CommonHelper';
+import type { GameSettings } from './GameSettings';
+import Level from './Level';
+
+export const DEFAULT_SIZE = 8;
+export const DEFAULT_BOMBS_NUMBER = 10;
 
 export function coordinatesInBoard(x: number, y: number, boardContent: number[][]): boolean {
   return x >= 0 && y >= 0 && x < boardContent.length && y < boardContent[x].length;
@@ -29,4 +34,32 @@ export function getDirectionsWithDiagonals(): number[][] {
 
 export function getDirections(): number[][] {
   return [[0, 1], [1, 0], [0, -1], [-1, 0]];
+}
+
+export function getGameSettings(level?: Level, size?: number, bombsNumber?: number): GameSettings {
+  if (!level || level === Level.EASY) {
+    return {
+      size: DEFAULT_SIZE,
+      bombsNumber: DEFAULT_BOMBS_NUMBER,
+    };
+  }
+
+  if (level === Level.CUSTOM) {
+    return {
+      size: size ?? DEFAULT_SIZE,
+      bombsNumber: bombsNumber ?? DEFAULT_BOMBS_NUMBER,
+    };
+  }
+
+  if (level === Level.MEDIUM) {
+    return {
+      size: 16,
+      bombsNumber: 40,
+    };
+  }
+
+  return {
+    size: 22,
+    bombsNumber: 100,
+  };
 }
