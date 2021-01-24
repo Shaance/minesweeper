@@ -6,7 +6,7 @@
   import CellType from "./minesweeper/CellType";
   import board from "./store";
 
-  const width = 400;
+  const width = 375;
 
   $: content = $board.content;
   $: visited = $board.visited;
