@@ -12,7 +12,6 @@
     text-align: left;
     font-size: 20px;
     font-weight: 300;
-    margin-right: 80px;
     margin-top: 20px;
     min-width: 60px;
   }
