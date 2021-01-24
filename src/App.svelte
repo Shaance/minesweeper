@@ -1,10 +1,15 @@
 <script lang="ts">
   import Board from "./Board.svelte";
+	import ButtonsRow from "./ButtonsRow.svelte";
   import Commands from "./Commands.svelte";
+	import StateText from "./StateText.svelte";
 </script>
 
 <main>
-  <h1>MineSweeper</h1>
+	<h1>MineSweeper</h1>
+	<StateText />
+	<ButtonsRow />
+	<br><br>
   <Board />
   <Commands />
 </main>

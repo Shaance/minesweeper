@@ -1,5 +1,5 @@
 import {
-  coordinatesInBoard, createMatrix, DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE, getDirectionsWithDiagonals,
+  coordinatesInBoard, DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE, getBooleanMatrix, getDirectionsWithDiagonals, getNumberMatrix,
 } from './BoardHelper';
 import BoardState from './BoardState';
 import CellType from './CellType';
@@ -26,7 +26,7 @@ export default class Board {
     const actualSize = size > 0
       ? size
       : DEFAULT_SIZE;
-    const actualBombsNumber = bombsNumber && bombsNumber > 0
+    const actualBombsNumber = bombsNumber > 0
       ? bombsNumber
       : DEFAULT_BOMBS_NUMBER;
     this.content = getBoardContent(actualSize, actualBombsNumber);
@@ -52,7 +52,7 @@ export default class Board {
 
 function getBoardContent(size: number, bombsNumber: number) {
   const bombPositions = getBombPositions(size, bombsNumber);
-  const board = placeBombs(getZeroesMatrix(size), bombPositions);
+  const board = placeBombs(getNumberMatrix(size, 0), bombPositions);
   return markAdjacentCells(board, bombPositions);
 }
 
@@ -106,12 +106,4 @@ function generatePosition(size: number) {
 // The maximum is exclusive and the minimum is inclusive
 function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
-}
-
-function getZeroesMatrix(size: number) {
-  return createMatrix(size, (matrix: number[][], idx: number) => matrix[idx].push(0));
-}
-
-function getBooleanMatrix(size: number) {
-  return createMatrix(size, (matrix: boolean[][], idx: number) => matrix[idx].push(false));
 }
