@@ -1,18 +1,19 @@
 import Board from '../minesweeper/Board';
 import BoardInput from '../minesweeper/BoardInput';
-import { getBoardAfterPlayerMove } from '../minesweeper/BoardManager';
+import { createBoard, getBoardAfterPlayerMove } from '../minesweeper/BoardManager';
 import BoardState from '../minesweeper/BoardState';
 import CellType from '../minesweeper/CellType';
+import Level from '../minesweeper/Level';
 
 describe('getBoardAfterPlayerMove function', () => {
   it('should return same board when coordinates are incorrect', () => {
-    const board = new Board();
+    const board = createBoard();
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, -1, -3);
     expect(newBoard).toEqual(board);
   });
 
   it('should return same board when cell already visited', () => {
-    let board = new Board();
+    let board = createBoard();
     // make sure we get the playable board
     board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const [x, y] = [1, 3];
@@ -22,7 +23,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should have lost state if bomb coordinates are played', () => {
-    let board = new Board();
+    let board = createBoard();
     // make sure we get the playable board
     board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const coord = getFirstBombFromBoard(board);
@@ -35,7 +36,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should have win state if all non bomb coordinates are played', () => {
-    let board = new Board();
+    let board = createBoard();
     // make sure we get the playable board
     board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const notBomb = (value: number) => value !== CellType.BOMB;
@@ -49,21 +50,21 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should update visited matrix when playing coordinates', () => {
-    const board = new Board();
+    const board = createBoard();
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     expect(newBoard.visited[x][y]).toEqual(true);
   });
 
   it('should update flagged matrix when flagging coordinates', () => {
-    const board = new Board();
+    const board = createBoard();
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
     expect(newBoard.flagged[x][y]).toEqual(true);
   });
 
   it('should not be able to visit a flagged coordinates', () => {
-    const board = new Board();
+    const board = createBoard();
     const [x, y] = [1, 3];
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, board, x, y);
     const finalBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, flaggedBoard, x, y);
@@ -73,14 +74,14 @@ describe('getBoardAfterPlayerMove function', () => {
   it('should always expand on first play', () => {
     const bombsNumber = 8;
     const size = 8;
-    const board = new Board(size, bombsNumber);
+    const board = createBoard(Level.CUSTOM, size, bombsNumber);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     expect(newBoard.remainingNotVisited).toBeLessThan(size * size - bombsNumber - 1);
   });
 
   it('should return same board when board state is WON', () => {
-    const board = new Board().withState(BoardState.WON);
+    const board = new Board(5, 4, Level.CUSTOM).withState(BoardState.WON);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
@@ -91,7 +92,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should return same board when board state is LOST', () => {
-    const board = new Board().withState(BoardState.LOST);
+    const board = new Board(5, 4, Level.CUSTOM).withState(BoardState.LOST);
     const [x, y] = [1, 3];
     const newBoard = getBoardAfterPlayerMove(BoardInput.REVEAL, board, x, y);
     const flaggedBoard = getBoardAfterPlayerMove(BoardInput.FLAG, newBoard, x, y);
@@ -102,7 +103,7 @@ describe('getBoardAfterPlayerMove function', () => {
   });
 
   it('should reveal all bombs when state is LOST', () => {
-    let board = new Board();
+    let board = createBoard();
     // make sure we get the playable board
     board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
     const coord = getFirstBombFromBoard(board);

@@ -1,11 +1,13 @@
 import Board from './Board';
-import { coordinatesInBoard, getDirections } from './BoardHelper';
+import { coordinatesInBoard, getDirections, getGameSettings } from './BoardHelper';
 import BoardInput from './BoardInput';
 import BoardState from './BoardState';
 import CellType from './CellType';
+import type Level from './Level';
 
-export function createBoard(size: number, bombNumber: number): Board {
-  return new Board(size, bombNumber);
+export function createBoard(level?: Level, size?: number, bombsNumber?: number): Board {
+  const settings = getGameSettings(level, size, bombsNumber);
+  return new Board(settings.size, settings.bombsNumber, level);
 }
 
 export function getBoardAfterPlayerMove(inputMode: BoardInput, board: Board, row: number, col: number): Board {
@@ -24,7 +26,8 @@ function getPlayableBoard(board: Board, row: number, col: number): Board {
   if (board.state !== BoardState.INITIAL || !coordinatesInBoard(row, col, board.content) || isEmptyCell(board, row, col)) {
     return board;
   }
-  const newBoard = createBoard(board.size, board.bombsNumber).withFlagged(board.flagged);
+  const newBoard = createBoard(board.level, board.size, board.bombsNumber)
+    .withFlagged(board.flagged);
   return getPlayableBoard(newBoard, row, col);
 }
 
