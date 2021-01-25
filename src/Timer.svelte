@@ -6,7 +6,7 @@
   $: state = $board.state;
   $: timeText = formatTime(elapsed, state);
 
-  let interval: number;
+  let interval;
   let elapsed = 0;
   let startTime: Date;
 
@@ -25,11 +25,15 @@
     if (state === BoardState.PLAYING) {
       startTime = new Date();
       elapsed = 0;
+      // when switching states very fast, can face situations previous interval is not cleared
+      if (interval) {
+        clearInterval(interval);
+      }
       interval = setInterval(() => {
         elapsed = Math.round((new Date().valueOf() - startTime.valueOf()) / 1000)
       }, 1000);
     } else if (!isPlayingState(state)) {
-      clearInterval(interval);
+      interval = clearInterval(interval);
     }
   }
 
