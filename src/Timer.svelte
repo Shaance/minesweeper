@@ -25,7 +25,7 @@
     if (state === BoardState.PLAYING) {
       startTime = new Date();
       elapsed = 0;
-      // when switching states very fast, can face situations previous interval is not cleared
+      // when switching states very fast, can face situations where previous interval is not cleared
       if (interval) {
         clearInterval(interval);
       }
