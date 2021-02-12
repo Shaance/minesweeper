@@ -25,4 +25,4 @@ Rules can be found here <https://www.instructables.com/How-to-play-minesweeper/>
 
 ## Link
 
-<https://svelte-minesweeper.shaance.vercel.app>
+<https://minesweeper.hashcode.dev>
