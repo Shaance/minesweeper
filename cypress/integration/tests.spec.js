@@ -5,7 +5,7 @@ describe('Minesweeper app', () => {
   const defaultNumberOfCells = 64;
 
   beforeEach(() => {
-    cy.visit('http://localhost:5000')
+    cy.visit('https://minesweeper.hashcode.dev/')
   })
 
   it('displays the elements correctly', () => {

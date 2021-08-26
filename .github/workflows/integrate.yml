@@ -25,3 +25,5 @@ jobs:
         run: npm test
       - name: Build the app
         run: npm run build
+      - name: Run the integration tests
+        run: npm run cy:run
