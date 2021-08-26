@@ -6,7 +6,7 @@
 </script>
 
 <main>
-  <h1>MineSweeper</h1>
+  <h1 id="title" data-cy="title">MineSweeper</h1>
   <StateText />
   <MenuRow />
   <br /><br />

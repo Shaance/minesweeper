@@ -2,7 +2,7 @@
   import board from "./store";
 </script>
 
-<main>
+<main data-cy="remaining-flags" id="remaining-flags">
     ⛳️  {$board.availableFlags}
 </main>
 

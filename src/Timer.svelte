@@ -39,7 +39,7 @@
 
 </script>
 
-<main>
+<main id="timer" data-cy="timer">
     ⏳  {timeText}
 </main>
 
