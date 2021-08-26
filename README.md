@@ -16,8 +16,13 @@ If you have Docker simply run `docker-compose up` from the root of the repositor
 5. Run `npm start` and connect to `localhost:5000`
 
 ## How to launch tests
+- For the unit tests just run `npm run test`
+- For the front-end integration tests you need to have a server running locally and run `npm run cy:run` or you can also run against another url by changing the base url variable in `cypress.json` file before running `npm run cy:run`
 
-Simply run `npm run test`
+## CICD
+- [Vercel](https://vercel.com/) is used to deploy every new branch to a preview environment. 
+- A github action has been set to build, run unit and integration tests for every pull request.
+- Vercel will create an url based on the branch name, and the integration tests will target that URL. A drawback of using the url based on the branch name is that we **cannot use non url friendly characters or underscores in the branch name**.
 
 ## How to play?
 

@@ -1,8 +1,6 @@
 name: Node CI
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
 
@@ -25,3 +23,5 @@ jobs:
         run: npm test
       - name: Build the app
         run: npm run build
+      - name: Run the integration tests
+        run: npx cypress run --env BASE_URL=https://svelte-minesweeper-git-${GITHUB_HEAD_REF}-shaance.vercel.app/
