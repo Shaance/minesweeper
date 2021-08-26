@@ -6,6 +6,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
+    "cy:run": "cypress run",
     "start": "sirv public",
     "validate": "svelte-check",
     "lint": "eslint -c .eslintrc.js --ext .ts src/minesweeper/**"
@@ -28,6 +29,7 @@
     "@tsconfig/svelte": "^1.0.0",
     "@types/jasmine": "^3.6.2",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "cypress": "^8.3.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-plugin-import": "^2.20.2",

@@ -15,7 +15,7 @@
 </script>
 
 <main>
-  <button class="reset-btn" on:click={resetBoard}> {resetBtnText} </button>
+  <button id="reset-btn" data-cy="reset-btn" class="reset-btn" on:click={resetBoard}> {resetBtnText} </button>
 </main>
 
 <style>

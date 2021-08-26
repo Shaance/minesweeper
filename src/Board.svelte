@@ -104,6 +104,8 @@
 
 <main>
   <div
+    id="board"
+    data-cy="board"
     class="grid"
     style="width: {width}px; 
       grid-template-columns: {repeatValueWithSuffix(size, width / size, 'px')};

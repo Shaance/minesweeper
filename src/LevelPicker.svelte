@@ -23,7 +23,7 @@
 
 <main>
   <!-- svelte-ignore a11y-no-onchange -->
-  <select bind:value={selected} on:change={changeLevel}>
+  <select id="level-picker" data-cy="level-picker" bind:value={selected} on:change={changeLevel}>
     {#each levels as level}
       <option value={level}>
         {level.text}
