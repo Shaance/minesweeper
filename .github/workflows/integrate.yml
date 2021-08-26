@@ -26,4 +26,4 @@ jobs:
       - name: Run the integration tests
         run: npm run cy:run
         env:
-          BASE_URL: https://svelte-minesweeper-git-${GITHUB_REF##*/}-shaance.vercel.app/
+          CYPRESS_BASE_URL: https://svelte-minesweeper-git-${GITHUB_REF##*/}-shaance.vercel.app/
