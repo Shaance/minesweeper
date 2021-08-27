@@ -9,7 +9,7 @@
 
 <main>
   {#if !isPlayingState(state)}
-    <h2 id="endgame-text">{endGameText}</h2>
+    <h2 id="endgame-text" data-cy="endgame-text">{endGameText}</h2>
   {:else}
     <h2 id="instructions" data-cy="instructions">Avoid the 💣💥</h2>
   {/if}

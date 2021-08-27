@@ -1973,7 +1973,7 @@ var app = (function () {
     			attr_dev(h2, "id", "instructions");
     			attr_dev(h2, "data-cy", "instructions");
     			attr_dev(h2, "class", "svelte-bpnciz");
-    			add_location(h2, file$7, 11, 4, 368);
+    			add_location(h2, file$7, 11, 4, 391);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h2, anchor);
@@ -2005,6 +2005,7 @@ var app = (function () {
     			h2 = element("h2");
     			t = text(/*endGameText*/ ctx[1]);
     			attr_dev(h2, "id", "endgame-text");
+    			attr_dev(h2, "data-cy", "endgame-text");
     			attr_dev(h2, "class", "svelte-bpnciz");
     			add_location(h2, file$7, 9, 4, 313);
     		},
