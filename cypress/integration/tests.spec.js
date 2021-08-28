@@ -56,6 +56,7 @@ describe('Minesweeper app', () => {
       cy.get('[data-cy=reset-btn]').click()
       cy.get('[data-cy=timer]').should('have.text', '⏳  000')
     })
+    // TODO didn't do the lose thing
   })
 
   it('should disable a cell after click and will not allow flag', () => {

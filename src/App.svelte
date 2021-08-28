@@ -3,6 +3,7 @@
   import MenuRow from "./MenuRow.svelte";
   import Commands from "./Commands.svelte";
   import StateText from "./StateText.svelte";
+  import AboutFooter from "./AboutFooter.svelte";
 </script>
 
 <main>
@@ -12,6 +13,7 @@
   <br /><br />
   <Board />
   <Commands />
+  <AboutFooter />
 </main>
 
 <style>
