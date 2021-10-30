@@ -15,12 +15,13 @@ describe('Minesweeper app', () => {
 
   it('displays the elements correctly', () => {
     cy.get('[data-cy=title]').should('have.text', 'MineSweeper')
-    cy.get('[data-cy=instructions]').should('have.text', 'Avoid the 💣💥')
+    cy.get('[data-cy=state-text]').should('have.text', 'Avoid the 💣💥')
     cy.get('[data-cy=reset-btn]').should('have.text', 'Reset')
     cy.get('[data-cy=remaining-flags]').should('have.text', `⛳️  ${defaultNumberOfRemainingFlags}`)
     cy.get('[data-cy=timer]').should('have.text', '⏳  000')
     cy.get('[data-cy=board]').children().should('have.length', defaultNumberOfCells)
     cy.get('[data-cy=commands-txt]').should('have.text', 'Left click to reveal cell content or right click to flag / unflag')
+    cy.get('[data-cy=footer]').should('have.text', 'Check out the code on GitHub')
   })
 
   it('changes the number of cells and remaining flags when selecting another level', () => {
@@ -41,7 +42,7 @@ describe('Minesweeper app', () => {
     })
   })
 
-  it('should start timer on left click and stops when clicking on reset, loosing or changing levels', () => {
+  it('should start timer on left click and stops when clicking on reset or changing levels', () => {
     cy.get('[data-cy=board]').children().first().as('firstCell')
     cy.get('@firstCell').rightclick().then(() => {
       cy.get('[data-cy=timer]').should('have.text', '⏳  000')
@@ -78,6 +79,8 @@ describe('Minesweeper app', () => {
         cy.get('@currentCell').contains('⛳️')
       } else {
         cy.get('@currentCell').should('not.contain', '⛳️')
+        // early stop, we don't need to check this over and over, lower execution time
+        return false
       }
     })
   })
