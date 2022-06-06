@@ -24,4 +24,4 @@ jobs:
       - name: Build the app
         run: npm run build
       - name: Run the integration tests
-        run: npx cypress run --env BASE_URL=https://svelte-minesweeper-git-${GITHUB_HEAD_REF}-shaance.vercel.app/
+        run: npx cypress run --env BASE_URL=https://minesweeper-git-${GITHUB_HEAD_REF}-shaance.vercel.app/
