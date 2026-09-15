@@ -150,7 +150,7 @@
       <strong class:record>{best === null ? '---' : String(best).padStart(3, '0')}</strong>
     </div>
   </header>
-  <Hud flags={board.availableFlags} {seconds} state={board.state} {pressed} {reduced} onreset={() => restart()} />
+  <Hud flags={board.availableFlags} {seconds} boardState={board.state} {pressed} {reduced} onreset={() => restart()} />
   <LevelPicker {level} onchange={restart} />
   {#key game}
     <Board {board} {mode} {motion} {reduced} onmove={move} onpress={(value) => pressed = value} />

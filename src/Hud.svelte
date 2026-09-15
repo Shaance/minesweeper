@@ -1,12 +1,22 @@
 <script lang="ts">
   import BoardState from './minesweeper/BoardState';
   import { renderSprite } from './sprites';
-  let { flags, seconds, state, pressed, reduced, onreset }: {
-    flags: number; seconds: number; state: BoardState;
+  let { flags, seconds, boardState, pressed, reduced, onreset }: {
+    flags: number; seconds: number; boardState: BoardState;
     pressed: boolean; reduced: boolean; onreset: () => void;
   } = $props();
-  const face = $derived(state === BoardState.LOST ? 'dead' :
-    state === BoardState.WON ? 'cool' : pressed ? 'worried' : 'face');
+  let blink = $state(false);
+  const face = $derived(boardState === BoardState.LOST ? 'dead' :
+    boardState === BoardState.WON ? 'cool' : pressed ? 'worried' : blink ? 'blink' : 'face');
+
+  // Idle blink: closed eyes for one frame every few seconds while nothing else is going on.
+  $effect(() => {
+    const timer = setInterval(() => {
+      blink = true;
+      setTimeout(() => blink = false, 120);
+    }, 3800);
+    return () => clearInterval(timer);
+  });
   const digits = $derived(String(seconds).padStart(3, '0'));
 </script>
 
@@ -18,7 +28,7 @@
   <output class="led timer" aria-label={seconds + ' seconds'}>
     {#each [...digits] as digit}
       <span class="digit">
-        {#if state === BoardState.WON && !reduced}
+        {#if boardState === BoardState.WON && !reduced}
           <span class="digit-roll">
             {#each Array.from({ length: 11 }, (_, i) => Math.floor(Number(digit) * i / 10)) as value}
               <span>{value}</span>
@@ -46,6 +56,7 @@
     background: var(--mid);
   }
   .face:active { border-color: var(--lo) var(--hi) var(--hi) var(--lo); }
+  @media (hover: hover) { .face:hover { background: #7c4fe6; } }
   .face :global(svg) { display: block; width: 32px; height: 32px; }
   .digit { display: inline-block; width: 24px; height: 24px; overflow: hidden; line-height: 24px; }
   .digit-roll { display: block; animation: digits 360ms steps(10) both; }

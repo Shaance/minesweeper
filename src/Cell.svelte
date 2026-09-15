@@ -103,6 +103,7 @@
     border-color: var(--hi) var(--lo) var(--lo) var(--hi);
     background: var(--mid); touch-action: manipulation; -webkit-touch-callout: none;
   }
+  @media (hover: hover) { .cell:not(.open):hover { background: #7c4fe6; } }
   .cell.pressed { border-color: var(--lo) var(--hi) var(--hi) var(--lo); }
   .cell.open { border: 1px solid var(--grid); background: var(--open); animation: arrival var(--fast) steps(1); }
   .cell.detonated { background: var(--pink); }
@@ -111,7 +112,7 @@
   .number { color: var(--number); font-size: 16px; text-shadow: 0 0 6px currentColor; animation: number var(--fast) steps(2); }
   .sprite { width: 22px; height: 22px; display: block; }
   .sprite :global(svg) { display: block; width: 100%; height: 100%; }
-  .flag { color: var(--red); }
+  .flag { color: var(--red); animation: number var(--fast) steps(2); }
   .explosion, .mine-sprite { position: absolute; }
   .explosion { color: var(--yellow); animation: boom var(--fast) steps(1, end) forwards; }
   .mine-sprite { color: var(--white); animation: mine var(--fast) steps(1, end) both; }
@@ -126,7 +127,7 @@
   @keyframes boom { from { visibility: visible; } to { visibility: hidden; } }
   @keyframes mine { from { visibility: hidden; } to { visibility: visible; } }
   @media (prefers-reduced-motion: reduce) {
-    .cell.open, .number { animation: none; }
+    .cell.open, .number, .flag { animation: none; }
     .explosion { animation: boom var(--fast) steps(1, end) forwards; }
     .mine-sprite { animation: mine var(--fast) steps(1, end) both; }
   }

@@ -15,4 +15,6 @@
   .levels { display: flex; gap: 12px; margin-bottom: 28px; }
   button { flex: 1; font-size: 10px; min-height: 40px; }
   button.active { box-shadow: 4px 4px 0 var(--lo); }
+  button:active { transform: translate(2px, 2px); }
+  button.active:active { box-shadow: 2px 2px 0 var(--lo); }
 </style>
