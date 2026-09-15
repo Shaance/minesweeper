@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import type Board from '../minesweeper/Board';
 import BoardInput from '../minesweeper/BoardInput';
 import { createBoard, getBoardAfterPlayerMove } from '../minesweeper/BoardManager';
@@ -158,9 +159,8 @@ function getFirstBombFromBoard(board: Board): number[] | undefined {
 }
 
 function getCoordinates(board: Board, predicate: Function): number[][] {
-  const coordinates = [];
+  const coordinates: number[][] = [];
   board.content.forEach((row, i) => {
-    // eslint-disable-next-line consistent-return
     row.forEach((value, j) => {
       if (predicate(value)) {
         coordinates.push([i, j]);
@@ -169,3 +169,44 @@ function getCoordinates(board: Board, predicate: Function): number[][] {
   });
   return coordinates;
 }
+
+describe('chording', () => {
+  function chordBoard() {
+    const board = createBoard(Level.CUSTOM, 3, 1).withState(BoardState.PLAYING);
+    board.content = [[-1, 1, 0], [1, 1, 0], [0, 0, 0]];
+    board.visited[1][1] = true;
+    board.remainingNotVisited = 7;
+    return board;
+  }
+
+  it('reveals hidden unflagged neighbours when the adjacent flags match', () => {
+    const board = chordBoard();
+    getBoardAfterPlayerMove(BoardInput.FLAG, board, 0, 0);
+    const result = getBoardAfterPlayerMove(BoardInput.CHORD, board, 1, 1);
+    expect(result).toBe(board);
+    expect(board.visited).toEqual([[false, true, true], [true, true, true], [true, true, true]]);
+    expect(board.remainingNotVisited).toBe(0);
+    expect(board.state).toBe(BoardState.WON);
+  });
+
+  it('does nothing when flags differ or the target is not a revealed number', () => {
+    const board = chordBoard();
+    const before = board.visited.map((row) => [...row]);
+    for (const [r, c] of [[1, 1], [0, 1], [2, 2], [-1, 0]]) {
+      expect(getBoardAfterPlayerMove(BoardInput.CHORD, board, r, c)).toBe(board);
+      expect(board.visited).toEqual(before);
+      expect(board.remainingNotVisited).toBe(7);
+      expect(board.availableFlags).toBe(1);
+    }
+  });
+
+  it('loses when a matching flag is on the wrong cell', () => {
+    const board = chordBoard();
+    getBoardAfterPlayerMove(BoardInput.FLAG, board, 0, 1);
+    getBoardAfterPlayerMove(BoardInput.CHORD, board, 1, 1);
+    expect(board.state).toBe(BoardState.LOST);
+    expect(board.visited[0][0]).toBe(true);
+    expect(board.visited[0][1]).toBe(false);
+    expect(board.flagged[0][1]).toBe(true);
+  });
+});

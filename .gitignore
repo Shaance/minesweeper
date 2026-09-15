@@ -119,5 +119,6 @@ lib
 .webpack
 .build
 .metals
-cypress/videos
-cypress/screenshots
+
+# Claude Code tooling
+.claude/

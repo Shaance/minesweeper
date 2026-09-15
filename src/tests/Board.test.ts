@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import Board from '../minesweeper/Board';
 import {
   coordinatesInBoard, DEFAULT_BOMBS_NUMBER, DEFAULT_SIZE, getDirectionsWithDiagonals,
@@ -67,7 +68,7 @@ function expectAdjacentCellsToHaveRightValue(board: Board) {
 
   const directions = getDirectionsWithDiagonals();
   while (stack.length > 0) {
-    const [x, y] = stack.pop();
+    const [x, y] = stack.pop()!;
     let adjacentCellsSum = 0;
     directions.forEach((dir) => {
       const [xi, yi] = [x + dir[0], y + dir[1]];
@@ -80,7 +81,7 @@ function expectAdjacentCellsToHaveRightValue(board: Board) {
 }
 
 function getNonBombCellsCoordinates(board: Board) {
-  const cells = [];
+  const cells: number[][] = [];
   board.content.forEach((row, i) => {
     row.forEach((value, j) => {
       if (value !== CellType.BOMB) {

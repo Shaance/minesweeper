@@ -18,13 +18,13 @@ export default class Board {
 
   state: BoardState;
 
-  level: Level;
+  level: Level | undefined;
 
   remainingNotVisited: number;
 
   availableFlags: number;
 
-  constructor(size: number, bombsNumber: number, level: Level) {
+  constructor(size: number, bombsNumber: number, level?: Level) {
     const actualSize = size > 0
       ? size
       : DEFAULT_SIZE;

@@ -1,49 +1,26 @@
 {
   "name": "minesweeper",
-  "version": "2.1.1",
-  "description": "Minesweeper game written in Svelte",
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
-    "cy:run": "cypress run",
-    "start": "sirv public",
-    "validate": "svelte-check",
-    "lint": "eslint -c .eslintrc.js --ext .ts src/minesweeper/**"
+  "private": true,
+  "version": "3.0.0",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
   },
-  "keywords": [
-    "minesweeper",
-    "Svelte",
-    "TypeScript",
-    "JavaScript"
-  ],
-  "author": "Christophe Ha",
-  "license": "ISC",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
+  },
   "dependencies": {
-    "sirv-cli": "^1.0.0"
+    "svelte": "5.57.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^16.0.0",
-    "@rollup/plugin-node-resolve": "^10.0.0",
-    "@rollup/plugin-typescript": "^6.0.0",
-    "@tsconfig/svelte": "^1.0.0",
-    "@types/jasmine": "^3.6.2",
-    "@typescript-eslint/eslint-plugin": "^2.24.0",
-    "cypress": "^8.3.1",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-typescript": "^7.2.1",
-    "eslint-plugin-import": "^2.20.2",
-    "jasmine": "^3.5.0",
-    "rollup": "^2.3.4",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "svelte": "^3.0.0",
-    "svelte-check": "^1.0.0",
-    "svelte-preprocess": "^4.0.0",
-    "ts-node": "^8.8.1",
-    "tslib": "^2.0.0",
-    "typescript": "^3.9.3"
+    "@sveltejs/vite-plugin-svelte": "7.3.0",
+    "svelte-check": "4.7.6",
+    "typescript": "6.0.3",
+    "vite": "8.3.0",
+    "vitest": "5.0.0"
   }
 }

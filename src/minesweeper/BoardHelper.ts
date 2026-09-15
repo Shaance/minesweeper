@@ -10,7 +10,7 @@ function createMatrix(size: number, func: BiConsumer<any[], number>) {
   let i = 0;
   let j = 0;
 
-  const blankBoard = [];
+  const blankBoard: any[][] = [];
 
   while (i !== size) {
     blankBoard.push([]);
@@ -58,10 +58,10 @@ export function getGameSettings(level?: Level, size?: number, bombsNumber?: numb
   }
 
   if (level === Level.CUSTOM) {
-    const actualSize = size > 0 ? size : DEFAULT_SIZE;
+    const actualSize = size !== undefined && size > 0 ? size : DEFAULT_SIZE;
     return {
       size: actualSize,
-      bombsNumber: bombsNumber > 0 && bombsNumber < actualSize
+      bombsNumber: bombsNumber !== undefined && bombsNumber > 0 && bombsNumber < actualSize
         ? bombsNumber
         : DEFAULT_BOMBS_NUMBER,
     };

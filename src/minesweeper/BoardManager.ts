@@ -1,6 +1,6 @@
 import Board from './Board';
 import {
-  coordinatesInBoard, getDirections, getGameSettings, isPlayingState,
+  coordinatesInBoard, getDirections, getDirectionsWithDiagonals, getGameSettings, isPlayingState,
 } from './BoardHelper';
 import BoardInput from './BoardInput';
 import BoardState from './BoardState';
@@ -13,6 +13,17 @@ export function createBoard(level?: Level, size?: number, bombsNumber?: number):
 }
 
 export function getBoardAfterPlayerMove(inputMode: BoardInput, board: Board, row: number, col: number): Board {
+  if (inputMode === BoardInput.CHORD) {
+    if (!coordinatesInBoard(row, col, board.content) || !isPlayingState(board.state)
+      || !board.visited[row][col] || board.content[row][col] <= 0) return board;
+    const neighbours = getDirectionsWithDiagonals()
+      .map(([r, c]) => [row + r, col + c])
+      .filter(([r, c]) => coordinatesInBoard(r, c, board.content));
+    const flags = neighbours.filter(([r, c]) => board.flagged[r][c]).length;
+    if (flags !== board.content[row][col]) return board;
+    for (const [r, c] of neighbours) playCoordinates(board, r, c);
+    return board;
+  }
   if (inputMode === BoardInput.REVEAL) {
     return playCoordinates(getPlayableBoard(board, row, col), row, col);
   }
@@ -117,7 +128,7 @@ function expand(board: Board, row: number, col: number): Board {
   let visitedCells = 0;
 
   while (stack.length > 0) {
-    const [x, y] = stack.pop();
+    const [x, y] = stack.pop()!;
     if (canExpand(expandedBoard, x, y)) {
       visited[x][y] = true;
       visitedCells += 1;

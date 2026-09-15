@@ -1,3 +1,5 @@
-<footer data-cy="footer">
-  <p> Check out the code on <a href="https://github.com/Shaance/minesweeper">GitHub</a></p>
-</footer>
+<footer><a href="https://github.com/Shaance/minesweeper">Code on GitHub</a></footer>
+
+<style>
+  footer { margin-top: 36px; text-align: center; font-size: 9px; line-height: 2; }
+</style>

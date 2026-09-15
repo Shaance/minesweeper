@@ -1,45 +1,18 @@
 <script lang="ts">
-  import { createBoard } from "./minesweeper/BoardManager";
-  import Level from "./minesweeper/Level";
-  import board from "./store";
-
-  interface LevelOption {
-    id: Level;
-    text: string;
-  }
-
-  let levels = [
-    { id: Level.EASY, text: `Easy` },
-    { id: Level.MEDIUM, text: `Medium` },
-    { id: Level.HARD, text: `Hard` },
-  ];
-
-  let selected: LevelOption;
-
-  function changeLevel() {
-    board.set(createBoard(selected.id));
-  }
+  import Level from './minesweeper/Level';
+  let { level, onchange }: { level: Level; onchange: (level: Level) => void } = $props();
 </script>
 
-<main>
-  <!-- svelte-ignore a11y-no-onchange -->
-  <select id="level-picker" data-cy="level-picker" bind:value={selected} on:change={changeLevel}>
-    {#each levels as level}
-      <option value={level}>
-        {level.text}
-      </option>
-    {/each}
-  </select>
-</main>
+<div class="levels" role="group" aria-label="Difficulty">
+  {#each [Level.EASY, Level.MEDIUM, Level.HARD] as option}
+    <button class:active={level === option} aria-pressed={level === option} onclick={() => onchange(option)}>
+      {option}
+    </button>
+  {/each}
+</div>
 
 <style>
-  main {
-    display: inline-block;
-  }
-  select {
-    font-size: 1em;
-    font-weight: 100;
-    text-align-last: center;
-    margin-right: 20px;
-  }
+  .levels { display: flex; gap: 12px; margin-bottom: 28px; }
+  button { flex: 1; font-size: 10px; min-height: 40px; }
+  button.active { box-shadow: 4px 4px 0 var(--lo); }
 </style>

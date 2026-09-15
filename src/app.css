@@ -1,0 +1,78 @@
+:root {
+  --bg: #0b0a1e;
+  --panel: #161437;
+  --hi: #a78bfa;
+  --mid: #6d3fd6;
+  --lo: #2e1065;
+  --open: #101028;
+  --grid: #1f1d47;
+  --cyan: #22d3ee;
+  --lime: #a3e635;
+  --pink: #f43f5e;
+  --yellow: #facc15;
+  --orange: #fb923c;
+  --magenta: #e879f9;
+  --white: #f8f8ff;
+  --red: #ff2d55;
+  --fast: 120ms;
+  --ring: 25ms;
+  --shake: 60ms;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--hi);
+  background: var(--bg);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+main { width: calc(100% - 24px); max-width: 480px; margin: 48px auto; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+h1 {
+  color: var(--cyan); font-size: 34px; line-height: 1.45; margin: 0;
+  font-weight: 400; text-shadow: 4px 4px var(--magenta), 8px 8px var(--lo);
+}
+.high-score { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; font-size: 9px; color: var(--lime); }
+.high-score strong { color: var(--yellow); font-size: 18px; font-weight: 400; }
+.high-score .record { animation: record var(--fast) steps(1); }
+button {
+  font: inherit; background: var(--panel); color: var(--hi); border: 2px solid var(--mid);
+  cursor: pointer; border-radius: 0; touch-action: manipulation; user-select: none;
+  -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+button.active { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
+button:active { border-color: var(--hi); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+button[aria-disabled='true'] { cursor: default; }
+a { color: var(--hi); text-underline-offset: 4px; }
+::selection { background: var(--cyan); color: var(--bg); }
+.scanlines {
+  position: fixed; inset: 0; z-index: 10; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 4px);
+}
+.scanlines.roll { animation: scanline 300ms linear; }
+.insert-coin {
+  display: block; margin: 24px auto 0; padding: 12px 0; border: 0;
+  font-size: 10px; line-height: 2; background: none; color: var(--magenta);
+  animation: blink 1s steps(1) infinite;
+}
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes scanline { from { background-position: 0 0; } to { background-position: 0 4px; } }
+@keyframes record { from { color: var(--cyan); } to { color: var(--yellow); } }
+@media (max-width: 400px) {
+  main { width: calc(100% - 22px); margin-block: 28px; }
+  header { gap: 8px; }
+  .high-score { font-size: 8px; }
+  .high-score strong { font-size: 16px; }
+}
+@media (max-width: 359px) {
+  header { flex-wrap: wrap; }
+  .high-score { flex-direction: row; align-items: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --ring: 0ms; }
+  .scanlines.roll, .high-score .record { animation: none; }
+  .insert-coin { animation: blink 1s steps(1) infinite; }
+}
