@@ -1,6 +1,7 @@
 {
   "name": "minesweeper",
   "private": true,
+  "license": "MIT",
   "version": "3.0.0",
   "type": "module",
   "engines": {
