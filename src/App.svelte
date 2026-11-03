@@ -11,7 +11,7 @@
   import Board from './Board.svelte';
   import Controls from './Controls.svelte';
   import AboutFooter from './AboutFooter.svelte';
-  import { playSound } from './sound';
+  import { playSound, stopSound } from './sound';
 
   // Class instances are not deeply proxied by Svelte. Keep the existing methods
   // on a plain object so BoardManager writes go through the state proxy.
@@ -50,7 +50,15 @@
     const timer = window.setInterval(() => {
       if (startedAt !== undefined && !ended) seconds = elapsed();
     }, 200);
-    return () => { clearInterval(timer); query.removeEventListener('change', syncMotion); };
+    // Safari can leave a backgrounded context stuck; the next move creates a fresh one.
+    const releaseAudio = () => { if (document.hidden) stopSound(); };
+    document.addEventListener('visibilitychange', releaseAudio);
+    return () => {
+      clearInterval(timer);
+      query.removeEventListener('change', syncMotion);
+      document.removeEventListener('visibilitychange', releaseAudio);
+      stopSound();
+    };
   });
 
   function elapsed() {
@@ -136,7 +144,10 @@
     else sound = !sound;
     try { localStorage.setItem('minesweeper.' + setting, String(setting === 'crt' ? crt : sound)); }
     catch { /* The toggle still works for this session. */ }
-    if (setting === 'sound' && sound) playSound('flag');
+    if (setting === 'sound') {
+      if (sound) playSound('flag');
+      else stopSound();
+    }
   }
 </script>
 
