@@ -79,7 +79,7 @@ cool     ..####..  .######.  ssssssss  #ss##ss#  ########  ##m##m##  .#mmmm#.  .
 
 ## Interaction
 
-- Pointer: primary click reveals (or flags when the mode toggle is on FLAG). Right-click or a 400ms press flags. Clicking a revealed number chords. `contextmenu` is suppressed on the board. A long-press that flagged must not also reveal on release.
+- Pointer: primary click follows the mode toggle (reveals in REVEAL, flags in FLAG). Right-click always flags. A 400ms press does the opposite of the mode (flags in REVEAL, reveals in FLAG). Clicking a revealed number chords. `contextmenu` is suppressed on the board. A long-press must not also trigger the tap action on release.
 - Keyboard: the board is a grid with roving tabindex. Arrow keys move focus (wrapping is not required), Enter or Space reveals (chords on a number), F flags. Focus ring: 2px `--cyan` outline, offset -2px, visible only for `:focus-visible`.
 - Face button: normal face while idle or playing, worried while any tile is pressed, dead after loss, cool after win. Clicking it starts a new game.
 - Timer starts on the first reveal, stops on win or loss, resets on new game or level change, and pauses while the tab is hidden (background time never counts). Level change starts a new board immediately; the chosen level is remembered in localStorage key `minesweeper.level`.
