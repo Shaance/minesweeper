@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import type GameBoard from './minesweeper/Board';
   import BoardInput from './minesweeper/BoardInput';
   import BoardState from './minesweeper/BoardState';
@@ -21,6 +22,21 @@
     Math.max(Math.abs(r - (board.size >> 1)), Math.abs(c - (board.size >> 1))) * 25;
   const hopDelay = (r: number, c: number) =>
     Math.max(Math.abs(r - origin.r), Math.abs(c - origin.c)) * 40;
+  // Deal-in is timer-driven (same idiom as Cell's reveal delay) so the settled
+  // scale(1) is a plain base style — no reliance on animation fill modes, which
+  // WebKit mishandles during animation-delay.
+  let dealt = $state<Record<number, boolean>>({});
+  $effect(() => {
+    if (reduced) return;
+    return untrack(() => {
+      const timers: ReturnType<typeof setTimeout>[] = [];
+      for (let r = 0; r < board.size; r++) for (let c = 0; c < board.size; c++) {
+        const i = r * board.size + c;
+        if (!dealt[i]) timers.push(setTimeout(() => { dealt[i] = true; }, dealDelay(r, c)));
+      }
+      return () => timers.forEach(clearTimeout);
+    });
+  });
 
   $effect(() => {
     if (!motion.sequence || reduced || !grid) return;
@@ -55,8 +71,8 @@
       <div class="row" role="row">
         {#each row as value, c}
           {@const index = r * board.size + c}
-          <div role="gridcell" class:deal={!reduced} class:hop={won && !reduced}
-            style={'--d: ' + dealDelay(r, c) + 'ms; --h: ' + hopDelay(r, c) + 'ms'}>
+          <div role="gridcell" class:predeal={!reduced && !dealt[index]} class:dealt={!reduced && dealt[index]}
+            class:hop={won && !reduced} style={'--h: ' + hopDelay(r, c) + 'ms'}>
             <Cell {value} row={r} col={c} visited={board.visited[r][c]} flagged={board.flagged[r][c]}
               lost={board.state === BoardState.LOST} {ended} {mode} {reduced}
               delay={motion.delays[index] ?? 0} detonated={motion.detonated === index}
@@ -78,7 +94,8 @@
   }
   .row { display: grid; grid-template-columns: repeat(var(--size), minmax(0, 1fr)); }
   [role='gridcell'] { min-width: 0; aspect-ratio: 1; }
-  [role='gridcell'].deal { animation: deal var(--fast) steps(2, end) both; animation-delay: var(--d); }
+  [role='gridcell'].predeal { transform: scale(0.55); }
+  [role='gridcell'].dealt { transform: scale(1); animation: deal var(--fast) steps(2, end); }
   [role='gridcell'].hop { animation: hop 200ms steps(1, end) both; animation-delay: var(--h); }
   @keyframes deal { from { transform: scale(0.55); } to { transform: scale(1); } }
   @keyframes hop {
@@ -87,6 +104,6 @@
     100% { transform: translateY(0); }
   }
   @media (prefers-reduced-motion: reduce) {
-    [role='gridcell'].deal, [role='gridcell'].hop { animation: none; }
+    [role='gridcell'].dealt, [role='gridcell'].hop { animation: none; }
   }
 </style>

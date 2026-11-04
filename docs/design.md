@@ -92,7 +92,7 @@ cool     ..####..  .######.  ssssssss  #ss##ss#  ########  ##m##m##  .#mmmm#.  .
 Timing tokens on `:root`: `--fast: 120ms`, `--ring: 25ms`, `--shake: 60ms`. Easing `steps()` or linear only; no smooth easing curves anywhere, the piece is 8-bit.
 
 - Tile press: bevel inverts on pointerdown with no transition.
-- New game: the board deals in from the centre outward — each Chebyshev ring starts 25ms after the previous and pops from scale 0.55 to 1 over `--fast` (`steps(2)`).
+- New game: the board deals in from the centre outward — each Chebyshev ring starts 25ms after the previous and pops from scale 0.55 to 1 over `--fast` (`steps(2)`). Driven by per-ring timers (`dealt` class) so the settled scale(1) is a plain base style, never an animation fill — WebKit does not hold backwards fill during `animation-delay`, which left tiles stuck at the wrong size on iOS Safari.
 - Reveal: the hidden cover crumbles away in three steps (scale 1, 0.66, 0.33, 0) over 140ms (`steps(1)`); the number arrives at scale 1.8 and snaps to 1 over `--fast` (`steps(2)`).
 - Flood fill: cells revealed by one move are grouped by Chebyshev distance from the clicked cell; ring k crumbles after k times `--ring`, so the wave reads as motion travelling outward.
 - Flag: the flag sprite stabs in from 8px above with a 1px settle over 120ms (`steps(1)`) and kicks up a two-pixel dust puff at its base over 160ms (`steps(2)`).
