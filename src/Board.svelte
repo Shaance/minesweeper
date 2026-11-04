@@ -6,7 +6,8 @@
   import StageClear from './StageClear.svelte';
   let { board, mode, motion, reduced, onmove, onpress }: {
     board: GameBoard; mode: BoardInput;
-    motion: { sequence: number; delays: Record<number, number>; detonated: number };
+    motion: { sequence: number; delays: Record<number, number>; detonated: number;
+      origin: { r: number; c: number } | null };
     reduced: boolean;
     onmove: (row: number, col: number, input: BoardInput) => void;
     onpress: (pressed: boolean) => void;
@@ -14,17 +15,19 @@
   let grid: HTMLDivElement;
   let focus = $state(0);
   const ended = $derived(board.state === BoardState.WON || board.state === BoardState.LOST);
+  const won = $derived(board.state === BoardState.WON);
+  const origin = $derived(motion.origin ?? { r: board.size >> 1, c: board.size >> 1 });
+  const dealDelay = (r: number, c: number) =>
+    Math.max(Math.abs(r - (board.size >> 1)), Math.abs(c - (board.size >> 1))) * 25;
+  const hopDelay = (r: number, c: number) =>
+    Math.max(Math.abs(r - origin.r), Math.abs(c - origin.c)) * 40;
 
   $effect(() => {
     if (!motion.sequence || reduced || !grid) return;
-    const lost = board.state === BoardState.LOST;
+    if (board.state !== BoardState.LOST) return;
     const animation = grid.animate(
-      lost ? [
-        { transform: 'translateX(0)' }, { transform: 'translateX(6px)' },
-        { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' },
-        { transform: 'translateX(-6px)' }, { transform: 'translateX(0)' },
-      ] : [{ transform: 'translateY(1px)' }, { transform: 'translateY(0)' }],
-      { duration: lost ? 300 : 60, easing: lost ? 'steps(6)' : 'steps(1)' },
+      [0, 8, -8, 6, -4, 2, 0].map((x) => ({ transform: 'translateX(' + x + 'px)' })),
+      { duration: 360, easing: 'steps(1, end)' },
     );
     return () => animation.cancel();
   });
@@ -52,7 +55,8 @@
       <div class="row" role="row">
         {#each row as value, c}
           {@const index = r * board.size + c}
-          <div role="gridcell">
+          <div role="gridcell" class:deal={!reduced} class:hop={won && !reduced}
+            style={'--d: ' + dealDelay(r, c) + 'ms; --h: ' + hopDelay(r, c) + 'ms'}>
             <Cell {value} row={r} col={c} visited={board.visited[r][c]} flagged={board.flagged[r][c]}
               lost={board.state === BoardState.LOST} {ended} {mode} {reduced}
               delay={motion.delays[index] ?? 0} detonated={motion.detonated === index}
@@ -74,4 +78,15 @@
   }
   .row { display: grid; grid-template-columns: repeat(var(--size), minmax(0, 1fr)); }
   [role='gridcell'] { min-width: 0; aspect-ratio: 1; }
+  [role='gridcell'].deal { animation: deal var(--fast) steps(2, end) both; animation-delay: var(--d); }
+  [role='gridcell'].hop { animation: hop 200ms steps(1, end) both; animation-delay: var(--h); }
+  @keyframes deal { from { transform: scale(0.55); } to { transform: scale(1); } }
+  @keyframes hop {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [role='gridcell'].deal, [role='gridcell'].hop { animation: none; }
+  }
 </style>

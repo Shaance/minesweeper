@@ -91,13 +91,17 @@ cool     ..####..  .######.  ssssssss  #ss##ss#  ########  ##m##m##  .#mmmm#.  .
 
 Timing tokens on `:root`: `--fast: 120ms`, `--ring: 25ms`, `--shake: 60ms`. Easing `steps()` or linear only; no smooth easing curves anywhere, the piece is 8-bit.
 
-- Tile press: bevel inverts on pointerdown with no transition. On reveal the whole board translates 1px down for one `--shake` and back (`steps(1)`).
-- Flood fill: cells revealed by one move are grouped by Chebyshev distance from the clicked cell; ring k appears after k times `--ring`. Each cell flashes `--cyan` at 60% for `--fast` on arrival, then settles to `--open`. Numbers arrive at scale 1.4 and snap to 1 after `--fast` (`steps(2)`).
-- Loss: mines reveal in a chain ordered by distance from the clicked mine, 60ms apart. Each shows the boom sprite in `--yellow` for `--fast` then the mine sprite. The board shakes 6px horizontally for 300ms (`steps(6)`). The scanline overlay rolls once (background-position 0 to 4px over 300ms). Face goes dead at the first explosion.
-- Win: face goes cool, a "STAGE CLEAR" banner (cyan text on `--bg`, magenta border, Press Start 2P 16px) slides in from the top over the board with `steps(6)` over 240ms and stays. Around 40 confetti pixels (4px squares in the number colours) fall from the banner over 1.2s, `steps(12)`, then are removed. The LED timer rolls its digits (each digit counts up from 0 to its value over 360ms, `steps(10)`).
+- Tile press: bevel inverts on pointerdown with no transition.
+- New game: the board deals in from the centre outward — each Chebyshev ring starts 25ms after the previous and pops from scale 0.55 to 1 over `--fast` (`steps(2)`).
+- Reveal: the hidden cover crumbles away in three steps (scale 1, 0.66, 0.33, 0) over 140ms (`steps(1)`); the number arrives at scale 1.8 and snaps to 1 over `--fast` (`steps(2)`).
+- Flood fill: cells revealed by one move are grouped by Chebyshev distance from the clicked cell; ring k crumbles after k times `--ring`, so the wave reads as motion travelling outward.
+- Flag: the flag sprite stabs in from 8px above with a 1px settle over 120ms (`steps(1)`) and kicks up a two-pixel dust puff at its base over 160ms (`steps(2)`).
+- Loss: mines reveal in a chain ordered by distance from the clicked mine, 60ms apart; each mine pops from scale 1.6 to 1 (`--fast`, `steps(2)`). The clicked mine's cell flashes `--white` then `--pink` over 240ms (`steps(1)`) while the boom sprite in `--yellow` scales 0.4 → 1.4 → 2.2 over 300ms (`steps(1)`) and fades out. The board shakes horizontally with a settle — 0, 8, −8, 6, −4, 2, 0 px over 360ms (`steps(1)`). The scanline overlay rolls once (background-position 0 to 4px over 300ms). Face goes dead at the first explosion.
+- Win: face goes cool, a "STAGE CLEAR" banner (cyan text on `--bg`, magenta border, Press Start 2P 16px) slams in from above with a 2px overshoot over 280ms (`steps(1)`) and stays. Around 40 confetti pixels (4px squares in the number colours) fall from the banner over 1.4s (`steps(14)`), tumbling in 90° steps, every third pixel delayed up to 160ms, then are removed. Every tile hops 4px up and back over 200ms (`steps(1)`), rings staggered 40ms apart from the last move. The LED timer rolls its digits (each digit counts up from 0 to its value over 360ms, `steps(10)`).
 - Face: normal to worried is an instant sprite swap on pointerdown; back on pointerup or cancel.
 - INSERT COIN: 1s step blink.
-- Reduced motion (`prefers-reduced-motion: reduce`): no shake, no scanline roll, no confetti, no digit roll, no banner slide (it appears in place), ring delay 0 and the arrival flash becomes an instant colour swap with no animation. Sprite swaps and the blink remain.
+- Reduced motion (`prefers-reduced-motion: reduce`): no shake, no scanline roll, no confetti, no digit roll, no banner slide (it appears in place), no crumble/stab/puff/flash/boom scale, no deal-in and no hop — state changes are instant, ring delay 0. Sprite swaps (face, mine) and the blink remain.
+- `?lab` opens the motion lab (`src/lab/`): every moment above side by side, running the real components against proposed effects, with per-card play buttons and a reduced-motion toggle. Lab only; the game routes to it via the footer link and never otherwise.
 
 ## Non-goals
 

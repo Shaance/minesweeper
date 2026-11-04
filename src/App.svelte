@@ -34,7 +34,8 @@
   let best = $state<number | null>(null);
   let record = $state(false);
   let announcement = $state('New game');
-  let motion = $state({ sequence: 0, delays: {} as Record<number, number>, detonated: -1 });
+  let motion = $state({ sequence: 0, delays: {} as Record<number, number>, detonated: -1,
+    origin: null as { r: number; c: number } | null });
   const ended = $derived(!isPlayingState(board.state));
 
   onMount(() => {
@@ -80,7 +81,7 @@
     startedAt = undefined;
     pressed = false;
     record = false;
-    motion = { sequence: 0, delays: {}, detonated: -1 };
+    motion = { sequence: 0, delays: {}, detonated: -1, origin: null };
     game += 1;
     readBest();
     announcement = 'New game';
@@ -121,7 +122,8 @@
           ? mines.findIndex((mine) => mine.r === r && mine.c === c) * 60
           : distance(r, c) * 25;
       }));
-      motion = { sequence: motion.sequence + 1, delays, detonated: detonated ? origin.r * board.size + origin.c : -1 };
+      motion = { sequence: motion.sequence + 1, delays,
+        detonated: detonated ? origin.r * board.size + origin.c : -1, origin };
     }
     if (ended) {
       seconds = elapsed();
