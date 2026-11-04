@@ -45,6 +45,9 @@
   let crt = $state(true);
   let sound = $state(false);
   let reduced = $state(false);
+  // Wide viewports get the side-cabinet layout (board left, control rail
+  // right); narrow ones keep the single column.
+  let wide = $state(false);
   let best = $state<number | null>(null);
   let record = $state(false);
   let announcement = $state('New game');
@@ -62,6 +65,10 @@
     const syncMotion = () => { reduced = query.matches; };
     syncMotion();
     query.addEventListener('change', syncMotion);
+    const wideQuery = matchMedia('(min-width: 1024px)');
+    const syncWide = () => { wide = wideQuery.matches; };
+    syncWide();
+    wideQuery.addEventListener('change', syncWide);
     const timer = window.setInterval(() => {
       if (startedAt !== undefined && !ended) seconds = elapsed();
     }, 200);
@@ -80,6 +87,7 @@
     return () => {
       clearInterval(timer);
       query.removeEventListener('change', syncMotion);
+      wideQuery.removeEventListener('change', syncWide);
       document.removeEventListener('visibilitychange', onVisibility);
       stopSound();
     };
@@ -168,6 +176,18 @@
     else if (flags !== board.availableFlags) buzz(12);
   }
 
+  function setMode(value: BoardInput) {
+    mode = value;
+    announcement = value === BoardInput.FLAG ? 'Flag mode' : 'Reveal mode';
+  }
+
+  function onKeydown(event: KeyboardEvent) {
+    if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.key.toLowerCase() !== 'm') return;
+    event.preventDefault();
+    setMode(mode === BoardInput.REVEAL ? BoardInput.FLAG : BoardInput.REVEAL);
+  }
+
   function toggle(setting: 'crt' | 'sound') {
     if (setting === 'crt') crt = !crt;
     else sound = !sound;
@@ -181,24 +201,53 @@
 </script>
 
 <svelte:head><title>MINE SWEEPER</title></svelte:head>
+<svelte:window onkeydown={onKeydown} />
 {#if crt}<div class="scanlines" class:roll={board.state === BoardState.LOST} aria-hidden="true"></div>{/if}
-<main>
-  <header>
-    <h1>MINE<br />SWEEPER</h1>
-    <div class="high-score">
-      <span>HI-SCORE</span>
-      <strong class:record>{best === null ? '---' : String(best).padStart(3, '0')}</strong>
+{#if wide}
+  <main class="wide">
+    <div class="board-col">
+      {#key game}
+        <Board {board} {mode} {motion} {reduced} onmove={move} onpress={(value) => pressed = value} />
+      {/key}
     </div>
-  </header>
-  <Hud flags={board.availableFlags} {seconds} boardState={board.state} {pressed} {reduced} onreset={() => restart()} />
-  <LevelPicker {level} onchange={restart} />
-  {#key game}
-    <Board {board} {mode} {motion} {reduced} onmove={move} onpress={(value) => pressed = value} />
-  {/key}
-  <Controls {mode} {crt} {sound} onmode={(value) => mode = value} ontoggle={toggle} />
-  {#if ended}
-    <button class="insert-coin" onclick={() => restart()}>▶ INSERT COIN TO PLAY AGAIN</button>
-  {/if}
-  <AboutFooter />
-  <p class="visually-hidden" aria-live="polite">{announcement}</p>
-</main>
+    <aside class="rail">
+      <header>
+        <h1>MINE<br />SWEEPER</h1>
+        <div class="high-score">
+          <span>HI-SCORE</span>
+          <strong class:record>{best === null ? '---' : String(best).padStart(3, '0')}</strong>
+        </div>
+      </header>
+      <Hud flags={board.availableFlags} {seconds} boardState={board.state} {pressed} {reduced} onreset={() => restart()} />
+      <div class="deck">
+        <LevelPicker {level} onchange={restart} />
+        <Controls {mode} {crt} {sound} onmode={setMode} ontoggle={toggle} />
+      </div>
+      {#if ended}
+        <button class="insert-coin" onclick={() => restart()}>▶ INSERT COIN TO PLAY AGAIN</button>
+      {/if}
+      <AboutFooter />
+    </aside>
+  </main>
+{:else}
+  <main>
+    <header>
+      <h1>MINE<br />SWEEPER</h1>
+      <div class="high-score">
+        <span>HI-SCORE</span>
+        <strong class:record>{best === null ? '---' : String(best).padStart(3, '0')}</strong>
+      </div>
+    </header>
+    <Hud flags={board.availableFlags} {seconds} boardState={board.state} {pressed} {reduced} onreset={() => restart()} />
+    <LevelPicker {level} onchange={restart} />
+    {#key game}
+      <Board {board} {mode} {motion} {reduced} onmove={move} onpress={(value) => pressed = value} />
+    {/key}
+    <Controls {mode} {crt} {sound} onmode={setMode} ontoggle={toggle} />
+    {#if ended}
+      <button class="insert-coin" onclick={() => restart()}>▶ INSERT COIN TO PLAY AGAIN</button>
+    {/if}
+    <AboutFooter />
+  </main>
+{/if}
+<p class="visually-hidden" aria-live="polite">{announcement}</p>

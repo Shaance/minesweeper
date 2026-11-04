@@ -87,7 +87,10 @@
 </div>
 
 <style>
-  .board-wrap { position: relative; width: min(100%, calc(var(--size) * 44px + 16px)); margin-inline: auto; }
+  .board-wrap {
+    position: relative;
+    width: min(100%, calc(var(--size) * var(--cell, 44px) + 16px)); margin-inline: auto;
+  }
   .board {
     background: var(--lo); padding: 4px; border: 4px solid var(--hi);
     box-shadow: 0 0 0 4px var(--bg), 0 0 0 8px var(--magenta), 0 0 40px #e879f966;

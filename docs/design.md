@@ -30,6 +30,8 @@ The whole page carries the scanline overlay when CRT is on: a fixed, pointer-eve
 
 At 375px wide the 12 by 12 board must fit with cells of at least 28px, and every control stays reachable without horizontal scroll. The mode toggle is the primary flag affordance on touch, long-press is the second.
 
+Large displays (viewport >= 1024px wide) use the side-cabinet layout (variant A1 from the dev-only `?mocks` page, `src/mocks/`): board left, control rail right as a `--panel` slab exactly as tall as the board, the pair centred in the viewport. The rail distributes four groups — brand (title left, HI-SCORE pinned top-right), HUD, a deck of level picker + controls + hints (one hint per line), footer. Cells are 48px, growing to 56px at >= 1280px (`--cell` on the board wrap, default 44px in the column layout). The `?lab` and `?mocks` pages stay gated behind `import.meta.env.DEV` and are not shipped in production builds.
+
 ## Palette and type
 
 ```
@@ -80,7 +82,7 @@ cool     ..####..  .######.  ssssssss  #ss##ss#  ########  ##m##m##  .#mmmm#.  .
 ## Interaction
 
 - Pointer: primary click follows the mode toggle (reveals in REVEAL, flags in FLAG). Right-click always flags. A 400ms press does the opposite of the mode (flags in REVEAL, reveals in FLAG). Clicking a revealed number chords. `contextmenu` is suppressed on the board. A long-press must not also trigger the tap action on release.
-- Keyboard: the board is a grid with roving tabindex. Arrow keys move focus (wrapping is not required), Enter or Space reveals (chords on a number), F flags. Focus ring: 2px `--cyan` outline, offset -2px, visible only for `:focus-visible`.
+- Keyboard: the board is a grid with roving tabindex. Arrow keys move focus (wrapping is not required), Enter or Space reveals (chords on a number), F flags, M toggles the REVEAL/FLAG mode (same as the mode buttons, announced in the live region). Focus ring: 2px `--cyan` outline, offset -2px, visible only for `:focus-visible`.
 - Face button: normal face while idle or playing, worried while any tile is pressed, dead after loss, cool after win. Clicking it starts a new game.
 - Timer starts on the first reveal, stops on win or loss, resets on new game or level change, and pauses while the tab is hidden (background time never counts). Level change starts a new board immediately; the chosen level is remembered in localStorage key `minesweeper.level`.
 - Haptics: where the device supports it, a 12ms vibration on flag and a short pattern on game end (80ms loss, 40/60/40ms win). Purely additive; no setting.

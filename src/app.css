@@ -78,6 +78,37 @@ a { color: var(--hi); text-underline-offset: 4px; }
   header { flex-wrap: wrap; }
   .high-score { flex-direction: row; align-items: center; }
 }
+/* Wide viewports (>= 1024px): the A1 side cabinet. Board left, control rail
+   right as a panel exactly as tall as the board; the pair centres in the
+   viewport. Cells grow from 48px to 56px at >= 1280px. */
+@media (min-width: 1024px) {
+  main.wide {
+    --cell: 48px;
+    display: grid; grid-template-columns: auto 320px; gap: 48px;
+    justify-content: center; align-content: center;
+    width: calc(100% - 48px); max-width: 1200px; margin: 48px auto;
+    min-height: calc(100vh - 96px);
+  }
+  main.wide .board-col { align-self: center; }
+  main.wide .board-wrap { width: calc(var(--size) * var(--cell) + 16px); }
+  main.wide .rail {
+    display: flex; flex-direction: column; justify-content: space-between;
+    background: var(--panel); border: 2px solid var(--mid); padding: 28px;
+  }
+  main.wide .rail header { flex-wrap: nowrap; align-items: flex-start; }
+  main.wide .rail h1 { font-size: 24px; }
+  main.wide .rail .high-score { gap: 16px; }
+  main.wide .rail .high-score strong { font-size: 16px; }
+  main.wide .rail .hud { margin: 0; }
+  main.wide .rail .deck .levels { margin-bottom: 20px; }
+  main.wide .rail .deck .controls { margin-top: 20px; gap: 10px; }
+  main.wide .rail .deck .hints { margin: 16px 0 0; line-height: 2.2; }
+  main.wide .rail .deck .pointer-hints { flex-direction: column; gap: 6px; }
+  main.wide .rail footer { margin: 0; text-align: left; }
+}
+@media (min-width: 1280px) {
+  main.wide { --cell: 56px; }
+}
 @media (prefers-reduced-motion: reduce) {
   :root { --ring: 0ms; }
   .scanlines.roll, .high-score .record, h1 { animation: none; }
