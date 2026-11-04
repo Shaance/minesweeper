@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mocks — landscape layout &amp; keyboard mode switch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0a1e; --panel: #161437; --hi: #a78bfa; --mid: #6d3fd6; --lo: #2e1065;
+    --open: #101028; --grid: #1f1d47; --cyan: #22d3ee; --lime: #a3e635; --pink: #f43f5e;
+    --yellow: #facc15; --orange: #fb923c; --magenta: #e879f9; --white: #f8f8ff; --red: #ff2d55;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 24px 64px; background: #050412; color: var(--hi);
+    font-family: 'Press Start 2P', monospace; font-size: 10px; line-height: 1.8;
+  }
+  h1 { color: var(--cyan); font-size: 16px; text-shadow: 3px 3px var(--magenta); margin: 0 0 8px; }
+  h2 { color: var(--magenta); font-size: 12px; margin: 40px 0 6px; }
+  p.note { max-width: 720px; margin: 6px 0 20px; }
+  .tag { display: inline-block; padding: 4px 8px; font-size: 8px; margin-right: 8px; }
+  .tag.before { background: var(--pink); color: var(--bg); }
+  .tag.after { background: var(--lime); color: var(--bg); }
+  .frames { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .frame-label { font-size: 9px; color: var(--yellow); margin-bottom: 8px; }
+  /* Fake viewport frames: fixed size, arcade cabinet inside. */
+  .frame { background: var(--bg); border: 2px solid var(--mid); overflow: hidden; position: relative; }
+  .scanlines {
+    position: absolute; inset: 0; z-index: 10; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 4px);
+  }
+  /* ---------- shared game UI (mirrors src/app.css + components) ---------- */
+  .cabinet { color: var(--hi); background: var(--bg); font-family: 'Press Start 2P', monospace; }
+  .cab-col { width: calc(100% - 24px); max-width: 480px; margin: 28px auto; }
+  .cab-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .cab-title { color: var(--cyan); font-size: 34px; line-height: 1.45; margin: 0; font-weight: 400;
+    text-shadow: 4px 4px var(--magenta), 8px 8px var(--lo); }
+  .hiscore { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; font-size: 9px; color: var(--lime); }
+  .hiscore strong { color: var(--yellow); font-size: 18px; font-weight: 400; }
+  .hud { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 18px; }
+  .led { display: flex; align-items: center; justify-content: center; background: #000; border: 2px solid var(--lo);
+    color: var(--red); text-shadow: 0 0 8px var(--red); font-size: 22px; letter-spacing: 2px;
+    padding: 10px 8px; min-width: 92px; height: 50px; }
+  .face { width: 54px; height: 54px; padding: 8px; color: var(--yellow); background: var(--mid);
+    border: 4px solid; border-color: var(--hi) var(--lo) var(--lo) var(--hi); }
+  .face svg { display: block; width: 32px; height: 32px; }
+  .levels { display: flex; gap: 10px; margin-bottom: 24px; }
+  .btn { font: inherit; font-size: 10px; background: var(--panel); color: var(--hi);
+    border: 2px solid var(--mid); padding: 10px 8px; min-height: 40px; flex: 1; text-align: center; }
+  .btn.active { background: var(--cyan); color: var(--bg); border-color: var(--cyan); box-shadow: 4px 4px 0 var(--lo); }
+  .controls { display: flex; gap: 8px; margin-top: 24px; }
+  .controls .btn { font-size: 9px; min-height: 44px; padding: 8px; }
+  .mode { display: flex; flex: 2; }
+  .mode .btn + .btn { border-left: 0; }
+  .hints { text-align: center; font-size: 9px; line-height: 2; margin: 14px 0 0; color: var(--hi); }
+  .hints .key { color: var(--cyan); }
+  .board-wrap { width: min(100%, calc(var(--n) * 44px + 16px)); margin-inline: auto; }
+  .board { background: var(--lo); padding: 4px; border: 4px solid var(--hi);
+    box-shadow: 0 0 0 4px var(--bg), 0 0 0 8px var(--magenta), 0 0 40px #e879f966; }
+  .brow { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); }
+  .cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: calc(var(--cell) * 0.42); }
+  .cell.hidden { background: var(--mid); border: 4px solid; border-color: var(--hi) var(--lo) var(--lo) var(--hi); }
+  .cell.open { background: var(--open); border: 1px solid var(--grid); text-shadow: 0 0 6px currentColor; }
+  .cell.flagged { background: var(--mid); border: 4px solid; border-color: var(--hi) var(--lo) var(--lo) var(--hi); }
+  .cell.flagged svg { width: 55%; height: 55%; color: var(--red); }
+  .n1 { color: var(--cyan); } .n2 { color: var(--lime); } .n3 { color: var(--pink); }
+  .n4 { color: var(--yellow); } .n5 { color: var(--orange); } .n6 { color: var(--magenta); }
+  .n7 { color: var(--white); } .n8 { color: var(--hi); }
+  .footer { text-align: center; font-size: 9px; margin-top: 24px; }
+  /* ---------- AFTER: landscape two-column ---------- */
+  .cab-land { width: calc(100% - 48px); margin: 24px auto; display: grid;
+    grid-template-columns: minmax(0, auto) 300px; gap: 32px; align-items: start; justify-content: center; }
+  .cab-land .rail { display: flex; flex-direction: column; }
+  .cab-land .cab-title { font-size: 26px; }
+  .cab-land .hud { margin: 20px 0 14px; }
+  .cab-land .led { font-size: 18px; min-width: 78px; height: 44px; }
+  .cab-land .face { width: 48px; height: 48px; }
+  .cab-land .levels { margin-bottom: 18px; }
+  .cab-land .controls { margin-top: 18px; }
+  .kb-hint { margin-top: 10px; font-size: 8px; color: var(--lime); text-align: center; }
+  .kb-hint .key { color: var(--cyan); }
+  ul.diff { max-width: 720px; padding-left: 18px; }
+  ul.diff li { margin-bottom: 6px; }
+  code { color: var(--yellow); }
+</style>
+</head>
+<body>
+
+<h1>MOCKS — large / landscape displays + keyboard mode switch</h1>
+<p class="note">Open this file in a browser. Every frame below is a fixed-size fake viewport, so you can
+check each placement directly — no need to resize. Palette, type, tiles, LED counters and sprites are
+copied from <code>src/app.css</code>, <code>docs/design.md</code> and <code>src/sprites.ts</code>.</p>
+
+<h2><span class="tag before">BEFORE</span> Current layout — one centred column, max 480px</h2>
+<p class="note">Today <code>main</code> is a single column (<code>max-width: 480px</code>). On a wide/landscape
+screen the board stays small and everything stacks vertically with dead space on both sides.</p>
+<div class="frames">
+  <div>
+    <div class="frame-label">DESKTOP 1280×800 — column stuck at 480px, centred</div>
+    <div class="frame" style="width: 640px; height: 460px;">
+      <div class="cabinet"><div class="cab-col" data-cabinet></div></div>
+      <div class="scanlines"></div>
+    </div>
+  </div>
+  <div>
+    <div class="frame-label">PHONE 375×667 — unchanged</div>
+    <div class="frame" style="width: 375px; height: 460px;">
+      <div class="cabinet"><div class="cab-col" data-cabinet></div></div>
+      <div class="scanlines"></div>
+    </div>
+  </div>
+</div>
+
+<h2><span class="tag after">AFTER</span> Landscape ≥ 720px — board left, control rail right</h2>
+<p class="note">Proposed: <code>@media (min-width: 720px)</code> switches <code>main</code> to a two-column
+grid — board on the left (cells grow with the viewport height, capped at 56px), and a 300px rail on the
+right holding title + HI-SCORE, HUD, level picker, controls and hints in reading order. Phone layout is untouched.</p>
+<div class="frames">
+  <div>
+    <div class="frame-label">LANDSCAPE 960×540 — two-column arcade cabinet</div>
+    <div class="frame" style="width: 960px; height: 540px;">
+      <div class="cabinet">
+        <div class="cab-land">
+          <div data-board-land></div>
+          <div class="rail">
+            <div class="cab-head">
+              <h1 class="cab-title">MINE<br />SWEEPER</h1>
+              <div class="hiscore"><span>HI-SCORE</span><strong>042</strong></div>
+            </div>
+            <div class="hud">
+              <output class="led">014</output>
+              <div class="face" data-face></div>
+              <output class="led">087</output>
+            </div>
+            <div class="levels">
+              <div class="btn active">EASY</div><div class="btn">MEDIUM</div><div class="btn">HARD</div>
+            </div>
+            <div class="controls">
+              <div class="mode"><div class="btn active">REVEAL</div><div class="btn">FLAG</div></div>
+              <div class="btn">CRT</div><div class="btn">SOUND</div>
+            </div>
+            <p class="hints"><span>CLICK · REVEAL / FLAG (MODE)</span><br /><span>RIGHT-CLICK / HOLD · THE OTHER</span></p>
+            <p class="kb-hint"><span class="key">ARROWS</span> MOVE · <span class="key">ENTER/SPACE</span> REVEAL · <span class="key">F</span> FLAG · <span class="key">M</span> SWITCH MODE</p>
+          </div>
+        </div>
+      </div>
+      <div class="scanlines"></div>
+    </div>
+  </div>
+  <div>
+    <div class="frame-label">TABLET LANDSCAPE 768×1024 → 820×560</div>
+    <div class="frame" style="width: 820px; height: 480px;">
+      <div class="cabinet">
+        <div class="cab-land" style="grid-template-columns: minmax(0, auto) 260px; gap: 24px;">
+          <div data-board-land-sm></div>
+          <div class="rail">
+            <div class="cab-head">
+              <h1 class="cab-title" style="font-size: 22px;">MINE<br />SWEEPER</h1>
+              <div class="hiscore"><span>HI-SCORE</span><strong>042</strong></div>
+            </div>
+            <div class="hud">
+              <output class="led">014</output>
+              <div class="face" data-face></div>
+              <output class="led">087</output>
+            </div>
+            <div class="levels">
+              <div class="btn active">EASY</div><div class="btn">MEDIUM</div><div class="btn">HARD</div>
+            </div>
+            <div class="controls">
+              <div class="mode"><div class="btn">REVEAL</div><div class="btn active">FLAG</div></div>
+              <div class="btn">CRT</div><div class="btn">SOUND</div>
+            </div>
+            <p class="hints"><span>CLICK · REVEAL / FLAG (MODE)</span><br /><span>RIGHT-CLICK / HOLD · THE OTHER</span></p>
+            <p class="kb-hint"><span class="key">ARROWS</span> MOVE · <span class="key">ENTER/SPACE</span> REVEAL · <span class="key">F</span> FLAG · <span class="key">M</span> SWITCH MODE</p>
+          </div>
+        </div>
+      </div>
+      <div class="scanlines"></div>
+    </div>
+  </div>
+</div>
+
+<h2><span class="tag after">AFTER</span> Keyboard: switch REVEAL / FLAG mode with <span style="color: var(--cyan)">M</span></h2>
+<p class="note">Today keyboard play uses <code>Enter/Space</code> to reveal and <code>F</code> to flag, but there is no
+key that flips the pointer mode itself. Proposed: <code>M</code> toggles REVEAL ↔ FLAG (same state as the
+segmented buttons, so the active segment visibly follows the keyboard), and the hints line gains the binding.</p>
+<div class="frames">
+  <div>
+    <div class="frame-label">BEFORE — keyboard hints</div>
+    <div class="frame" style="width: 480px; padding: 20px;">
+      <div class="cabinet">
+        <p class="hints" style="margin: 0;"><span class="key">ARROWS</span> MOVE · <span class="key">ENTER/SPACE</span> REVEAL · <span class="key">F</span> FLAG</p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="frame-label">AFTER — keyboard hints + mode flipped to FLAG via M</div>
+    <div class="frame" style="width: 480px; padding: 20px;">
+      <div class="cabinet">
+        <p class="hints" style="margin: 0 0 14px;"><span class="key">ARROWS</span> MOVE · <span class="key">ENTER/SPACE</span> REVEAL · <span class="key">F</span> FLAG · <span class="key">M</span> SWITCH MODE</p>
+        <div class="controls" style="margin-top: 0;">
+          <div class="mode"><div class="btn">REVEAL</div><div class="btn active">FLAG</div></div>
+          <div class="btn">CRT</div><div class="btn">SOUND</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>What changes (checklist)</h2>
+<ul class="diff">
+  <li><code>main</code>: <code>max-width: 480px</code> column → at <code>min-width: 720px</code> a grid of
+    <code>auto 300px</code> (board | rail); below 720px nothing changes.</li>
+  <li>Placement: title + HI-SCORE, HUD (LEDs + face), level row, controls and hints move into the right rail,
+    stacked in the same top-to-bottom order; the board takes the left and sizes from available height
+    (cell = <code>min(56px, (viewport height − chrome) / n)</code>).</li>
+  <li>Board: cell cap raised from 44px to 56px only in landscape; bevels, glow ring and scanlines unchanged.</li>
+  <li>Keyboard: new <code>M</code> binding toggling the shared REVEAL/FLAG mode state (segmented control reflects it);
+    hints line and <code>#keyboard-help</code> text updated.</li>
+  <li>Not changing: palette, sprites, motion, phone layout, game logic.</li>
+</ul>
+
+<script>
+  const FLAG_MAP = ['...##...', '...####.', '...#####', '...####.', '...##...', '...#....', '.####...', '######..'];
+  const FACE_MAP = ['..####..', '.######.', '##e##e##', '########', '##m##m##', '###mm###', '.######.', '..####..'];
+  function sprite(map, color, feature) {
+    const rects = [];
+    map.forEach((row, y) => [...row].forEach((ch, x) => {
+      if (ch === '#') rects.push(`<rect x="${x}" y="${y}" width="1" height="1" fill="${color}"/>`);
+      else if (ch !== '.' && ch !== 'o') rects.push(`<rect x="${x}" y="${y}" width="1" height="1" fill="${feature}"/>`);
+    }));
+    return `<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true">${rects.join('')}</svg>`;
+  }
+  const flagSvg = sprite(FLAG_MAP, 'var(--red)');
+  const faceSvg = sprite(FACE_MAP, 'currentColor', 'var(--bg)');
+  document.querySelectorAll('[data-face]').forEach((el) => el.innerHTML = faceSvg);
+
+  // Deterministic demo board: 12x12 (EASY), mines at fixed spots, centre revealed, two flags.
+  const N = 12;
+  const mines = new Set(['1,10', '3,1', '5,9', '8,3', '9,11', '10,6', '11,0', '0,7']);
+  const revealed = new Set();
+  for (let r = 3; r <= 8; r++) for (let c = 3; c <= 8; c++) if (!mines.has(r + ',' + c)) revealed.add(r + ',' + c);
+  const flagged = new Set(['1,10', '10,6']);
+  function count(r, c) {
+    let n = 0;
+    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++)
+      if (mines.has((r + dr) + ',' + (c + dc))) n++;
+    return n;
+  }
+  function boardHtml(cellPx) {
+    let rows = '';
+    for (let r = 0; r < N; r++) {
+      let cells = '';
+      for (let c = 0; c < N; c++) {
+        const key = r + ',' + c;
+        if (flagged.has(key)) cells += `<div class="cell flagged">${flagSvg}</div>`;
+        else if (revealed.has(key)) {
+          const n = count(r, c);
+          cells += `<div class="cell open ${n ? 'n' + n : ''}" style="--cell:${cellPx}px">${n || ''}</div>`;
+        } else cells += `<div class="cell hidden" style="--cell:${cellPx}px"></div>`;
+      }
+      rows += `<div class="brow" style="--n:${N}">${cells}</div>`;
+    }
+    return `<div class="board-wrap" style="--n:${N}"><div class="board">${rows}</div></div>`;
+  }
+  function cabinetHtml() {
+    return `
+      <div class="cab-head">
+        <h1 class="cab-title">MINE<br />SWEEPER</h1>
+        <div class="hiscore"><span>HI-SCORE</span><strong>042</strong></div>
+      </div>
+      <div class="hud">
+        <output class="led">014</output>
+        <div class="face" data-face></div>
+        <output class="led">087</output>
+      </div>
+      <div class="levels">
+        <div class="btn active">EASY</div><div class="btn">MEDIUM</div><div class="btn">HARD</div>
+      </div>
+      ${boardHtml(30)}
+      <div class="controls">
+        <div class="mode"><div class="btn active">REVEAL</div><div class="btn">FLAG</div></div>
+        <div class="btn">CRT</div><div class="btn">SOUND</div>
+      </div>
+      <p class="hints"><span>CLICK · REVEAL / FLAG (MODE)</span><br /><span>RIGHT-CLICK / HOLD · THE OTHER</span></p>
+      <p class="hints"><span class="key">ARROWS</span> MOVE · <span class="key">ENTER/SPACE</span> REVEAL · <span class="key">F</span> FLAG</p>
+      <p class="footer">CODE ON GITHUB</p>`;
+  }
+  document.querySelectorAll('[data-cabinet]').forEach((el) => {
+    el.innerHTML = cabinetHtml();
+    el.querySelectorAll('[data-face]').forEach((f) => f.innerHTML = faceSvg);
+  });
+  document.querySelector('[data-board-land]').innerHTML = boardHtml(38);
+  document.querySelector('[data-board-land-sm]').innerHTML = boardHtml(34);
+</script>
+</body>
+</html>
