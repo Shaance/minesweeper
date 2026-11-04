@@ -3,13 +3,14 @@
   import Cell from '../Cell.svelte';
   import StageClear from '../StageClear.svelte';
   import BoardInput from '../minesweeper/BoardInput';
-  import { layout, cheb, ring, type Scenario } from './scenarios';
+  import { layout, cheb, ring, initialState, chordTargets, type Scenario } from './scenarios';
 
   let { scenario, reduced, tick, cell }: {
     scenario: Scenario; reduced: boolean; tick: number; cell: number;
   } = $props();
 
   const lay = $derived(layout(scenario));
+  const base = $derived(initialState(scenario));
   let visited = $state<boolean[][]>([]);
   let flagged = $state<boolean[][]>([]);
   let delays = $state<Record<number, number>>({});
@@ -18,10 +19,14 @@
   let detonated = $state(-1);
   let grid: HTMLDivElement | undefined = $state();
 
-  const empty = (n: number) => Array.from({ length: n }, () => Array<boolean>(n).fill(false));
-
   $effect(() => {
-    if (!tick) return;
+    if (!tick) {
+      untrack(() => {
+        visited = base.visited.map((row) => [...row]);
+        flagged = base.flagged.map((row) => [...row]);
+      });
+      return;
+    }
     untrack(() => run());
   });
 
@@ -37,13 +42,20 @@
 
   function run() {
     const n = lay.n;
-    visited = empty(n);
-    flagged = empty(n);
+    visited = base.visited.map((row) => [...row]);
+    flagged = base.flagged.map((row) => [...row]);
     delays = {};
     lost = false;
     won = false;
     detonated = -1;
     const o = { r: n >> 1, c: n >> 1 };
+    if (scenario === 'chord') {
+      for (const i of chordTargets(n, o.r, o.c, flagged)) {
+        visited[Math.floor(i / n)][i % n] = true;
+        delays[i] = cheb(Math.floor(i / n), i % n, o.r, o.c) * 25;
+      }
+      return;
+    }
     if (scenario === 'reveal') {
       visited[o.r][o.c] = true;
       shake(false);

@@ -85,6 +85,11 @@ function playCoordinates(board: Board, row: number, col: number): Board {
   const expandedBoard = expand(board, row, col);
   if (expandedBoard.remainingNotVisited === 0) {
     expandedBoard.state = BoardState.WON;
+    // Classic behaviour: a won board shows every mine flagged.
+    expandedBoard.content.forEach((row, r) => row.forEach((value, c) => {
+      if (value === CellType.BOMB) expandedBoard.flagged[r][c] = true;
+    }));
+    expandedBoard.availableFlags = 0;
   }
 
   if (expandedBoard.state === BoardState.INITIAL) {

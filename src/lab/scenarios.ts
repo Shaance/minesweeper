@@ -1,4 +1,4 @@
-export type Scenario = 'reveal' | 'cascade' | 'flag' | 'boom' | 'win' | 'deal';
+export type Scenario = 'reveal' | 'cascade' | 'flag' | 'boom' | 'win' | 'deal' | 'chord';
 
 export interface Layout {
   n: number;
@@ -29,7 +29,40 @@ export function layout(scenario: Scenario): Layout {
       return { n: 5, values: grid(5, (r, c) => ((r * 5 + c) % 4) + 1) };
     case 'deal':
       return { n: 9, values: grid(9, (r, c) => ((r + c) % 5 === 0 ? 0 : ((r * 3 + c) % 3) + 1)) };
+    case 'chord':
+      return { n: 5, values: grid(5, (r, c) => (r === 2 && c === 2 ? 2 : 1)) };
   }
+}
+
+export interface InitialState {
+  visited: boolean[][];
+  flagged: boolean[][];
+}
+
+// Mid-game starting position per scenario (all hidden unless noted).
+export function initialState(scenario: Scenario): InitialState {
+  const { n } = layout(scenario);
+  const visited = Array.from({ length: n }, () => Array<boolean>(n).fill(false));
+  const flagged = Array.from({ length: n }, () => Array<boolean>(n).fill(false));
+  if (scenario === 'chord') {
+    for (let c = 0; c < n; c++) visited[0][c] = true;
+    visited[2][2] = true;
+    flagged[1][1] = true;
+    flagged[3][3] = true;
+  }
+  return { visited, flagged };
+}
+
+// Hidden, unflagged Chebyshev neighbours of a cell — the chord targets.
+export function chordTargets(n: number, r0: number, c0: number, flagged: boolean[][]): number[] {
+  const targets: number[] = [];
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    if (!dr && !dc) continue;
+    const r = r0 + dr, c = c0 + dc;
+    if (r < 0 || c < 0 || r >= n || c >= n || flagged[r][c]) continue;
+    targets.push(r * n + c);
+  }
+  return targets;
 }
 
 export function cheb(r: number, c: number, r0: number, c0: number): number {

@@ -11,6 +11,7 @@
   } = $props();
   let shown = $state(false);
   let pressed = $state(false);
+  let holding = $state(false);
   let suppressClick = false;
   let hold: ReturnType<typeof setTimeout> | undefined;
   const wrong = $derived(lost && flagged && value !== -1);
@@ -29,6 +30,7 @@
   function cancelPress() {
     clearTimeout(hold);
     pressed = false;
+    holding = false;
     onpress(false);
   }
 
@@ -36,9 +38,11 @@
     if (ended || event.button !== 0) return;
     suppressClick = false;
     pressed = true;
+    holding = !shown;
     onpress(true);
     hold = setTimeout(() => {
       suppressClick = true;
+      holding = false;
       onmove(BoardInput.FLAG);
     }, 400);
   }
@@ -83,6 +87,7 @@
     cancelPress();
   }}
   onkeydown={keydown} onkeyup={keyup} onblur={cancelPress}>
+  {#if holding}<span class="holdbar" aria-hidden="true"></span>{/if}
   {#if shown && !reduced}<span class="cover" aria-hidden="true"></span>{/if}
   {#if shown}
     {#if value === -1}
@@ -123,6 +128,12 @@
     border-color: var(--hi) var(--lo) var(--lo) var(--hi);
     animation: crumble 140ms steps(1, end) forwards;
   }
+  .holdbar {
+    position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+    background: var(--cyan); transform-origin: left center; pointer-events: none;
+    animation: holdfill 400ms steps(8, end) forwards;
+  }
+  @keyframes holdfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   .puff { position: absolute; inset: 0; pointer-events: none; }
   .puff i {
     position: absolute; bottom: 2px; width: 3px; height: 3px; background: var(--hi);
