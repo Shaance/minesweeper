@@ -21,11 +21,25 @@
     });
   }
 
-  let level = $state(Level.EASY);
-  let board = $state(reactiveBoard(createBoard(Level.EASY)));
+  function readLevel(): Level {
+    try {
+      const saved = localStorage.getItem('minesweeper.level');
+      if (saved === Level.EASY || saved === Level.MEDIUM || saved === Level.HARD) return saved;
+    } catch { /* Storage can be unavailable in private browsing. */ }
+    return Level.EASY;
+  }
+
+  const initialLevel = readLevel();
+  let level = $state(initialLevel);
+  let board = $state(reactiveBoard(createBoard(initialLevel)));
   let mode = $state(BoardInput.REVEAL);
   let seconds = $state(0);
   let startedAt: number | undefined;
+  let hiddenAt: number | undefined;
+
+  function buzz(pattern: number | number[]) {
+    try { navigator.vibrate?.(pattern); } catch { /* Vibration unsupported. */ }
+  }
   let game = $state(0);
   let pressed = $state(false);
   let crt = $state(true);
@@ -52,12 +66,21 @@
       if (startedAt !== undefined && !ended) seconds = elapsed();
     }, 200);
     // Safari can leave a backgrounded context stuck; the next move creates a fresh one.
-    const releaseAudio = () => { if (document.hidden) stopSound(); };
-    document.addEventListener('visibilitychange', releaseAudio);
+    // While hidden, the clock is paused so background time does not count.
+    const onVisibility = () => {
+      if (document.hidden) {
+        hiddenAt = performance.now();
+        stopSound();
+      } else if (hiddenAt !== undefined) {
+        if (startedAt !== undefined && !ended) startedAt += performance.now() - hiddenAt;
+        hiddenAt = undefined;
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
       clearInterval(timer);
       query.removeEventListener('change', syncMotion);
-      document.removeEventListener('visibilitychange', releaseAudio);
+      document.removeEventListener('visibilitychange', onVisibility);
       stopSound();
     };
   });
@@ -76,6 +99,8 @@
 
   function restart(nextLevel = level) {
     level = nextLevel;
+    try { localStorage.setItem('minesweeper.level', nextLevel); }
+    catch { /* The choice still applies for this session. */ }
     board = reactiveBoard(createBoard(level));
     seconds = 0;
     startedAt = undefined;
@@ -139,6 +164,8 @@
       else if (flags !== board.availableFlags) playSound('flag');
       else if (revealed) playSound('reveal');
     }
+    if (ended) buzz(board.state === BoardState.WON ? [40, 60, 40] : 80);
+    else if (flags !== board.availableFlags) buzz(12);
   }
 
   function toggle(setting: 'crt' | 'sound') {

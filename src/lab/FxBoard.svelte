@@ -2,26 +2,32 @@
   import { untrack } from 'svelte';
   import FxCell from './FxCell.svelte';
   import StageClearFx from './StageClearFx.svelte';
-  import { layout, cheb, ring, type Scenario } from './scenarios';
+  import { layout, cheb, ring, initialState, chordTargets, type Scenario } from './scenarios';
 
   let { scenario, reduced, tick, cell }: {
     scenario: Scenario; reduced: boolean; tick: number; cell: number;
   } = $props();
 
   const lay = $derived(layout(scenario));
+  const base = $derived(initialState(scenario));
   let visited = $state<boolean[][]>([]);
   let flagged = $state<boolean[][]>([]);
   let delays = $state<Record<number, number>>({});
   let hopDelays = $state<Record<number, number>>({});
+  let preview = $state<Set<number>>(new Set());
   let lost = $state(false);
   let won = $state(false);
   let detonated = $state(-1);
   let grid: HTMLDivElement | undefined = $state();
 
-  const empty = (n: number) => Array.from({ length: n }, () => Array<boolean>(n).fill(false));
-
   $effect(() => {
-    if (!tick) return;
+    if (!tick) {
+      untrack(() => {
+        visited = base.visited.map((row) => [...row]);
+        flagged = base.flagged.map((row) => [...row]);
+      });
+      return;
+    }
     untrack(() => run());
   });
 
@@ -35,14 +41,29 @@
 
   function run() {
     const n = lay.n;
-    visited = empty(n);
-    flagged = empty(n);
+    visited = base.visited.map((row) => [...row]);
+    flagged = base.flagged.map((row) => [...row]);
     delays = {};
     hopDelays = {};
+    preview = new Set();
     lost = false;
     won = false;
     detonated = -1;
     const o = { r: n >> 1, c: n >> 1 };
+    if (scenario === 'chord') {
+      const targets = chordTargets(n, o.r, o.c, flagged);
+      if (!reduced) preview = new Set(targets);
+      const reveal = () => {
+        preview = new Set();
+        for (const i of targets) {
+          visited[Math.floor(i / n)][i % n] = true;
+          delays[i] = cheb(Math.floor(i / n), i % n, o.r, o.c) * 25;
+        }
+      };
+      if (reduced) reveal();
+      else setTimeout(reveal, 300);
+      return;
+    }
     if (scenario === 'reveal') {
       visited[o.r][o.c] = true;
     } else if (scenario === 'cascade') {
@@ -85,6 +106,7 @@
             <div class="lcell-wrap">
               <FxCell {value} visited={visited[r]?.[c] ?? false} flagged={flagged[r]?.[c] ?? false}
                 {lost} {reduced} delay={delays[i] ?? 0} detonated={detonated === i}
+                preview={preview.has(i)}
                 hopDelay={won ? (hopDelays[i] ?? -1) : -1}
                 dealDelay={scenario === 'deal' ? ring(r, c, lay.n) * 25 : -1} />
             </div>

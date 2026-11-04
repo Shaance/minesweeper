@@ -50,6 +50,22 @@ describe('getBoardAfterPlayerMove function', () => {
     expect(board.state).toEqual(BoardState.WON);
   });
 
+  it('should flag all bombs and zero the flag counter when winning', () => {
+    let board = createBoard();
+    board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 1, 1);
+    const notBomb = (value: number) => value !== CellType.BOMB;
+    const coordinates = getCoordinates(board, notBomb);
+    coordinates.forEach((coord) => {
+      board = getBoardAfterPlayerMove(BoardInput.REVEAL, board, coord[0], coord[1]);
+    });
+
+    expect(board.state).toEqual(BoardState.WON);
+    expect(board.availableFlags).toEqual(0);
+    board.content.forEach((row, r) => row.forEach((value, c) => {
+      if (value === CellType.BOMB) expect(board.flagged[r][c]).toEqual(true);
+    }));
+  });
+
   it('should update visited matrix when playing coordinates', () => {
     const board = createBoard();
     const [x, y] = [1, 3];

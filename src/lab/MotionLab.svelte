@@ -48,7 +48,14 @@
       specF: 'banner 280ms · confetti 1.4s steps(14) + spin · tile hop 200ms, ring × 40ms',
     },
     {
-      id: 'deal', cell: 30, title: '6 · NEW GAME',
+      id: 'chord', cell: 40, title: '7 · CHORD PREVIEW — PRESS A REVEALED NUMBER',
+      current: 'Pressing a revealed number gives no hint of what will open; on release the chord just happens (App.svelte move → CHORD).',
+      fx: 'ARMED — while you hold a number whose adjacent flags match, the hidden neighbours it will open blink in the hover purple (300ms, steps); release crumbles them.',
+      specC: 'no press feedback on revealed numbers',
+      specF: '300ms armed blink · steps(1) · then 140ms crumble on release · reduced: no blink',
+    },
+    {
+      id: 'deal', cell: 30, title: '8 · NEW GAME',
       current: 'App.svelte:131 — the {#key game} remount makes every tile appear instantly on restart or level change.',
       fx: 'DEAL-IN — tiles pop in from the centre outward, one ring every 25ms (about 350ms total on a 16×16 board).',
       specC: 'instant',

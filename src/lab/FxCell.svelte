@@ -2,9 +2,9 @@
   import { untrack } from 'svelte';
   import { renderSprite } from '../sprites';
 
-  let { value, visited, flagged, lost, reduced, delay, detonated, hopDelay, dealDelay }: {
+  let { value, visited, flagged, lost, reduced, delay, detonated, hopDelay, dealDelay, preview }: {
     value: number; visited: boolean; flagged: boolean; lost: boolean; reduced: boolean;
-    delay: number; detonated: boolean; hopDelay: number; dealDelay: number;
+    delay: number; detonated: boolean; hopDelay: number; dealDelay: number; preview: boolean;
   } = $props();
 
   let shown = $state(false);
@@ -27,6 +27,7 @@
 
 <button class="lcell" class:open={shown} class:anim={fx}
   class:detonated={detonated && shown} class:mine={value === -1 && shown}
+  class:armed={fx && preview && !shown && !flagged}
   class:deal={fx && dealDelay >= 0} class:hop={fx && hopDelay >= 0}
   {style} tabindex={-1} aria-label="demo tile">
   {#if shown && fx}<span class="cover" aria-hidden="true"></span>{/if}
@@ -77,6 +78,12 @@
   }
   .puff i:first-child { left: 30%; }
   .puff i:last-child { right: 30%; animation-delay: 40ms; }
+  .lcell.armed { animation: armed 300ms steps(1, end) both; }
+  @keyframes armed {
+    0% { background: #7c4fe6; }
+    50% { background: var(--mid); }
+    100% { background: #7c4fe6; }
+  }
   .lcell.deal {
     transform: scale(0.55);
     animation: deal var(--fast) steps(2, end) forwards;
