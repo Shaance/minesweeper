@@ -77,7 +77,11 @@
   }
   .puff i:first-child { left: 30%; }
   .puff i:last-child { right: 30%; animation-delay: 40ms; }
-  .lcell.deal { animation: deal var(--fast) steps(2, end) both; animation-delay: var(--d); }
+  .lcell.deal {
+    transform: scale(0.55);
+    animation: deal var(--fast) steps(2, end) forwards;
+    animation-delay: var(--d);
+  }
   .lcell.hop { animation: hop 200ms steps(1, end) both; animation-delay: var(--h); }
   @keyframes crumble {
     0% { transform: scale(1); }
