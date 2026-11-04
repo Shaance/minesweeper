@@ -1,5 +1,6 @@
 <script lang="ts">
   import MockScreen from './MockScreen.svelte';
+  import TransitionMock from './TransitionMock.svelte';
 </script>
 
 <div class="page">
@@ -55,6 +56,28 @@
     </figure>
   </section>
 
+  <section>
+    <h2><span class="chip after">MOCK</span> level-switch transitions · click a level button to replay</h2>
+    <div class="tgrid">
+      <figure>
+        <figcaption>T1 · SWAP (currently shipped) — frame scale+fade, then deal-in</figcaption>
+        <div class="viewport"><TransitionMock variant="swap" /></div>
+      </figure>
+      <figure>
+        <figcaption>T2 · FADE — frame fades in only, then deal-in</figcaption>
+        <div class="viewport"><TransitionMock variant="fade" /></div>
+      </figure>
+      <figure>
+        <figcaption>T3 · SLIDE — frame slides in from the right, then deal-in</figcaption>
+        <div class="viewport"><TransitionMock variant="slide" /></div>
+      </figure>
+      <figure>
+        <figcaption>T4 · DEAL ONLY — no frame animation, just the deal-in (previous behaviour)</figcaption>
+        <div class="viewport"><TransitionMock variant="deal" /></div>
+      </figure>
+    </div>
+  </section>
+
   <p class="intro"><a href="/">← Back to the game</a></p>
 </div>
 
@@ -79,4 +102,6 @@
     background: var(--bg); line-height: 0;
   }
   .notes { margin: 8px 0 0; padding-left: 16px; font-size: 9px; line-height: 2; color: var(--hi); }
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+  .tgrid figure { margin: 0; }
 </style>

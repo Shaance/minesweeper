@@ -105,6 +105,9 @@ a { color: var(--hi); text-underline-offset: 4px; }
   main.wide .rail .deck .hints { margin: 16px 0 0; line-height: 2.2; }
   main.wide .rail .deck .pointer-hints { flex-direction: column; gap: 6px; }
   main.wide .rail footer { margin: 0; text-align: left; }
+  /* The coin button always holds its slot so the rail never shifts when a
+     game ends; hidden state is not focusable and not announced. */
+  main.wide .rail .insert-coin.off { visibility: hidden; }
 }
 @media (min-width: 1280px) {
   main.wide { --cell: 56px; }

@@ -230,9 +230,8 @@
         <LevelPicker {level} onchange={restart} />
         <Controls {mode} {crt} {sound} onmode={setMode} ontoggle={toggle} />
       </div>
-      {#if ended}
-        <button class="insert-coin" onclick={() => restart()}>▶ INSERT COIN TO PLAY AGAIN</button>
-      {/if}
+      <button class="insert-coin" class:off={!ended} aria-hidden={!ended} tabindex={ended ? 0 : -1}
+        onclick={() => restart()}>▶ INSERT COIN TO PLAY AGAIN</button>
       <AboutFooter />
     </aside>
   </main>
