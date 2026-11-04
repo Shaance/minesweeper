@@ -43,7 +43,9 @@
     hold = setTimeout(() => {
       suppressClick = true;
       holding = false;
-      onmove(BoardInput.FLAG);
+      // A long press does the opposite of the current mode: flags in REVEAL
+      // mode, reveals in FLAG mode.
+      onmove(mode === BoardInput.FLAG ? BoardInput.REVEAL : BoardInput.FLAG);
     }, 400);
   }
 
