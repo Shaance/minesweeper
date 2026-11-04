@@ -103,7 +103,7 @@ Timing tokens on `:root`: `--fast: 120ms`, `--ring: 25ms`, `--shake: 60ms`. Easi
 - Face: normal to worried is an instant sprite swap on pointerdown; back on pointerup or cancel.
 - INSERT COIN: 1s step blink.
 - Reduced motion (`prefers-reduced-motion: reduce`): no shake, no scanline roll, no confetti, no digit roll, no banner slide (it appears in place), no crumble/stab/puff/flash/boom scale, no deal-in and no hop — state changes are instant, ring delay 0. Sprite swaps (face, mine) and the blink remain.
-- `?lab` opens the motion lab (`src/lab/`): every moment above side by side, running the real components against proposed effects (including a chord-press "armed neighbours" preview), with per-card play buttons and a reduced-motion toggle. Lab only; the game routes to it via the footer link and never otherwise.
+- `?lab` opens the motion lab (`src/lab/`) in dev only (`npm run dev`): every moment above side by side, running the real components against proposed effects (including a chord-press "armed neighbours" preview), with per-card play buttons and a reduced-motion toggle. The lab is gated behind `import.meta.env.DEV` (dynamic import in `main.ts`, footer link in `AboutFooter.svelte`), so production builds drop the whole chunk and never ship it.
 
 ## Non-goals
 
