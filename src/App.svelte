@@ -181,11 +181,18 @@
     announcement = value === BoardInput.FLAG ? 'Flag mode' : 'Reveal mode';
   }
 
+  const levelKeys: Record<string, Level> = { '1': Level.EASY, '2': Level.MEDIUM, '3': Level.HARD };
+
   function onKeydown(event: KeyboardEvent) {
     if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
-    if (event.key.toLowerCase() !== 'm') return;
-    event.preventDefault();
-    setMode(mode === BoardInput.REVEAL ? BoardInput.FLAG : BoardInput.REVEAL);
+    const key = event.key.toLowerCase();
+    if (key === 'm') {
+      event.preventDefault();
+      setMode(mode === BoardInput.REVEAL ? BoardInput.FLAG : BoardInput.REVEAL);
+    } else if (levelKeys[key]) {
+      event.preventDefault();
+      restart(levelKeys[key]);
+    }
   }
 
   function toggle(setting: 'crt' | 'sound') {

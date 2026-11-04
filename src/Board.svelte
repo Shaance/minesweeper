@@ -90,6 +90,11 @@
   .board-wrap {
     position: relative;
     width: min(100%, calc(var(--size) * var(--cell, 44px) + 16px)); margin-inline: auto;
+    animation: swapin var(--fast) steps(2, end);
+  }
+  @keyframes swapin {
+    from { transform: scale(.94); opacity: .35; }
+    to { transform: scale(1); opacity: 1; }
   }
   .board {
     background: var(--lo); padding: 4px; border: 4px solid var(--hi);
@@ -107,6 +112,6 @@
     100% { transform: translateY(0); }
   }
   @media (prefers-reduced-motion: reduce) {
-    [role='gridcell'].dealt, [role='gridcell'].hop { animation: none; }
+    .board-wrap, [role='gridcell'].dealt, [role='gridcell'].hop { animation: none; }
   }
 </style>
