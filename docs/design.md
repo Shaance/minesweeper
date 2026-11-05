@@ -31,7 +31,7 @@ The whole page carries the scanline overlay when CRT is on: a fixed, pointer-eve
 
 At 375px wide the 12 by 12 board must fit with cells of at least 28px, and every control stays reachable without horizontal scroll. The mode toggle is the primary flag affordance on touch, long-press is the second.
 
-Large displays (viewport >= 1024px wide) use the side-cabinet layout (variant A1 from the dev-only `?mocks` page, `src/mocks/`): board left, control rail right as a `--panel` slab exactly as tall as the board, the pair centred in the viewport. The rail distributes four groups — brand (title left, HI-SCORE pinned top-right), HUD, a deck of level picker + controls + hints (one hint per line), footer. Cells are 48px, growing to 56px at >= 1280px (`--cell` on the board wrap, default 44px in the column layout). The `?mocks` page stays gated behind `import.meta.env.DEV` and is not shipped in production builds.
+Large displays (viewport >= 1024px wide) use the side-cabinet layout: board left, control rail right as a `--panel` slab exactly as tall as the board, the pair centred in the viewport. The rail distributes four groups — brand (title left, HI-SCORE pinned top-right), HUD, a deck of level picker + controls + hints (one hint per line), footer. Cells are 48px, growing to 56px at >= 1280px (`--cell` on the board wrap, default 44px in the column layout).
 
 ## Palette and type
 
@@ -98,7 +98,7 @@ cool     ..####..  .######.  ssssssss  #ss##ss#  ########  ##m##m##  .#mmmm#.  .
 Timing tokens on `:root`: `--fast: 120ms`, `--ring: 25ms`, `--shake: 60ms`. Easing `steps()` or linear only; no smooth easing curves anywhere, the piece is 8-bit.
 
 - Tile press: bevel inverts on pointerdown with no transition.
-- New game (including level change): the board frame swaps in with a 120ms scale 0.94 → 1 / opacity 0.35 → 1 (`--fast`, `steps(2)`) on the board wrap (alternative frame transitions are mocked on the dev-only `?mocks` page), while the board deals in from the centre outward — each Chebyshev ring starts 25ms after the previous and pops from scale 0.55 to 1 over `--fast` (`steps(2)`). Driven by per-ring timers (`dealt` class) so the settled scale(1) is a plain base style, never an animation fill — WebKit does not hold backwards fill during `animation-delay`, which left tiles stuck at the wrong size on iOS Safari. The frame swap is skipped under reduced motion.
+- New game (including level change): the board frame swaps in with a 120ms scale 0.94 → 1 / opacity 0.35 → 1 (`--fast`, `steps(2)`) on the board wrap, while the board deals in from the centre outward — each Chebyshev ring starts 25ms after the previous and pops from scale 0.55 to 1 over `--fast` (`steps(2)`). Driven by per-ring timers (`dealt` class) so the settled scale(1) is a plain base style, never an animation fill — WebKit does not hold backwards fill during `animation-delay`, which left tiles stuck at the wrong size on iOS Safari. The frame swap is skipped under reduced motion.
 - Reveal: the hidden cover crumbles away in three steps (scale 1, 0.66, 0.33, 0) over 140ms (`steps(1)`); the number arrives at scale 1.8 and snaps to 1 over `--fast` (`steps(2)`).
 - Chord preview (armed neighbours): each armed tile blinks `#7c4fe6` / `--mid` over 300ms (`steps(1, end)`, both) for as long as the matching number is held. Skipped under reduced motion.
 - Flood fill: cells revealed by one move are grouped by Chebyshev distance from the clicked cell; ring k crumbles after k times `--ring`, so the wave reads as motion travelling outward.
