@@ -5,6 +5,8 @@ import { createBoard, getBoardAfterPlayerMove } from '../minesweeper/BoardManage
 import BoardState from '../minesweeper/BoardState';
 import CellType from '../minesweeper/CellType';
 import Level from '../minesweeper/Level';
+import { isSolvableWithoutGuessing } from '../minesweeper/Solver';
+import { getGameSettings } from '../minesweeper/BoardHelper';
 
 describe('getBoardAfterPlayerMove function', () => {
   it('should return same board when coordinates are incorrect', () => {
@@ -224,5 +226,27 @@ describe('chording', () => {
     expect(board.visited[0][0]).toBe(true);
     expect(board.visited[0][1]).toBe(false);
     expect(board.flagged[0][1]).toBe(true);
+  });
+});
+
+describe('no-guess board generation', () => {
+  const levels = [Level.EASY, Level.MEDIUM, Level.HARD];
+  for (const level of levels) {
+    it(`deals only logically solvable boards on ${level}`, () => {
+      for (let i = 0; i < 20; i++) {
+        const board = createBoard(level);
+        const result = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 3, 3);
+        expect(isSolvableWithoutGuessing(result.content, 3, 3)).toBe(true);
+      }
+    });
+  }
+
+  it('still guarantees an expandable first click on every level', () => {
+    for (const level of levels) {
+      const { size, bombsNumber } = getGameSettings(level);
+      const board = createBoard(level);
+      const result = getBoardAfterPlayerMove(BoardInput.REVEAL, board, 3, 3);
+      expect(result.remainingNotVisited).toBeLessThan(size * size - bombsNumber - 1);
+    }
   });
 });

@@ -6,6 +6,7 @@ import BoardInput from './BoardInput';
 import BoardState from './BoardState';
 import CellType from './CellType';
 import type Level from './Level';
+import { isSolvableWithoutGuessing } from './Solver';
 
 export function createBoard(level?: Level, size?: number, bombsNumber?: number): Board {
   const settings = getGameSettings(level, size, bombsNumber);
@@ -30,14 +31,29 @@ export function getBoardAfterPlayerMove(inputMode: BoardInput, board: Board, row
   return flagCoordinates(board, row, col);
 }
 
+// Bounded regeneration: keeps first-move generation fast even on dense custom boards.
+const MAX_GENERATION_ATTEMPTS = 200;
+
 /**
- * We always want the first coordinates the player picks to be expandable. This function will
- * regenerate a board as long as the coordinates in input points to either a bomb or a cell
- * that is adjacent to bombs
+ * We always want the first coordinates the player picks to be expandable, and the
+ * whole board to be solvable by pure logic. This function regenerates a board until
+ * the coordinates in input point to an empty cell (no bomb, no adjacent bomb) on a
+ * board that is solvable without guessing, so no game ever comes down to a 50/50.
+ * If the attempt cap is exhausted it falls back to the expandable-first-click only.
  */
 function getPlayableBoard(board: Board, row: number, col: number): Board {
-  if (board.state !== BoardState.INITIAL || !coordinatesInBoard(row, col, board.content) || isEmptyCell(board, row, col)) {
+  if (board.state !== BoardState.INITIAL || !coordinatesInBoard(row, col, board.content)) {
     return board;
+  }
+  if (isEmptyCell(board, row, col) && isSolvableWithoutGuessing(board.content, row, col)) {
+    return board;
+  }
+  for (let attempt = 0; attempt < MAX_GENERATION_ATTEMPTS; attempt++) {
+    const candidate = createBoard(board.level, board.size, board.bombsNumber)
+      .withFlagged(board.flagged);
+    if (isEmptyCell(candidate, row, col) && isSolvableWithoutGuessing(candidate.content, row, col)) {
+      return candidate;
+    }
   }
   const newBoard = createBoard(board.level, board.size, board.bombsNumber)
     .withFlagged(board.flagged);
