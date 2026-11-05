@@ -17,8 +17,8 @@
   <button class:active={crt} aria-pressed={crt} onclick={() => ontoggle('crt')}>CRT</button>
   <button class:active={sound} aria-pressed={sound} onclick={() => ontoggle('sound')}>SOUND</button>
 </div>
-<p class="hints pointer-hints"><span>CLICK · REVEAL / FLAG (MODE)</span><span>RIGHT-CLICK / HOLD · THE OTHER</span><span>M · SWITCH MODE</span><span>1/2/3 · LEVEL</span></p>
-<p class="hints touch-hints">TAP · REVEAL / FLAG (MODE)<br />HOLD · THE OTHER</p>
+<p class="hints pointer-hints"><span>CLICK · REVEAL / FLAG (MODE)</span><span>RIGHT-CLICK / HOLD · THE OTHER</span><span>CLICK NUMBER · CHORD</span><span>M · SWITCH MODE</span><span>1/2/3 · LEVEL</span></p>
+<p class="hints touch-hints">TAP · REVEAL / FLAG (MODE)<br />HOLD · THE OTHER<br />PRESS NUMBER · CHORD</p>
 <p class="visually-hidden" id="keyboard-help">Arrow keys move. Enter or Space reveals or chords. F flags. M switches reveal/flag mode. 1, 2, 3 change difficulty.</p>
 
 <style>

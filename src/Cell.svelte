@@ -3,10 +3,10 @@
   import BoardInput from './minesweeper/BoardInput';
   import { renderSprite } from './sprites';
   let { value, row, col, visited, flagged, lost, ended, mode, reduced, delay, detonated,
-    tabindex, onfocus, onpress, onmove }: {
+    armed, tabindex, onfocus, onpress, onmove }: {
     value: number; row: number; col: number; visited: boolean; flagged: boolean;
     lost: boolean; ended: boolean; mode: BoardInput; reduced: boolean; delay: number;
-    detonated: boolean; tabindex: number; onfocus: () => void;
+    detonated: boolean; armed: boolean; tabindex: number; onfocus: () => void;
     onpress: (pressed: boolean) => void; onmove: (input: BoardInput) => void;
   } = $props();
   let shown = $state(false);
@@ -77,6 +77,7 @@
 </script>
 
 <button class="cell" class:open={shown} class:pressed={pressed && !shown} class:wrong
+  class:armed={armed && !reduced && !shown && !flagged}
   class:detonated={detonated && shown}
   style={'--number: var(--' + colors[Math.max(0, value)] + ')'}
   aria-label={'row ' + (row + 1) + ' column ' + (col + 1) + ', ' + label}
@@ -114,6 +115,12 @@
   }
   @media (hover: hover) { .cell:not(.open):hover { background: #7c4fe6; } }
   .cell.pressed { border-color: var(--lo) var(--hi) var(--hi) var(--lo); }
+  .cell.armed { animation: armed 300ms steps(1, end) both; }
+  @keyframes armed {
+    0% { background: #7c4fe6; }
+    50% { background: var(--mid); }
+    100% { background: #7c4fe6; }
+  }
   .cell.open { border: 1px solid var(--grid); background: var(--open); }
   .cell.detonated { background: var(--pink); animation: flash 240ms steps(1, end) forwards; }
   .cell:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; z-index: 2; }
@@ -178,7 +185,7 @@
     100% { background: var(--pink); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cell.open, .number, .flag, .cell.detonated, .cover, .puff, .mine-sprite { animation: none; }
+    .cell.open, .cell.armed, .number, .flag, .cell.detonated, .cover, .puff, .mine-sprite { animation: none; }
     .cover, .puff, .explosion { display: none; }
   }
 </style>

@@ -101,7 +101,7 @@
               <Cell {value} row={r} col={c}
                 visited={visited[r]?.[c] ?? false} flagged={flagged[r]?.[c] ?? false}
                 {lost} ended={lost} mode={BoardInput.REVEAL} {reduced}
-                delay={delays[i] ?? 0} detonated={detonated === i}
+                delay={delays[i] ?? 0} detonated={detonated === i} armed={false}
                 tabindex={-1} onfocus={() => {}} onpress={() => {}} onmove={() => {}} />
             </div>
           {/each}

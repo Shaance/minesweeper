@@ -3,6 +3,7 @@
   import type GameBoard from './minesweeper/Board';
   import BoardInput from './minesweeper/BoardInput';
   import BoardState from './minesweeper/BoardState';
+  import { getDirectionsWithDiagonals } from './minesweeper/BoardHelper';
   import Cell from './Cell.svelte';
   import StageClear from './StageClear.svelte';
   let { board, mode, motion, reduced, onmove, onpress }: {
@@ -15,6 +16,11 @@
   } = $props();
   let grid: HTMLDivElement;
   let focus = $state(0);
+  let armed = $state<Set<number>>(new Set());
+  // Any move replaces the board, which ends the preview.
+  $effect(() => {
+    if (board) armed = new Set();
+  });
   const ended = $derived(board.state === BoardState.WON || board.state === BoardState.LOST);
   const won = $derived(board.state === BoardState.WON);
   const origin = $derived(motion.origin ?? { r: board.size >> 1, c: board.size >> 1 });
@@ -48,7 +54,35 @@
     return () => animation.cancel();
   });
 
+  // Chord preview: while a revealed number is pressed and its adjacent flag
+  // count matches the number, its hidden, unflagged neighbours are "armed" —
+  // exactly the cells the chord will open on release.
+  function armCell(r: number, c: number) {
+    armed = new Set();
+    if (reduced || ended) return;
+    const value = board.content[r][c];
+    if (!board.visited[r][c] || value <= 0) return;
+    let flags = 0;
+    const targets: number[] = [];
+    for (const [dr, dc] of getDirectionsWithDiagonals()) {
+      const x = r + dr;
+      const y = c + dc;
+      if (x < 0 || y < 0 || x >= board.size || y >= board.size) continue;
+      if (board.flagged[x][y]) flags += 1;
+      else if (!board.visited[x][y]) targets.push(x * board.size + y);
+    }
+    if (flags === value && targets.length > 0) armed = new Set(targets);
+  }
+
+  function disarm() {
+    if (armed.size > 0) armed = new Set();
+  }
+
   function navigate(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      armCell(Math.floor(focus / board.size), focus % board.size);
+      return;
+    }
     const row = Math.floor(focus / board.size);
     const col = focus % board.size;
     let next = focus;
@@ -61,21 +95,29 @@
     focus = next;
     grid.querySelectorAll<HTMLButtonElement>('.cell')[next].focus();
   }
+
+  function onGridKeyUp(event: KeyboardEvent) {
+    if (event.key === ' ') disarm();
+  }
 </script>
 
 <div class="board-wrap" style={'--size: ' + board.size}>
   <div class="board" role="grid" tabindex="-1" aria-label="Minesweeper board" aria-describedby="keyboard-help"
     aria-rowcount={board.size} aria-colcount={board.size} bind:this={grid}
-    onkeydown={navigate} oncontextmenu={(event) => event.preventDefault()}>
+    onkeydown={navigate} onkeyup={onGridKeyUp}
+    onpointerup={disarm} onpointercancel={disarm} onpointerleave={disarm}
+    oncontextmenu={(event) => event.preventDefault()}>
     {#each board.content as row, r}
       <div class="row" role="row">
         {#each row as value, c}
           {@const index = r * board.size + c}
-          <div role="gridcell" class:predeal={!reduced && !dealt[index]} class:dealt={!reduced && dealt[index]}
-            class:hop={won && !reduced} style={'--h: ' + hopDelay(r, c) + 'ms'}>
+          <div role="gridcell" tabindex={-1} class:predeal={!reduced && !dealt[index]} class:dealt={!reduced && dealt[index]}
+            class:hop={won && !reduced} style={'--h: ' + hopDelay(r, c) + 'ms'}
+            onpointerdown={() => armCell(r, c)}>
             <Cell {value} row={r} col={c} visited={board.visited[r][c]} flagged={board.flagged[r][c]}
               lost={board.state === BoardState.LOST} {ended} {mode} {reduced}
               delay={motion.delays[index] ?? 0} detonated={motion.detonated === index}
+              armed={armed.has(index)}
               tabindex={focus === index ? 0 : -1} onfocus={() => focus = index}
               {onpress} onmove={(input) => onmove(r, c, input)} />
           </div>
