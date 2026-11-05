@@ -100,7 +100,7 @@ a { color: var(--hi); text-underline-offset: 4px; }
   main.wide .rail .high-score { gap: 16px; }
   main.wide .rail .high-score strong { font-size: 16px; }
   main.wide .rail .hud { margin: 0; }
-  main.wide .rail .deck .levels { margin-bottom: 20px; }
+  main.wide .rail .deck .levels { margin-top: 20px; margin-bottom: 20px; }
   main.wide .rail .deck .controls { margin-top: 20px; gap: 10px; }
   main.wide .rail .deck .hints { margin: 16px 0 0; line-height: 2.2; }
   main.wide .rail .deck .pointer-hints { flex-direction: column; gap: 6px; }

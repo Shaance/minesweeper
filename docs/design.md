@@ -21,7 +21,7 @@ One centred column, max width 480px, on `--bg`. From top:
 
 1. Title "MINE SWEEPER" on two lines, Press Start 2P, cyan with a magenta 4px offset shadow and a `--lo` 8px shadow. Right of it, small "HI-SCORE" in lime with the best time for the current level in yellow (from localStorage, `---` when none).
 2. HUD row: LED flag counter (flags remaining, 3 digits), face button, LED timer (seconds, 3 digits, capped at 999).
-3. Level row: EASY, MEDIUM, HARD buttons. Selected one is cyan with `--bg` text and a 4px `--lo` hard shadow; others are `--panel` with `--hi` text and a 2px `--mid` border.
+3. Level row: EASY, MEDIUM, HARD buttons, 44px tall with 8px padding (same as the controls row). Selected one is cyan with `--bg` text and a 4px `--lo` hard shadow; others are `--panel` with `--hi` text and a 2px `--mid` border.
 4. Board: `--lo` background, 4px padding, 4px `--hi` border, outer ring `0 0 0 4px --bg, 0 0 0 8px --magenta` and a `0 0 40px` magenta glow at 40% alpha. Cells are square, size = min(44px, (column width - padding) / n).
 5. Controls row under the board, Press Start 2P 9px in `--hi`: a REVEAL / FLAG mode toggle (two segmented buttons, the active one cyan), a CRT toggle, a SOUND toggle. Hints line: "CLICK · REVEAL   RIGHT-CLICK / HOLD · FLAG" on pointer devices.
 6. After a game ends, a blinking magenta line "▶ INSERT COIN TO PLAY AGAIN" (1s step blink, no fade). It is a button; activating it starts a new game at the same level. The face button does the same at any time. In the wide side-cabinet rail the button always holds its slot (`visibility: hidden` while playing) so the rail never shifts when a game ends.
