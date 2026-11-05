@@ -11,6 +11,7 @@ Design contract for the 2026 rebuild of minesweeper.hashcode.dev. The chosen dir
 ## Logic changes
 
 - `getBoardAfterPlayerMove` grows a third input mode `BoardInput.CHORD`: on a revealed number cell whose adjacent flag count equals its number, reveal every hidden, unflagged neighbour (each through the same code path as a normal reveal, so a wrongly flagged mine still loses). On any other cell it is a no-op.
+- No-guess guarantee: `getPlayableBoard` regenerates the board (up to 200 attempts, measured at ~2ms average / ~9ms worst on HARD) until the first-click cell is empty on a board for which `isSolvableWithoutGuessing` (`src/minesweeper/Solver.ts`) returns true. The solver simulates the first reveal, then applies only certain deductions — all-unknown-neighbours-are-mines, all-are-safe, and the subset rule between frontier constraints — and requires every non-bomb cell to end up revealed. So a loss is always a logic error, never a 50/50. If the attempt cap is exhausted the fallback keeps the old expandable-first-click-only behaviour.
 - Board mutation stays in place (the current functions mutate and return the same object). The UI holds the board in a Svelte 5 `$state` so those mutations are reactive.
 - Unit tests port from jasmine to vitest with the same cases, plus cases for chording (reveals neighbours, no-op when flag count differs, loses when a flag is wrong).
 
