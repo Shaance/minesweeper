@@ -31,7 +31,7 @@ The whole page carries the scanline overlay when CRT is on: a fixed, pointer-eve
 
 At 375px wide the 12 by 12 board must fit with cells of at least 28px, and every control stays reachable without horizontal scroll. The mode toggle is the primary flag affordance on touch, long-press is the second.
 
-Large displays (viewport >= 1024px wide) use the side-cabinet layout (variant A1 from the dev-only `?mocks` page, `src/mocks/`): board left, control rail right as a `--panel` slab exactly as tall as the board, the pair centred in the viewport. The rail distributes four groups — brand (title left, HI-SCORE pinned top-right), HUD, a deck of level picker + controls + hints (one hint per line), footer. Cells are 48px, growing to 56px at >= 1280px (`--cell` on the board wrap, default 44px in the column layout). The `?lab` and `?mocks` pages stay gated behind `import.meta.env.DEV` and are not shipped in production builds.
+Large displays (viewport >= 1024px wide) use the side-cabinet layout (variant A1 from the dev-only `?mocks` page, `src/mocks/`): board left, control rail right as a `--panel` slab exactly as tall as the board, the pair centred in the viewport. The rail distributes four groups — brand (title left, HI-SCORE pinned top-right), HUD, a deck of level picker + controls + hints (one hint per line), footer. Cells are 48px, growing to 56px at >= 1280px (`--cell` on the board wrap, default 44px in the column layout). The `?mocks` page stays gated behind `import.meta.env.DEV` and is not shipped in production builds.
 
 ## Palette and type
 
@@ -108,8 +108,6 @@ Timing tokens on `:root`: `--fast: 120ms`, `--ring: 25ms`, `--shake: 60ms`. Easi
 - Face: normal to worried is an instant sprite swap on pointerdown; back on pointerup or cancel.
 - INSERT COIN: 1s step blink.
 - Reduced motion (`prefers-reduced-motion: reduce`): no shake, no scanline roll, no confetti, no digit roll, no banner slide (it appears in place), no crumble/stab/puff/flash/boom scale, no deal-in, no frame swap and no hop — state changes are instant, ring delay 0. Sprite swaps (face, mine) and the blink remain.
-- `?lab` opens the motion lab (`src/lab/`) in dev only (`npm run dev`): every moment above side by side, running the real components against proposed effects, with per-card play buttons and a reduced-motion toggle. The lab is gated behind `import.meta.env.DEV` (dynamic import in `main.ts`, footer link in `AboutFooter.svelte`), so production builds drop the whole chunk and never ship it.
-
 ## Non-goals
 
 Custom board sizes in the UI, multiplayer, a leaderboard beyond localStorage, themes other than Arcade, PWA or offline support, analytics.

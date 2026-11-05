@@ -4,7 +4,7 @@
 
 <footer>
   <a href="https://github.com/Shaance/minesweeper">Code on GitHub</a>
-  {#if dev}<span aria-hidden="true"> · </span><a href="?lab">Motion Lab</a><span aria-hidden="true"> · </span><a href="?mocks">Mocks</a>{/if}
+  {#if dev}<span aria-hidden="true"> · </span><a href="?mocks">Mocks</a>{/if}
 </footer>
 
 <style>
