@@ -25,7 +25,7 @@ One centred column, max width 480px, on `--bg`. From top:
 4. Board: `--lo` background, 4px padding, 4px `--hi` border, outer ring `0 0 0 4px --bg, 0 0 0 8px --magenta` and a `0 0 40px` magenta glow at 40% alpha. Cells are square, size = min(44px, (column width - padding) / n).
 5. Controls row under the board, Press Start 2P 9px in `--hi`: a REVEAL / FLAG mode toggle (two segmented buttons, the active one cyan), a CRT toggle, a SOUND toggle. Hints line: "CLICK · REVEAL   RIGHT-CLICK / HOLD · FLAG" on pointer devices.
 6. After a game ends, a blinking magenta line "▶ INSERT COIN TO PLAY AGAIN" (1s step blink, no fade). It is a button; activating it starts a new game at the same level. The face button does the same at any time. In the wide side-cabinet rail the button always holds its slot (`visibility: hidden` while playing) so the rail never shifts when a game ends.
-7. Footer: "Code on GitHub" link in `--hi`, 9px.
+7. Footer: "Code on GitHub" link in `--hi`, 9px, centred in both the column layout and the wide rail.
 
 The whole page carries the scanline overlay when CRT is on: a fixed, pointer-events-none `repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 4px)`. CRT defaults to on, remembered in localStorage.
 
